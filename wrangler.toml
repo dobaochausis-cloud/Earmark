@@ -2,3 +2,7 @@ name = "earmark"
 pages_build_output_dir = "public"
 compatibility_date = "2025-09-01"
 compatibility_flags = ["nodejs_compat"]
+
+# Cloudflare Workers AI: the free AI the site uses when no Anthropic key is set.
+[ai]
+binding = "AI"

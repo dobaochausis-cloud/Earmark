@@ -6,7 +6,7 @@ This folder is Earmark as a normal website that anyone can open, with no Claude 
 |---|---|
 | `public/index.html` | The app. Built from `earmark.html`, the same file that runs on claude.ai. |
 | `public/platform.js` | Saves each person's books, flashcards and scores **in their own browser**. Sends AI questions to the server. |
-| `functions/api/sample.js` | The only server code. It passes questions to Claude using **your** Anthropic API key, which stays secret on the server. |
+| `functions/api/sample.js` | The only server code. It asks Cloudflare's free AI, or Claude if you add an Anthropic API key (the key stays secret on the server). |
 
 Nobody's books are uploaded to your server. Each student's library stays on their own device and browser.
 
@@ -14,7 +14,7 @@ Nobody's books are uploaded to your server. Each student's library stays on thei
 
 ## Before you start: what you need
 
-1. **An Anthropic API account and some credit.** This is what pays for the AI answers.
+1. **Optional: an Anthropic API account and some credit**, only if you want Claude's answers instead of the free AI.
    - Anthropic API accounts are for adults (18+). If you're under 18, ask a parent, guardian or teacher to create the account and API key.
    - Sign up at <https://console.anthropic.com>, add credit (you pay up front), then create an **API key**.
    - **Set a monthly spend limit** in the Console (Settings → Limits), for example $10. This is your main protection against surprise costs.
@@ -36,33 +36,25 @@ Nobody's books are uploaded to your server. Each student's library stays on thei
    - **Build output directory:** `public`
 3. Click **Save and Deploy**. Your site will be at something like `https://earmark.pages.dev` (Cloudflare picks another name if that one is taken).
 
-## Step 3: add your API key (and a class code)
+## Step 3: the AI
 
-In your Cloudflare Pages project, go to **Settings → Variables and Secrets** and add:
+**It works for free out of the box.** With no key added, the site uses **Cloudflare Workers AI** (Google's Gemma 4 model) on Cloudflare's free daily allowance. That allowance resets every day. If it runs out, people see "Today's free AI allowance is used up", and everything else keeps working.
+
+To get Claude's better answers later, add these in your Pages project under **Settings → Variables and Secrets**, then **retry the latest deployment**:
 
 | Name | Type | Value |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | **Secret** | your key from console.anthropic.com |
-| `ACCESS_CODE` | Secret (optional, recommended) | a class code, for example `owl42`. People must type it once before the AI works, so strangers who find your link can't spend your credit. |
+| `ANTHROPIC_API_KEY` | **Secret** | your key from console.anthropic.com. Once it's set, the site uses Claude instead of the free AI. |
+| `ACCESS_CODE` | Secret (optional) | a class code, for example `owl42`. People type it once before the AI works, so strangers can't use up your allowance or credit. |
 | `MODEL` | Text (optional) | which Claude model to use (see costs below) |
-
-Then go to **Deployments** and **retry the latest deployment** so the new settings take effect.
+| `FREE_MODEL` | Text (optional) | a different Workers AI model, for example `@cf/meta/llama-3.3-70b-instruct-fp8-fast` |
 
 ## What it costs
 
-Hosting on Cloudflare is free. You only pay Anthropic for AI use, from the credit you added.
+- **Free AI (no key):** $0. Hosting on Cloudflare is free too.
+- **Claude (with a key):** you pay Anthropic per use from credit you add ahead of time. With the default **Claude Opus 5**, asking a question or making flashcards or a quiz costs about 5–15¢, and a word look-up about 1¢. Set `MODEL` to `claude-sonnet-5` (about 2½× cheaper) or `claude-haiku-4-5` (about 5× cheaper) to spend less.
 
-By default the site uses **Claude Opus 5** ($5 per million input tokens and $25 per million output tokens). Each question sends up to about 16,000 tokens of book text, so a rough guide is:
-
-- **Asking a question, making flashcards or a quiz:** about 5–15¢ each
-- **Word look-ups (hover for 3 seconds):** about 1¢ each
-
-To spend less, set `MODEL` to one of these:
-
-- `claude-sonnet-5`: about 2½× cheaper
-- `claude-haiku-4-5`: about 5× cheaper, and less careful with harder questions
-
-Read-aloud, the PDF viewer and the games don't use the AI, so they cost nothing.
+Read-aloud, the PDF viewer and the games never use the AI.
 
 ## Updating the site later
 

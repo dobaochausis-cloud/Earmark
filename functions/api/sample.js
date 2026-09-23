@@ -6,18 +6,31 @@
  *   {"done": true, "stop": "..."}  – finished (stop = the API's stop_reason)
  *   {"error": {code, message}}     – failed part-way
  *
+ * GET /api/sample    → { provider, maxPromptBytes } so the page sizes its requests.
+ *
+ * Which AI answers:
+ *   - Claude, when ANTHROPIC_API_KEY is set (paid per use, best answers).
+ *   - Otherwise Cloudflare Workers AI through the "AI" binding in wrangler.toml
+ *     (free daily allowance on every Cloudflare account; resets each day).
+ *
  * Settings (Cloudflare Pages → Settings → Variables and Secrets):
- *   ANTHROPIC_API_KEY  (required, secret)  your key from console.anthropic.com
+ *   ANTHROPIC_API_KEY  (optional, secret)  your key from console.anthropic.com
  *   ACCESS_CODE        (optional, secret)  a class code people must enter to use the AI
- *   MODEL              (optional)          defaults to claude-opus-5; claude-sonnet-5 or
- *                                          claude-haiku-4-5 cost less per question
+ *   MODEL              (optional)          Claude model; defaults to claude-opus-5
+ *   FREE_MODEL         (optional)          Workers AI model; defaults to Gemma 4 (see below)
  */
 // The official Anthropic SDK, pre-packed into one file (npm run vendor) so
 // Cloudflare needs no install step to run this.
 import Anthropic from "../../lib/anthropic-sdk.mjs";
 
-const MAX_BODY_BYTES = 65536 + 4096;   // matches the page's prompt budget
 const DEFAULT_MODEL = "claude-opus-5";
+// Google's Gemma 4 on Workers AI: quick, cheap on the free allowance, and good
+// in many languages (Vietnamese included).
+const DEFAULT_FREE_MODEL = "@cf/google/gemma-4-26b-a4b-it";
+
+// How much book text the page may send. The free model gets less, so each
+// question uses less of the daily allowance.
+const PROMPT_BYTES = { claude: 65536, free: 24000 };
 
 // How hard Claude thinks, per kind of request. Word look-ups are "quick";
 // answers, flashcards and quizzes are "default".
@@ -56,9 +69,21 @@ function cleanMessages(raw) {
   return out[0].role === "user" && out[out.length - 1].role === "user" ? out : null;
 }
 
+function providerFor(env) {
+  if (env.ANTHROPIC_API_KEY) return "claude";
+  if (env.AI) return "free";
+  return null;
+}
+
+export async function onRequestGet({ env }) {
+  const provider = providerFor(env);
+  return json(200, { provider, maxPromptBytes: provider ? PROMPT_BYTES[provider] : 0 });
+}
+
 export async function onRequestPost({ request, env }) {
-  if (!env.ANTHROPIC_API_KEY) {
-    return json(503, { code: "not_configured", message: "The site owner hasn't added an Anthropic API key yet." });
+  const provider = providerFor(env);
+  if (!provider) {
+    return json(503, { code: "not_configured", message: "The site owner hasn't turned on an AI yet." });
   }
   if (env.ACCESS_CODE && request.headers.get("x-earmark-code") !== env.ACCESS_CODE) {
     return json(401, { code: "not_granted", message: "A class code is needed to use the AI." });
@@ -67,7 +92,7 @@ export async function onRequestPost({ request, env }) {
   if (tooMany(ip)) return json(429, { code: "rate_limited", message: "Slow down a little — try again in a minute." });
 
   const raw = await request.text();
-  if (raw.length > MAX_BODY_BYTES) {
+  if (raw.length > PROMPT_BYTES[provider] + 4096) {
     return json(413, { code: "prompt_too_large", message: "That request is too large." });
   }
   let body;
@@ -75,6 +100,8 @@ export async function onRequestPost({ request, env }) {
   const messages = cleanMessages(body.messages);
   if (!messages) return json(400, { code: "bad_request", message: "Bad request." });
   const tier = EFFORT[body.tier] ? body.tier : "default";
+  const system = body.json ? SYSTEM_JSON : SYSTEM;
+  if (provider === "free") return askWorkersAI(env, messages, system, tier);
 
   const client = new Anthropic({
     apiKey: env.ANTHROPIC_API_KEY,
@@ -91,7 +118,7 @@ export async function onRequestPost({ request, env }) {
   const params = {
     model,
     max_tokens: MAX_TOKENS[tier],
-    system: body.json ? SYSTEM_JSON : SYSTEM,
+    system,
     messages,
   };
   // Haiku doesn't take an effort setting; the other current models do.
@@ -116,6 +143,66 @@ export async function onRequestPost({ request, env }) {
       else if (err instanceof Anthropic.BadRequestError) { code = "bad_request"; message = "The AI couldn't handle that request."; }
       else if (err instanceof Anthropic.APIError) { message = "The AI had a problem (" + (err.status || "no status") + ")."; }
       await send({ error: { code, message } }).catch(() => {});
+    } finally {
+      await writer.close().catch(() => {});
+    }
+  })();
+
+  return new Response(readable, {
+    headers: { "content-type": "application/x-ndjson; charset=utf-8", "cache-control": "no-store" },
+  });
+}
+
+/* ---- the free option: Cloudflare Workers AI ----
+   Same reply format as above. The binding streams OpenAI-style chunks
+   ("data: {choices:[{delta:{content}}]}"); some older models send
+   {"response": "..."} instead, so both are read. */
+async function askWorkersAI(env, messages, system, tier) {
+  const encoder = new TextEncoder();
+  const { readable, writable } = new TransformStream();
+  const writer = writable.getWriter();
+  const send = (obj) => writer.write(encoder.encode(JSON.stringify(obj) + "\n"));
+
+  (async () => {
+    let stop = "end_turn";
+    try {
+      const out = await env.AI.run(env.FREE_MODEL || DEFAULT_FREE_MODEL, {
+        messages: [{ role: "system", content: system }, ...messages],
+        max_tokens: tier === "quick" ? 800 : 4000,
+        stream: true,
+      });
+      const reader = out.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+      const handle = (line) => {
+        line = line.trim();
+        if (!line.startsWith("data:")) return;
+        const data = line.slice(5).trim();
+        if (!data || data === "[DONE]") return;
+        let chunk;
+        try { chunk = JSON.parse(data); } catch (e) { return; }
+        const choice = chunk.choices && chunk.choices[0];
+        const text = choice ? (choice.delta && choice.delta.content) || "" : chunk.response || "";
+        if (text) send({ d: text });
+        if (choice && choice.finish_reason === "length") stop = "max_tokens";
+      };
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        let nl;
+        while ((nl = buf.indexOf("\n")) >= 0) { handle(buf.slice(0, nl)); buf = buf.slice(nl + 1); }
+      }
+      handle(buf);
+      await send({ done: true, stop });
+    } catch (err) {
+      // Workers AI reports errors as plain messages; the daily free allowance
+      // running out is the one worth explaining.
+      const msg = String((err && err.message) || err);
+      const usedUp = /neuron|daily free allocation|4006|3036/i.test(msg);
+      await send({ error: usedUp
+        ? { code: "rate_limited", message: "Today's free AI allowance is used up. It resets tomorrow." }
+        : { code: "server_error", message: "The free AI isn't available right now. Try again in a moment." } }).catch(() => {});
     } finally {
       await writer.close().catch(() => {});
     }

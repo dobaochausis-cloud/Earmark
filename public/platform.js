@@ -8,7 +8,8 @@
  * This file gives the app the same three abilities on a normal website:
  *   db + assets live in this browser (IndexedDB), so every student's library
  *   is private to their own device, and nothing is stored on the server.
- *   sample calls this website's own /api/sample, which talks to Claude.
+ *   sample calls this website's own /api/sample, which asks Claude (with an
+ *   Anthropic key) or Cloudflare's free AI.
  *
  * It must load before the app's script.
  */
@@ -144,7 +145,18 @@
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 
   /* ---------------- asking Claude (through /api/sample) ---------------- */
-  const MAX_PROMPT_BYTES = 65536;   // must match the server's limit
+  // How much book text one request may carry; the server says (it depends on
+  // whether the site uses Claude or the free Cloudflare AI).
+  let limitsPromise = null;
+  function serverLimits() {
+    if (!limitsPromise) {
+      limitsPromise = fetch("/api/sample", { method: "GET" })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((j) => ({ maxPromptBytes: (j && j.maxPromptBytes) || 24000, provider: (j && j.provider) || null }))
+        .catch(() => { limitsPromise = null; return { maxPromptBytes: 24000, provider: null }; });
+    }
+    return limitsPromise;
+  }
   const CODE_KEY = "earmark_access_code";
 
   function fail(code, message, text) {
@@ -161,7 +173,8 @@
     opts = opts || {};
     const messages = typeof input === "string" ? [{ role: "user", content: input }] : input;
     const body = JSON.stringify({ messages, tier: opts.modelTier || "default", json: !!asJson });
-    if (new Blob([body]).size > MAX_PROMPT_BYTES + 4096) throw fail("prompt_too_large", "That request is too large.");
+    const { maxPromptBytes } = await serverLimits();
+    if (new Blob([body]).size > maxPromptBytes + 4096) throw fail("prompt_too_large", "That request is too large.");
 
     let res;
     for (let tries = 0; ; tries++) {
@@ -245,7 +258,7 @@
     const r = await callServer(input, opts, true);
     return parseJsonLoose(r.text);
   };
-  sampleApi.limits = async () => ({ maxPromptBytes: MAX_PROMPT_BYTES, images: false });
+  sampleApi.limits = async () => ({ maxPromptBytes: (await serverLimits()).maxPromptBytes, images: false });
 
   /* ---------------- the same entry point the app uses on claude.ai ---------------- */
   const namespaces = { db: dbApi, assets: assetsApi, sample: sampleApi };
