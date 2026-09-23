@@ -2725,10 +2725,12 @@
   function parseGlossaryReply(text){
     const out = { pos: "", definition: "", synonyms: [] };
     const lines = String(text || "").split("\n");
-    for (const line of lines) {
-      const m = line.match(/^\s*(POS|DEFINITION|SYNONYMS)\s*:\s*(.*)$/i);
+    for (const raw of lines) {
+      // Some AIs add formatting ("**POS:** noun", "- POS: noun"); ignore it.
+      const line = raw.replace(/[*_`#>]/g, "").replace(/^\s*(?:[-•]|\d+[.)])\s*/, "");
+      const m = line.match(/^\s*(POS|PART OF SPEECH|DEFINITION|SYNONYMS?)\s*:\s*(.*)$/i);
       if (!m) continue;
-      const key = m[1].toUpperCase();
+      const key = m[1].toUpperCase().replace("PART OF SPEECH", "POS").replace(/^SYNONYM$/, "SYNONYMS");
       const val = m[2].trim();
       if (key === "POS") out.pos = val;
       else if (key === "DEFINITION") out.definition = val;

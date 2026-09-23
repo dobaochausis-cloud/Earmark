@@ -75,8 +75,15 @@ function providerFor(env) {
   return null;
 }
 
-export async function onRequestGet({ env }) {
+export async function onRequestGet({ request, env }) {
   const provider = providerFor(env);
+  const url = new URL(request.url);
+  if (url.searchParams.get("test") && provider === "free") {
+    if (env.ACCESS_CODE && url.searchParams.get("code") !== env.ACCESS_CODE) {
+      return json(401, { code: "not_granted", message: "Add &code=YOUR_CLASS_CODE to the address." });
+    }
+    return testWorkersAI(env);
+  }
   return json(200, { provider, maxPromptBytes: provider ? PROMPT_BYTES[provider] : 0 });
 }
 
@@ -156,7 +163,69 @@ export async function onRequestPost({ request, env }) {
 /* ---- the free option: Cloudflare Workers AI ----
    Same reply format as above. The binding streams OpenAI-style chunks
    ("data: {choices:[{delta:{content}}]}"); some older models send
-   {"response": "..."} instead, so both are read. */
+   {"response": "..."} instead, so both are read.
+
+   Gemma 4 "thinks" before answering unless told not to, and that thinking
+   can use up the whole token limit and leave no answer. So thinking is
+   switched off, and if a model still gives nothing (or fails) before any
+   text has reached the page, the next attempt runs instead. */
+const FALLBACK_FREE_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+
+function freeAttempts(env) {
+  const primary = env.FREE_MODEL || DEFAULT_FREE_MODEL;
+  const list = [
+    { model: primary, extra: { chat_template_kwargs: { enable_thinking: false } } },
+    { model: primary, extra: {} },
+  ];
+  if (primary !== FALLBACK_FREE_MODEL) list.push({ model: FALLBACK_FREE_MODEL, extra: {} });
+  return list;
+}
+
+// Runs one attempt, passing each piece of answer text to onText.
+// Resolves { stop, chars }; throws if the model call itself fails.
+async function streamWorkersAI(env, attempt, messages, system, maxTokens, onText) {
+  const out = await env.AI.run(attempt.model, {
+    messages: [{ role: "system", content: system }, ...messages],
+    max_tokens: maxTokens,
+    stream: true,
+    ...attempt.extra,
+  });
+  let stop = "end_turn", chars = 0;
+  const handle = (line) => {
+    line = line.trim();
+    if (!line.startsWith("data:")) return;
+    const data = line.slice(5).trim();
+    if (!data || data === "[DONE]") return;
+    let chunk;
+    try { chunk = JSON.parse(data); } catch (e) { return; }
+    const choice = chunk.choices && chunk.choices[0];
+    const text = choice ? (choice.delta && choice.delta.content) || "" : chunk.response || "";
+    if (text) { chars += text.length; onText(text); }
+    if (choice && choice.finish_reason === "length") stop = "max_tokens";
+  };
+  if (out && typeof out.getReader === "function") {
+    const reader = out.getReader();
+    const decoder = new TextDecoder();
+    let buf = "";
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      let nl;
+      while ((nl = buf.indexOf("\n")) >= 0) { handle(buf.slice(0, nl)); buf = buf.slice(nl + 1); }
+    }
+    handle(buf);
+  } else if (out) {
+    // Some models ignore stream:true and answer all at once.
+    const choice = out.choices && out.choices[0];
+    const text = (choice && choice.message && choice.message.content) || out.response || "";
+    if (text) { chars += text.length; onText(text); }
+  }
+  return { stop, chars };
+}
+
+const usedUpMessage = (msg) => /neuron|daily free allocation|4006|3036/i.test(msg);
+
 async function askWorkersAI(env, messages, system, tier) {
   const encoder = new TextEncoder();
   const { readable, writable } = new TransformStream();
@@ -164,45 +233,26 @@ async function askWorkersAI(env, messages, system, tier) {
   const send = (obj) => writer.write(encoder.encode(JSON.stringify(obj) + "\n"));
 
   (async () => {
-    let stop = "end_turn";
+    let lastError = "";
     try {
-      const out = await env.AI.run(env.FREE_MODEL || DEFAULT_FREE_MODEL, {
-        messages: [{ role: "system", content: system }, ...messages],
-        max_tokens: tier === "quick" ? 800 : 4000,
-        stream: true,
-      });
-      const reader = out.getReader();
-      const decoder = new TextDecoder();
-      let buf = "";
-      const handle = (line) => {
-        line = line.trim();
-        if (!line.startsWith("data:")) return;
-        const data = line.slice(5).trim();
-        if (!data || data === "[DONE]") return;
-        let chunk;
-        try { chunk = JSON.parse(data); } catch (e) { return; }
-        const choice = chunk.choices && chunk.choices[0];
-        const text = choice ? (choice.delta && choice.delta.content) || "" : chunk.response || "";
-        if (text) send({ d: text });
-        if (choice && choice.finish_reason === "length") stop = "max_tokens";
-      };
-      for (;;) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        let nl;
-        while ((nl = buf.indexOf("\n")) >= 0) { handle(buf.slice(0, nl)); buf = buf.slice(nl + 1); }
+      for (const attempt of freeAttempts(env)) {
+        let sent = 0;
+        try {
+          const r = await streamWorkersAI(env, attempt, messages, system, tier === "quick" ? 800 : 4000,
+            (text) => { sent += text.length; send({ d: text }); });
+          if (r.chars > 0) { await send({ done: true, stop: r.stop }); return; }
+          lastError = "empty answer from " + attempt.model;
+        } catch (err) {
+          lastError = String((err && err.message) || err);
+          if (usedUpMessage(lastError)) break;
+          if (sent > 0) break;   // part of an answer already went out; don't mix in another
+        }
       }
-      handle(buf);
-      await send({ done: true, stop });
-    } catch (err) {
-      // Workers AI reports errors as plain messages; the daily free allowance
-      // running out is the one worth explaining.
-      const msg = String((err && err.message) || err);
-      const usedUp = /neuron|daily free allocation|4006|3036/i.test(msg);
-      await send({ error: usedUp
+      await send({ error: usedUpMessage(lastError)
         ? { code: "rate_limited", message: "Today's free AI allowance is used up. It resets tomorrow." }
-        : { code: "server_error", message: "The free AI isn't available right now. Try again in a moment." } }).catch(() => {});
+        : { code: "server_error", message: "The free AI isn't available right now. Try again in a moment." } });
+    } catch (e) {
+      /* the page went away */
     } finally {
       await writer.close().catch(() => {});
     }
@@ -211,4 +261,23 @@ async function askWorkersAI(env, messages, system, tier) {
   return new Response(readable, {
     headers: { "content-type": "application/x-ndjson; charset=utf-8", "cache-control": "no-store" },
   });
+}
+
+// Open /api/sample?test=1 in a browser to see exactly what the free AI does.
+async function testWorkersAI(env) {
+  const tries = [];
+  for (const attempt of freeAttempts(env)) {
+    let text = "";
+    try {
+      const r = await streamWorkersAI(env, attempt,
+        [{ role: "user", content: 'Reply with exactly: POS: noun / DEFINITION: a small living unit / SYNONYMS: unit' }],
+        SYSTEM, 200, (t) => { text += t; });
+      tries.push({ model: attempt.model, settings: attempt.extra, ok: r.chars > 0, stop: r.stop, text: text.slice(0, 200) });
+      if (r.chars > 0) break;
+    } catch (err) {
+      tries.push({ model: attempt.model, settings: attempt.extra, ok: false, error: String((err && err.message) || err).slice(0, 300) });
+      if (usedUpMessage(String(err && err.message))) break;
+    }
+  }
+  return json(200, { provider: "free", works: tries.some((t) => t.ok), tries });
 }

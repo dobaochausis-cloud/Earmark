@@ -40,6 +40,8 @@ Nobody's books are uploaded to your server. Each student's library stays on thei
 
 **It works for free out of the box.** With no key added, the site uses **Cloudflare Workers AI** (Google's Gemma 4 model) on Cloudflare's free daily allowance. That allowance resets every day. If it runs out, people see "Today's free AI allowance is used up", and everything else keeps working.
 
+**Checking the free AI:** open `https://YOUR-SITE.pages.dev/api/sample?test=1` in your browser (add `&code=YOUR_CLASS_CODE` if you set one). It shows whether the AI answered, and the exact error if it didn't.
+
 To get Claude's better answers later, add these in your Pages project under **Settings → Variables and Secrets**, then **retry the latest deployment**:
 
 | Name | Type | Value |
