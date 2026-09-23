@@ -4809,7 +4809,9 @@
     wave: 0, walking: true, camZ: 0, spawnLeft: 0, spawnIn: 0, bannerUntil: 0, t: 0,
     best: new Map(),
     sound: safeStorage("get", "earmark_game_sound") !== "off",
-    readAloud: safeStorage("get", "earmark_game_read") !== "off",
+    // Questions are read out only when you press Listen, unless you turn on
+    // "Read questions aloud" in the game menu.
+    readAloud: safeStorage("get", "earmark_game_read") === "on",
     three: null, raf: 0, lastT: 0, errorMsg: ""
   };
   const coarsePointer = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
@@ -6438,6 +6440,7 @@
     const chars = q.q.length + q.options.join(" ").length;
     // More time for longer questions — and extra when they're read aloud.
     monkey.tLimit = Math.max(15, Math.min(40, 12 + chars * 0.07)) + (game.readAloud ? chars / 15 : 0);
+    q._listenBonus = game.readAloud;   // read-aloud time is already included above
     monkey.tLeft = monkey.tLimit;
     monkey.phase = "question";
     renderMonkeyPanel();
@@ -6613,7 +6616,16 @@
     if (ph === "question") {
       const qMap = joinMaps(maps);
       const row = el("div", "study-row");
-      row.appendChild(listenButton("say:mk:" + qMap.text, () => qMap, "go-listen"));
+      const listen = listenButton("say:mk:" + qMap.text, () => qMap, "go-listen");
+      // Pressing Listen gives the branch extra time to hold, once per question.
+      listen.addEventListener("click", () => {
+        if (monkey.phase === "question" && monkey.current && !monkey.current._listenBonus) {
+          monkey.current._listenBonus = true;
+          const bonus = qMap.text.length / 15;
+          monkey.tLimit += bonus; monkey.tLeft += bonus;
+        }
+      });
+      row.appendChild(listen);
       card.appendChild(row);
       return;
     }
