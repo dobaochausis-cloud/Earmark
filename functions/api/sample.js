@@ -12,7 +12,9 @@
  *   MODEL              (optional)          defaults to claude-opus-5; claude-sonnet-5 or
  *                                          claude-haiku-4-5 cost less per question
  */
-import Anthropic from "@anthropic-ai/sdk";
+// The official Anthropic SDK, pre-packed into one file (npm run vendor) so
+// Cloudflare needs no install step to run this.
+import Anthropic from "../../lib/anthropic-sdk.mjs";
 
 const MAX_BODY_BYTES = 65536 + 4096;   // matches the page's prompt budget
 const DEFAULT_MODEL = "claude-opus-5";

@@ -5,7 +5,8 @@
   "scripts": {
     "build": "node build.mjs",
     "dev": "npx wrangler pages dev public",
-    "deploy": "npx wrangler pages deploy public --project-name earmark"
+    "deploy": "npx wrangler pages deploy public --project-name earmark",
+    "vendor": "echo 'export { default } from \"@anthropic-ai/sdk\";' > sdk-entry.mjs && npx esbuild sdk-entry.mjs --bundle --format=esm --platform=neutral --conditions=workerd,worker,browser --main-fields=module,main --target=es2022 --external:'node:*' --minify --legal-comments=eof --outfile=lib/anthropic-sdk.mjs && rm sdk-entry.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0"
