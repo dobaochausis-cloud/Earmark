@@ -1,0 +1,16 @@
+{
+  "name": "earmark-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "wrangler pages dev public",
+    "deploy": "wrangler pages deploy public --project-name earmark"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.128.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
