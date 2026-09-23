@@ -699,6 +699,16 @@
   .go-how{ font-size:13px; }
   .go-kicker{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--danger); }
   .go-toggles{ display:flex; gap:8px; flex-wrap:wrap; }
+  .go-difficulty{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .go-diff-label{ font-weight:600; color:var(--ink-soft); font-size:14px; }
+  .diff-seg{ display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:3px; gap:3px; background:var(--paper-sunken); }
+  .diff-btn{ border:none; background:none; color:var(--ink); font:inherit; font-size:14px; font-weight:600; padding:7px 14px; border-radius:999px; cursor:pointer; }
+  .diff-btn:hover{ background:var(--paper-raised); }
+  .diff-btn[aria-pressed="true"]{ color:#fff; }
+  .diff-btn.easy[aria-pressed="true"]{ background:#2e8b57; }
+  .diff-btn.medium[aria-pressed="true"]{ background:var(--accent); }
+  .diff-btn.hard[aria-pressed="true"]{ background:#c8412f; }
+  .diff-btn:focus-visible{ outline:3px solid var(--listen); outline-offset:2px; }
   .go-best{ background:var(--accent); color:#fff; font-weight:700; font-size:13px; padding:3px 12px; border-radius:99px; }
   .go-card .cta{ margin-top:0; }
   .float-pts{ position:absolute; transform:translate(-50%, -50%); pointer-events:none; font-family:var(--font-display); font-weight:700; font-size:22px; color:var(--accent-strong); text-shadow:0 1px 0 var(--paper-raised), 0 0 6px var(--paper-raised); animation:ptsUp .9s ease-out forwards; }
@@ -2540,6 +2550,34 @@
     ro: {"gameQuit": "Ieșire"},
     fa: {"gameQuit": "خروج"},
     ur: {"gameQuit": "باہر نکلیں"}
+  });
+  addStrings({
+    en: {"gameDifficulty": "Difficulty", "diffEasy": "Easy", "diffMedium": "Medium", "diffHard": "Hard"},
+    vi: {"gameDifficulty": "Độ khó", "diffEasy": "Dễ", "diffMedium": "Vừa", "diffHard": "Khó"},
+    es: {"gameDifficulty": "Dificultad", "diffEasy": "Fácil", "diffMedium": "Medio", "diffHard": "Difícil"},
+    fr: {"gameDifficulty": "Difficulté", "diffEasy": "Facile", "diffMedium": "Moyen", "diffHard": "Difficile"},
+    de: {"gameDifficulty": "Schwierigkeit", "diffEasy": "Leicht", "diffMedium": "Mittel", "diffHard": "Schwer"},
+    pt: {"gameDifficulty": "Dificuldade", "diffEasy": "Fácil", "diffMedium": "Médio", "diffHard": "Difícil"},
+    it: {"gameDifficulty": "Difficoltà", "diffEasy": "Facile", "diffMedium": "Medio", "diffHard": "Difficile"},
+    nl: {"gameDifficulty": "Moeilijkheid", "diffEasy": "Makkelijk", "diffMedium": "Gemiddeld", "diffHard": "Moeilijk"},
+    ru: {"gameDifficulty": "Сложность", "diffEasy": "Легко", "diffMedium": "Средне", "diffHard": "Сложно"},
+    pl: {"gameDifficulty": "Poziom trudności", "diffEasy": "Łatwy", "diffMedium": "Średni", "diffHard": "Trudny"},
+    tr: {"gameDifficulty": "Zorluk", "diffEasy": "Kolay", "diffMedium": "Orta", "diffHard": "Zor"},
+    ar: {"gameDifficulty": "الصعوبة", "diffEasy": "سهل", "diffMedium": "متوسط", "diffHard": "صعب"},
+    hi: {"gameDifficulty": "कठिनाई", "diffEasy": "आसान", "diffMedium": "मध्यम", "diffHard": "कठिन"},
+    id: {"gameDifficulty": "Tingkat kesulitan", "diffEasy": "Mudah", "diffMedium": "Sedang", "diffHard": "Sulit"},
+    th: {"gameDifficulty": "ระดับความยาก", "diffEasy": "ง่าย", "diffMedium": "ปานกลาง", "diffHard": "ยาก"},
+    ja: {"gameDifficulty": "難易度", "diffEasy": "かんたん", "diffMedium": "ふつう", "diffHard": "むずかしい"},
+    ko: {"gameDifficulty": "난이도", "diffEasy": "쉬움", "diffMedium": "보통", "diffHard": "어려움"},
+    zh: {"gameDifficulty": "难度", "diffEasy": "简单", "diffMedium": "中等", "diffHard": "困难"},
+    tl: {"gameDifficulty": "Hirap", "diffEasy": "Madali", "diffMedium": "Katamtaman", "diffHard": "Mahirap"},
+    he: {"gameDifficulty": "רמת קושי", "diffEasy": "קל", "diffMedium": "בינוני", "diffHard": "קשה"},
+    el: {"gameDifficulty": "Δυσκολία", "diffEasy": "Εύκολο", "diffMedium": "Μέτριο", "diffHard": "Δύσκολο"},
+    sv: {"gameDifficulty": "Svårighetsgrad", "diffEasy": "Lätt", "diffMedium": "Medel", "diffHard": "Svår"},
+    uk: {"gameDifficulty": "Складність", "diffEasy": "Легко", "diffMedium": "Середньо", "diffHard": "Складно"},
+    ro: {"gameDifficulty": "Dificultate", "diffEasy": "Ușor", "diffMedium": "Mediu", "diffHard": "Greu"},
+    fa: {"gameDifficulty": "سختی", "diffEasy": "آسان", "diffMedium": "متوسط", "diffHard": "سخت"},
+    ur: {"gameDifficulty": "مشکل کی سطح", "diffEasy": "آسان", "diffMedium": "درمیانہ", "diffHard": "مشکل"}
   });
   // LANG_PACKS_END
 
@@ -4802,6 +4840,7 @@
     // Questions are read out only when you press Listen, unless you turn on
     // "Read questions aloud" in the game menu.
     readAloud: safeStorage("get", "earmark_game_read") === "on",
+    difficulty: ["easy", "medium", "hard"].includes(safeStorage("get", "earmark_game_diff")) ? safeStorage("get", "earmark_game_diff") : "medium",
     three: null, raf: 0, lastT: 0, errorMsg: ""
   };
   const coarsePointer = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
@@ -5270,6 +5309,14 @@
 
   const DAMAGE = { head: 150, body: 100, leg: 50 };
   const CHARGE_DIST = 5.5, CHARGE_BOOST = 1.8;
+  // Difficulty: how fast monsters move and how often they come out, and how
+  // fast Monkey Climb's branch clock runs. Medium is the original pace.
+  const DIFFICULTY = {
+    easy:   { speed: 0.6,  spawnGap: 1.35, clock: 0.6 },
+    medium: { speed: 1,    spawnGap: 1,    clock: 1 },
+    hard:   { speed: 1.45, spawnGap: 0.8,  clock: 1.35 }
+  };
+  const diff = () => DIFFICULTY[game.difficulty] || DIFFICULTY.medium;
 
   const SLIME_COLORS = [0x5fe07a, 0xff7ab8, 0x6fc8ff, 0xffd23f, 0xb68cff];
 
@@ -5609,7 +5656,7 @@
         if (game.spawnLeft > 0 && game.spawnIn <= 0) {
           spawnMonster();
           game.spawnLeft--;
-          game.spawnIn = Math.max(0.3, 0.75 - game.wave * 0.08) + Math.random() * 0.35;
+          game.spawnIn = (Math.max(0.3, 0.75 - game.wave * 0.08) + Math.random() * 0.35) * diff().spawnGap;
         }
         if (game.spawnLeft === 0 && !s.monsters.length) {
           game.wave++;
@@ -5639,7 +5686,7 @@
         }
         if (!u.charging && dist < CHARGE_DIST) { u.charging = true; beep(u.k.walker ? "groan" : "growl"); }
         u.stun = Math.max(0, u.stun - dt);
-        const speed = u.stun > 0 ? 0 : u.k.speed * (u.charging ? CHARGE_BOOST : 1);
+        const speed = u.stun > 0 ? 0 : u.k.speed * diff().speed * (u.charging ? CHARGE_BOOST : 1);
         const step = speed * dt;
         const weave = u.charging ? 0 : Math.sin(u.t * 1.7 + u.wobble) * 0.6 * dt;   // hard to line up a shot
         m.position.x = Math.max(-HALL_W / 2 + 0.6, Math.min(HALL_W / 2 - 0.6, m.position.x + dx / dist * step + weave));
@@ -5968,6 +6015,28 @@
     return row;
   }
 
+  // Easy / Medium / Hard, chosen in the game menu and remembered.
+  function difficultyRow(){
+    const row = el("div", "go-difficulty");
+    row.setAttribute("role", "group");
+    row.setAttribute("aria-label", t("gameDifficulty"));
+    const lbl = el("span", "go-diff-label"); lbl.textContent = t("gameDifficulty"); row.appendChild(lbl);
+    const seg = el("div", "diff-seg");
+    for (const [id, key] of [["easy", "diffEasy"], ["medium", "diffMedium"], ["hard", "diffHard"]]) {
+      const b = el("button", "diff-btn " + id); b.type = "button";
+      b.textContent = t(key);
+      b.setAttribute("aria-pressed", game.difficulty === id ? "true" : "false");
+      b.addEventListener("click", () => {
+        game.difficulty = id;
+        safeStorage("set", "earmark_game_diff", id);
+        seg.querySelectorAll(".diff-btn").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+      });
+      seg.appendChild(b);
+    }
+    row.appendChild(seg);
+    return row;
+  }
+
   function renderGameOverlay(){
     const ov = $("gameOverlay");
     if (!ov) return;
@@ -5986,6 +6055,7 @@
     if (game.phase === "menu") {
       card.classList.add("go-menu");
       const h = el("h3", "go-title"); h.textContent = t("modeTitle"); card.appendChild(h);
+      card.appendChild(difficultyRow());
       card.appendChild(toggleRow());
       const grid = el("div", "mode-grid");
       const modes = [
@@ -6376,7 +6446,7 @@
       monkey.rot = 200 + Math.sin(now / 300) * 8;
     } else if (monkey.phase === "question" || monkey.phase === "waiting" || monkey.phase === "paused") {
       if (monkey.phase === "question") {
-        monkey.tLeft = Math.max(0, monkey.tLeft - dt);
+        monkey.tLeft = Math.max(0, monkey.tLeft - dt * diff().clock);
         if (monkey.tLeft <= 0) { monkeyFall("time"); }
       }
       const frac = monkey.phase === "question" ? monkey.tLeft / monkey.tLimit : 1;
