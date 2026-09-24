@@ -704,6 +704,8 @@
   .go-how{ font-size:13px; }
   .go-kicker{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--danger); }
   .go-toggles{ display:flex; gap:8px; flex-wrap:wrap; }
+  .prep-bar{ width:100%; height:10px; border-radius:999px; background:var(--paper-sunken); overflow:hidden; }
+  .prep-bar > div{ height:100%; background:var(--listen); border-radius:999px; transition:width .3s ease; }
   .go-difficulty{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   .go-diff-label{ font-weight:600; color:var(--ink-soft); font-size:14px; }
   .diff-seg{ display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:3px; gap:3px; background:var(--paper-sunken); }
@@ -2703,6 +2705,34 @@
     ro: {"errDailyLimit": "S-a terminat AI-ul gratuit pentru azi. Se reînnoiește mâine. Citirea cu voce tare, vizualizatorul PDF și cartonașele salvate funcționează în continuare."},
     fa: {"errDailyLimit": "سهمیهٔ رایگان هوش مصنوعی امروز تمام شد و فردا دوباره شارژ می‌شود. بلندخوانی، نمایشگر PDF و کارت‌های ذخیره‌شده همچنان کار می‌کنند."},
     ur: {"errDailyLimit": "آج کی مفت AI حد ختم ہو گئی ہے۔ کل دوبارہ ملے گی۔ بلند آواز میں پڑھنا، PDF ویور اور محفوظ فلیش کارڈز اب بھی کام کرتے ہیں۔"}
+  });
+  addStrings({
+    en: {"gamePreparing": "Getting your questions ready… {i} of {n}", "gameTryAgain": "Try again", "gameStartAnyway": "Start with {n} questions"},
+    vi: {"gamePreparing": "Đang chuẩn bị câu hỏi… {i}/{n}", "gameTryAgain": "Thử lại", "gameStartAnyway": "Bắt đầu với {n} câu"},
+    es: {"gamePreparing": "Preparando tus preguntas… {i} de {n}", "gameTryAgain": "Reintentar", "gameStartAnyway": "Empezar con {n} preguntas"},
+    fr: {"gamePreparing": "Préparation de vos questions… {i} sur {n}", "gameTryAgain": "Réessayer", "gameStartAnyway": "Commencer avec {n} questions"},
+    de: {"gamePreparing": "Deine Fragen werden vorbereitet… {i} von {n}", "gameTryAgain": "Erneut versuchen", "gameStartAnyway": "Mit {n} Fragen starten"},
+    pt: {"gamePreparing": "Preparando suas perguntas… {i} de {n}", "gameTryAgain": "Tentar de novo", "gameStartAnyway": "Começar com {n} perguntas"},
+    it: {"gamePreparing": "Preparo le tue domande… {i} di {n}", "gameTryAgain": "Riprova", "gameStartAnyway": "Inizia con {n} domande"},
+    nl: {"gamePreparing": "Je vragen worden klaargezet… {i} van {n}", "gameTryAgain": "Opnieuw proberen", "gameStartAnyway": "Start met {n} vragen"},
+    ru: {"gamePreparing": "Готовлю вопросы… {i} из {n}", "gameTryAgain": "Попробовать снова", "gameStartAnyway": "Начать с {n} вопросами"},
+    pl: {"gamePreparing": "Przygotowuję pytania… {i} z {n}", "gameTryAgain": "Spróbuj ponownie", "gameStartAnyway": "Zacznij z {n} pytaniami"},
+    tr: {"gamePreparing": "Soruların hazırlanıyor… {i}/{n}", "gameTryAgain": "Tekrar dene", "gameStartAnyway": "{n} soruyla başla"},
+    ar: {"gamePreparing": "جارٍ تجهيز أسئلتك… {i} من {n}", "gameTryAgain": "حاول مرة أخرى", "gameStartAnyway": "ابدأ بـ {n} سؤالًا"},
+    hi: {"gamePreparing": "आपके सवाल तैयार हो रहे हैं… {i} / {n}", "gameTryAgain": "फिर कोशिश करें", "gameStartAnyway": "{n} सवालों के साथ शुरू करें"},
+    id: {"gamePreparing": "Menyiapkan pertanyaanmu… {i} dari {n}", "gameTryAgain": "Coba lagi", "gameStartAnyway": "Mulai dengan {n} pertanyaan"},
+    th: {"gamePreparing": "กำลังเตรียมคำถาม… {i} จาก {n}", "gameTryAgain": "ลองอีกครั้ง", "gameStartAnyway": "เริ่มด้วย {n} คำถาม"},
+    ja: {"gamePreparing": "問題を準備中… {i} / {n}", "gameTryAgain": "もう一度", "gameStartAnyway": "{n}問で始める"},
+    ko: {"gamePreparing": "문제를 준비하는 중… {n}개 중 {i}개", "gameTryAgain": "다시 시도", "gameStartAnyway": "{n}문제로 시작"},
+    zh: {"gamePreparing": "正在准备题目… {i}/{n}", "gameTryAgain": "重试", "gameStartAnyway": "用 {n} 道题开始"},
+    tl: {"gamePreparing": "Inihahanda ang mga tanong… {i} sa {n}", "gameTryAgain": "Subukan muli", "gameStartAnyway": "Magsimula sa {n} tanong"},
+    he: {"gamePreparing": "מכין את השאלות… {i} מתוך {n}", "gameTryAgain": "לנסות שוב", "gameStartAnyway": "להתחיל עם {n} שאלות"},
+    el: {"gamePreparing": "Ετοιμάζονται οι ερωτήσεις… {i} από {n}", "gameTryAgain": "Δοκιμάστε ξανά", "gameStartAnyway": "Έναρξη με {n} ερωτήσεις"},
+    sv: {"gamePreparing": "Förbereder dina frågor… {i} av {n}", "gameTryAgain": "Försök igen", "gameStartAnyway": "Börja med {n} frågor"},
+    uk: {"gamePreparing": "Готую запитання… {i} з {n}", "gameTryAgain": "Спробувати ще", "gameStartAnyway": "Почати з {n} запитаннями"},
+    ro: {"gamePreparing": "Se pregătesc întrebările… {i} din {n}", "gameTryAgain": "Încearcă din nou", "gameStartAnyway": "Începe cu {n} întrebări"},
+    fa: {"gamePreparing": "در حال آماده‌کردن سؤال‌ها… {i} از {n}", "gameTryAgain": "دوباره امتحان کنید", "gameStartAnyway": "شروع با {n} سؤال"},
+    ur: {"gamePreparing": "آپ کے سوالات تیار ہو رہے ہیں… {i} از {n}", "gameTryAgain": "دوبارہ کوشش کریں", "gameStartAnyway": "{n} سوالات کے ساتھ شروع کریں"}
   });
   // LANG_PACKS_END
 
@@ -5126,16 +5156,22 @@
   }
 
   /* ---- questions ---- */
+  // One batch of about 10 new questions into the queue. Resolves how many were added.
+  async function fetchQuestionBatch(bookId){
+    const loaded = await ensureBookLoaded(bookId);
+    const book = state.books.find(b => b.id === bookId) || { title: "" };
+    const raw = await sample.json(quizPrompt(book, studyExcerpts(bookId, loaded, "book", 5), 10), { modelTier: "default", cache: false });
+    const qs = cleanQuiz(raw).filter(q => !game.seen.has(q.q));
+    if (!qs.length) throw { code: "invalid_json" };
+    if (game.bookId === bookId) { qs.forEach(q => game.seen.add(q.q)); game.queue.push(...qs); }
+    return qs.length;
+  }
+
   async function refillQuestions(bookId){
     if (game.fetching || !sample) return;
     game.fetching = true; game.fetchError = "";
     try {
-      const loaded = await ensureBookLoaded(bookId);
-      const book = state.books.find(b => b.id === bookId) || { title: "" };
-      const raw = await sample.json(quizPrompt(book, studyExcerpts(bookId, loaded, "book", 5), 10), { modelTier: "default", cache: false });
-      const qs = cleanQuiz(raw).filter(q => !game.seen.has(q.q));
-      if (!qs.length) throw { code: "invalid_json" };
-      if (game.bookId === bookId) { qs.forEach(q => game.seen.add(q.q)); game.queue.push(...qs); }
+      await fetchQuestionBatch(bookId);
     } catch (e) {
       game.fetchError = sampleErrorText(e);
     } finally {
@@ -6110,7 +6146,7 @@
     game.lastT = performance.now();
     renderGameOverlay();
     requestLock();
-    if (game.queue.length < 4) refillQuestions(game.bookId);
+    if (game.queue.length < 10) refillQuestions(game.bookId);
   }
 
   function openQuestion(){
@@ -6193,9 +6229,45 @@
     if (isSavedBook(game.bookId)) db.doc("gameStats/" + game.bookId).set({ bookId: game.bookId, best: o.hall || 0, modes: o, updatedAt: new Date().toISOString() }).catch(() => {});
   }
 
+  // How many questions each game gets ready before it starts. Monkey Climb
+  // can need at most 25 right answers plus one wrong one per heart.
+  function questionsNeeded(mode){ return mode === "monkey" ? MONKEY_GOAL + MONKEY_LIVES + 2 : 30; }
+
   function startMode(mode){
     game.mode = mode;
-    if (mode === "monkey") beginMonkey(); else { showMonkeyStage(false); beginGame(); }
+    if (!sample) return;
+    showMonkeyStage(false);
+    prepareQuestions(mode);
+  }
+  function launchMode(mode){
+    if (mode === "monkey") beginMonkey(); else beginGame();
+  }
+
+  // Gets every question the game will need before it starts, with a progress bar.
+  async function prepareQuestions(mode){
+    const bookId = game.bookId, need = questionsNeeded(mode);
+    const stillHere = () => game.phase === "preparing" && game.bookId === bookId && game.mode === mode;
+    game.phase = "preparing";
+    game.prep = { need, error: "" };
+    renderGameOverlay();
+    while (game.fetching && stillHere()) await new Promise(r => setTimeout(r, 200));   // a refill already running
+    let fails = 0;
+    while (stillHere() && game.queue.length < need && fails < 3) {
+      try {
+        game.fetching = true;
+        await fetchQuestionBatch(bookId);
+      } catch (e) {
+        fails++;
+        game.prep.error = sampleErrorText(e);
+        if (e && ["rate_limited", "daily_limit", "not_granted", "refused"].includes(e.code)) break;
+      } finally {
+        game.fetching = false;
+      }
+      if (stillHere()) renderGameOverlay();
+    }
+    if (!stillHere()) return;
+    if (game.queue.length >= need) { game.prep = null; launchMode(mode); return; }
+    renderGameOverlay();   // shows the reason, Try again, and Start anyway when there are enough
   }
   function backToGameMenu(){
     pauseSpeech();
@@ -6324,6 +6396,22 @@
     }
     if (game.phase === "loading") {
       card.appendChild(busyNote(t("gameLoading")));
+      return;
+    }
+    if (game.phase === "preparing" && game.prep) {
+      const have = Math.min(game.queue.length, game.prep.need);
+      const failed = !!game.prep.error && !game.fetching && have < game.prep.need;
+      const h = el("h3", "go-title"); h.textContent = t("gamePreparing", { i: have, n: game.prep.need }); card.appendChild(h);
+      const bar = el("div", "prep-bar"); const fill = el("div"); fill.style.width = Math.round(100 * have / game.prep.need) + "%"; bar.appendChild(fill); card.appendChild(bar);
+      if (!failed) { card.appendChild(busyNote(t("gameLoading"))); }
+      else {
+        const e = el("div", "setup-error"); e.setAttribute("role", "alert"); e.textContent = game.prep.error; card.appendChild(e);
+        const row = el("div", "study-row");
+        row.appendChild(goButton("cta", t("gameTryAgain"), () => prepareQuestions(game.mode)));
+        if (have >= 5) row.appendChild(goButton("pill-btn", t("gameStartAnyway", { n: have }), () => { game.prep = null; launchMode(game.mode); }));
+        card.appendChild(row);
+      }
+      card.appendChild(goButton("link-danger", t("otherGames"), () => { game.prep = null; backToGameMenu(); }));
       return;
     }
     if (game.phase === "paused") {
