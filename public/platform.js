@@ -269,6 +269,33 @@
   };
   sampleApi.limits = async () => ({ maxPromptBytes: (await serverLimits()).maxPromptBytes, images: false });
 
+  /* ---------------- reading a web page (Add a book → Link) ---------------- */
+  // Resolves { title, text, url }; rejects with an Error carrying .code.
+  window.__earmarkFetchPage = async (url) => {
+    for (let tries = 0; ; tries++) {
+      let res;
+      try {
+        res = await fetch("/api/fetch", {
+          method: "POST",
+          headers: { "content-type": "application/json", "x-earmark-code": readCode() },
+          body: JSON.stringify({ url }),
+        });
+      } catch (e) {
+        throw fail("network", "Couldn't reach the server — check your internet connection.");
+      }
+      if (res.status === 401 && tries < 2) {
+        const entered = window.prompt(tries ? "That code didn't work. Enter the class code again:" : "Enter the class code your teacher or friend gave you:");
+        if (!entered) throw fail("not_granted", "A class code is needed.");
+        saveCode(entered.trim());
+        continue;
+      }
+      let info = {};
+      try { info = await res.json(); } catch (e) { /* not JSON */ }
+      if (!res.ok) throw fail(info.code || "fetch_failed", info.message || "Couldn't open that page.");
+      return info;
+    }
+  };
+
   /* ---------------- the same entry point the app uses on claude.ai ---------------- */
   const namespaces = { db: dbApi, assets: assetsApi, sample: sampleApi };
   window.claude = {

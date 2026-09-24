@@ -7,6 +7,7 @@ This folder is Earmark as a normal website that anyone can open, with no Claude 
 | `public/index.html` | The app. Built from `earmark.html`, the same file that runs on claude.ai. |
 | `public/platform.js` | Saves each person's books, flashcards and scores **in their own browser**. Sends AI questions to the server. |
 | `functions/api/sample.js` | The only server code. It asks Cloudflare's free AI, or Claude if you add an Anthropic API key (the key stays secret on the server). |
+| `functions/api/fetch.js` | Reads a web page someone adds by link (Add a book → Or add a web page) and keeps only its readable text. Refuses private and local addresses, and uses the same class code as the AI. |
 
 Nobody's books are uploaded to your server. Each student's library stays on their own device and browser.
 

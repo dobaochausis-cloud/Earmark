@@ -221,7 +221,12 @@
     padding:14px; display:flex; flex-direction:column; gap:10px;
   }
   .upload-panel label{font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em;}
-  .upload-panel input[type="text"], .upload-panel select{
+  .link-row{ display:flex; flex-direction:column; align-items:stretch; gap:8px; margin-top:6px; }
+  .link-row input{ width:100%; min-width:0; }
+  .link-add{ align-self:flex-start; }
+  .upload-panel .link-easy{ display:flex; align-items:center; gap:8px; margin-top:8px; text-transform:none; letter-spacing:0; font-size:13px; font-weight:500; color:var(--ink); cursor:pointer; }
+  .link-easy input{ width:16px; height:16px; accent-color:var(--accent); }
+  .upload-panel input[type="text"], .upload-panel input[type="url"], .upload-panel select{
     width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:var(--radius-sm);
     background:var(--paper-raised); color:var(--ink); font-size:14px;
   }
@@ -840,6 +845,14 @@
             <div id="dzLabel" data-i18n="dropzoneHint">Drop a PDF or .txt, or tap to choose</div>
             <input type="file" id="fileInput" accept=".pdf,.txt,text/plain,application/pdf" class="visually-hidden">
           </div>
+        </div>
+        <div id="linkRow" hidden>
+          <label for="linkInput" data-i18n="linkLabel">Or add a web page</label>
+          <div class="link-row">
+            <input type="url" id="linkInput" placeholder="https://…" autocomplete="off" inputmode="url" spellcheck="false">
+            <button type="button" class="pill-btn link-add" id="linkAdd" data-i18n="linkAdd">Add page</button>
+          </div>
+          <label class="link-easy"><input type="checkbox" id="linkEasy" checked> <span data-i18n="linkEasy">Make it easier to understand</span></label>
         </div>
         <div class="upload-progress" id="uploadProgressWrap" hidden><div id="uploadProgressBar"></div></div>
         <div class="upload-status" id="uploadStatus"></div>
@@ -2617,6 +2630,34 @@
     fa: {"saveBookError": "این کتاب در مرورگر ذخیره نشد و فقط برای همین بازدید باز است. فضا آزاد کنید یا از حالت خصوصی خارج شوید.", "pdfPasswordError": "این PDF رمز دارد. آن را باز کنید، نسخه‌ای بدون رمز ذخیره کنید و همان را اضافه کنید."},
     ur: {"saveBookError": "یہ کتاب براؤزر میں محفوظ نہیں ہو سکی، اس لیے صرف اس بار کھلی ہے۔ جگہ خالی کریں یا پرائیویٹ براؤزنگ سے باہر آئیں۔", "pdfPasswordError": "یہ PDF پاس ورڈ سے محفوظ ہے۔ اسے کھولیں، پاس ورڈ کے بغیر کاپی محفوظ کریں اور وہ شامل کریں۔"}
   });
+  addStrings({
+    en: {"linkLabel": "Or add a web page", "linkAdd": "Add page", "linkEasy": "Make it easier to understand", "linkFetching": "Getting the page…", "linkSimplifying": "Making it easier to understand… part {i} of {n}", "linkErrBadUrl": "That doesn't look like a web page address.", "linkErrNoText": "That page has no readable text. Videos, and pages behind a login, can't be read.", "linkErrNotPage": "That link isn't a web page (it's a file or video).", "linkErrGeneric": "Couldn't open that page."},
+    vi: {"linkLabel": "Hoặc thêm một trang web", "linkAdd": "Thêm trang", "linkEasy": "Viết lại cho dễ hiểu", "linkFetching": "Đang tải trang…", "linkSimplifying": "Đang viết lại cho dễ hiểu… phần {i}/{n}", "linkErrBadUrl": "Đó không giống địa chỉ trang web.", "linkErrNoText": "Trang đó không có chữ đọc được. Không đọc được video và trang cần đăng nhập.", "linkErrNotPage": "Liên kết đó không phải trang web (là tệp hoặc video).", "linkErrGeneric": "Không mở được trang đó."},
+    es: {"linkLabel": "O añade una página web", "linkAdd": "Añadir página", "linkEasy": "Hacerlo más fácil de entender", "linkFetching": "Obteniendo la página…", "linkSimplifying": "Haciéndolo más fácil de entender… parte {i} de {n}", "linkErrBadUrl": "Eso no parece la dirección de una página web.", "linkErrNoText": "Esa página no tiene texto legible. No se pueden leer vídeos ni páginas que piden iniciar sesión.", "linkErrNotPage": "Ese enlace no es una página web (es un archivo o vídeo).", "linkErrGeneric": "No se pudo abrir esa página."},
+    fr: {"linkLabel": "Ou ajoutez une page web", "linkAdd": "Ajouter la page", "linkEasy": "Rendre plus facile à comprendre", "linkFetching": "Récupération de la page…", "linkSimplifying": "Simplification en cours… partie {i} sur {n}", "linkErrBadUrl": "Cela ne ressemble pas à une adresse de page web.", "linkErrNoText": "Cette page n'a pas de texte lisible. Les vidéos et les pages avec connexion ne peuvent pas être lues.", "linkErrNotPage": "Ce lien n'est pas une page web (c'est un fichier ou une vidéo).", "linkErrGeneric": "Impossible d'ouvrir cette page."},
+    de: {"linkLabel": "Oder eine Webseite hinzufügen", "linkAdd": "Seite hinzufügen", "linkEasy": "Leichter verständlich machen", "linkFetching": "Seite wird geladen…", "linkSimplifying": "Wird vereinfacht… Teil {i} von {n}", "linkErrBadUrl": "Das sieht nicht wie eine Webadresse aus.", "linkErrNoText": "Diese Seite hat keinen lesbaren Text. Videos und Seiten mit Anmeldung können nicht gelesen werden.", "linkErrNotPage": "Dieser Link ist keine Webseite (sondern eine Datei oder ein Video).", "linkErrGeneric": "Die Seite konnte nicht geöffnet werden."},
+    pt: {"linkLabel": "Ou adicione uma página da web", "linkAdd": "Adicionar página", "linkEasy": "Deixar mais fácil de entender", "linkFetching": "Buscando a página…", "linkSimplifying": "Deixando mais fácil de entender… parte {i} de {n}", "linkErrBadUrl": "Isso não parece um endereço de página da web.", "linkErrNoText": "Essa página não tem texto legível. Vídeos e páginas que pedem login não podem ser lidos.", "linkErrNotPage": "Esse link não é uma página da web (é um arquivo ou vídeo).", "linkErrGeneric": "Não foi possível abrir essa página."},
+    it: {"linkLabel": "Oppure aggiungi una pagina web", "linkAdd": "Aggiungi pagina", "linkEasy": "Rendilo più facile da capire", "linkFetching": "Recupero della pagina…", "linkSimplifying": "Semplificazione… parte {i} di {n}", "linkErrBadUrl": "Non sembra l'indirizzo di una pagina web.", "linkErrNoText": "Quella pagina non ha testo leggibile. Video e pagine con accesso non si possono leggere.", "linkErrNotPage": "Quel link non è una pagina web (è un file o un video).", "linkErrGeneric": "Impossibile aprire quella pagina."},
+    nl: {"linkLabel": "Of voeg een webpagina toe", "linkAdd": "Pagina toevoegen", "linkEasy": "Makkelijker te begrijpen maken", "linkFetching": "Pagina ophalen…", "linkSimplifying": "Makkelijker maken… deel {i} van {n}", "linkErrBadUrl": "Dat lijkt geen webadres.", "linkErrNoText": "Die pagina heeft geen leesbare tekst. Video's en pagina's met inloggen kunnen niet worden gelezen.", "linkErrNotPage": "Die link is geen webpagina (het is een bestand of video).", "linkErrGeneric": "Die pagina kon niet worden geopend."},
+    ru: {"linkLabel": "Или добавьте веб-страницу", "linkAdd": "Добавить страницу", "linkEasy": "Сделать понятнее", "linkFetching": "Загружаю страницу…", "linkSimplifying": "Упрощаю текст… часть {i} из {n}", "linkErrBadUrl": "Это не похоже на адрес веб-страницы.", "linkErrNoText": "На этой странице нет читаемого текста. Видео и страницы со входом прочитать нельзя.", "linkErrNotPage": "Эта ссылка — не веб-страница (это файл или видео).", "linkErrGeneric": "Не удалось открыть страницу."},
+    pl: {"linkLabel": "Albo dodaj stronę internetową", "linkAdd": "Dodaj stronę", "linkEasy": "Uprość, żeby łatwiej zrozumieć", "linkFetching": "Pobieram stronę…", "linkSimplifying": "Upraszczam… część {i} z {n}", "linkErrBadUrl": "To nie wygląda na adres strony.", "linkErrNoText": "Ta strona nie ma tekstu do przeczytania. Filmów i stron z logowaniem nie da się odczytać.", "linkErrNotPage": "Ten link to nie strona (to plik lub film).", "linkErrGeneric": "Nie udało się otworzyć tej strony."},
+    tr: {"linkLabel": "Ya da bir web sayfası ekle", "linkAdd": "Sayfayı ekle", "linkEasy": "Daha kolay anlaşılır yap", "linkFetching": "Sayfa alınıyor…", "linkSimplifying": "Kolaylaştırılıyor… bölüm {i}/{n}", "linkErrBadUrl": "Bu bir web sayfası adresine benzemiyor.", "linkErrNoText": "Bu sayfada okunabilir metin yok. Videolar ve giriş gerektiren sayfalar okunamaz.", "linkErrNotPage": "Bu bağlantı bir web sayfası değil (dosya veya video).", "linkErrGeneric": "Sayfa açılamadı."},
+    ar: {"linkLabel": "أو أضف صفحة ويب", "linkAdd": "أضف الصفحة", "linkEasy": "اجعلها أسهل للفهم", "linkFetching": "جارٍ جلب الصفحة…", "linkSimplifying": "جارٍ التبسيط… الجزء {i} من {n}", "linkErrBadUrl": "هذا لا يبدو عنوان صفحة ويب.", "linkErrNoText": "لا تحتوي تلك الصفحة على نص مقروء. لا يمكن قراءة الفيديوهات والصفحات التي تتطلب تسجيل الدخول.", "linkErrNotPage": "هذا الرابط ليس صفحة ويب (إنه ملف أو فيديو).", "linkErrGeneric": "تعذّر فتح تلك الصفحة."},
+    hi: {"linkLabel": "या कोई वेब पेज जोड़ें", "linkAdd": "पेज जोड़ें", "linkEasy": "समझने में आसान बनाएँ", "linkFetching": "पेज लाया जा रहा है…", "linkSimplifying": "आसान बनाया जा रहा है… भाग {i} / {n}", "linkErrBadUrl": "यह वेब पेज का पता नहीं लगता।", "linkErrNoText": "उस पेज पर पढ़ने लायक टेक्स्ट नहीं है। वीडियो और लॉगिन वाले पेज नहीं पढ़े जा सकते।", "linkErrNotPage": "यह लिंक वेब पेज नहीं है (यह फ़ाइल या वीडियो है)।", "linkErrGeneric": "वह पेज नहीं खुल सका।"},
+    id: {"linkLabel": "Atau tambahkan halaman web", "linkAdd": "Tambah halaman", "linkEasy": "Buat lebih mudah dipahami", "linkFetching": "Mengambil halaman…", "linkSimplifying": "Menyederhanakan… bagian {i} dari {n}", "linkErrBadUrl": "Itu tidak tampak seperti alamat halaman web.", "linkErrNoText": "Halaman itu tidak punya teks yang bisa dibaca. Video dan halaman yang perlu login tidak bisa dibaca.", "linkErrNotPage": "Tautan itu bukan halaman web (itu file atau video).", "linkErrGeneric": "Tidak bisa membuka halaman itu."},
+    th: {"linkLabel": "หรือเพิ่มหน้าเว็บ", "linkAdd": "เพิ่มหน้า", "linkEasy": "ทำให้เข้าใจง่ายขึ้น", "linkFetching": "กำลังดึงหน้าเว็บ…", "linkSimplifying": "กำลังเรียบเรียงให้ง่ายขึ้น… ส่วนที่ {i} จาก {n}", "linkErrBadUrl": "ดูไม่เหมือนที่อยู่หน้าเว็บ", "linkErrNoText": "หน้านั้นไม่มีข้อความที่อ่านได้ วิดีโอและหน้าที่ต้องล็อกอินอ่านไม่ได้", "linkErrNotPage": "ลิงก์นั้นไม่ใช่หน้าเว็บ (เป็นไฟล์หรือวิดีโอ)", "linkErrGeneric": "เปิดหน้านั้นไม่ได้"},
+    ja: {"linkLabel": "またはウェブページを追加", "linkAdd": "ページを追加", "linkEasy": "わかりやすく書き直す", "linkFetching": "ページを取得中…", "linkSimplifying": "わかりやすく書き直し中… {i}/{n}", "linkErrBadUrl": "ウェブページのアドレスではないようです。", "linkErrNoText": "そのページには読める文章がありません。動画やログインが必要なページは読めません。", "linkErrNotPage": "そのリンクはウェブページではありません（ファイルか動画です）。", "linkErrGeneric": "そのページを開けませんでした。"},
+    ko: {"linkLabel": "또는 웹페이지 추가", "linkAdd": "페이지 추가", "linkEasy": "이해하기 쉽게 바꾸기", "linkFetching": "페이지를 가져오는 중…", "linkSimplifying": "쉽게 바꾸는 중… {n}개 중 {i}번째", "linkErrBadUrl": "웹페이지 주소가 아닌 것 같아요.", "linkErrNoText": "그 페이지에는 읽을 수 있는 글이 없어요. 동영상과 로그인이 필요한 페이지는 읽을 수 없어요.", "linkErrNotPage": "그 링크는 웹페이지가 아니에요(파일이나 동영상이에요).", "linkErrGeneric": "그 페이지를 열 수 없어요."},
+    zh: {"linkLabel": "或添加一个网页", "linkAdd": "添加网页", "linkEasy": "改写得更容易理解", "linkFetching": "正在获取网页…", "linkSimplifying": "正在简化… 第 {i}/{n} 部分", "linkErrBadUrl": "这看起来不像网页地址。", "linkErrNoText": "该网页没有可读的文字。无法读取视频和需要登录的网页。", "linkErrNotPage": "该链接不是网页（是文件或视频）。", "linkErrGeneric": "无法打开该网页。"},
+    tl: {"linkLabel": "O magdagdag ng web page", "linkAdd": "Idagdag ang page", "linkEasy": "Gawing mas madaling maintindihan", "linkFetching": "Kinukuha ang page…", "linkSimplifying": "Pinapadali… bahagi {i} ng {n}", "linkErrBadUrl": "Mukhang hindi iyon address ng web page.", "linkErrNoText": "Walang mababasang teksto ang page na iyon. Hindi mababasa ang mga video at page na kailangan ng login.", "linkErrNotPage": "Hindi web page ang link na iyon (file o video iyon).", "linkErrGeneric": "Hindi mabuksan ang page na iyon."},
+    he: {"linkLabel": "או הוסיפו דף אינטרנט", "linkAdd": "הוספת דף", "linkEasy": "לפשט להבנה קלה", "linkFetching": "מביא את הדף…", "linkSimplifying": "מפשט… חלק {i} מתוך {n}", "linkErrBadUrl": "זה לא נראה כמו כתובת של דף אינטרנט.", "linkErrNoText": "אין בדף הזה טקסט קריא. אי אפשר לקרוא סרטונים ודפים שדורשים התחברות.", "linkErrNotPage": "הקישור הזה אינו דף אינטרנט (זה קובץ או סרטון).", "linkErrGeneric": "לא ניתן לפתוח את הדף."},
+    el: {"linkLabel": "Ή προσθέστε μια ιστοσελίδα", "linkAdd": "Προσθήκη σελίδας", "linkEasy": "Κάν' το πιο εύκολο στην κατανόηση", "linkFetching": "Λήψη της σελίδας…", "linkSimplifying": "Απλοποίηση… μέρος {i} από {n}", "linkErrBadUrl": "Δεν μοιάζει με διεύθυνση ιστοσελίδας.", "linkErrNoText": "Η σελίδα δεν έχει κείμενο που να διαβάζεται. Βίντεο και σελίδες με σύνδεση δεν διαβάζονται.", "linkErrNotPage": "Ο σύνδεσμος δεν είναι ιστοσελίδα (είναι αρχείο ή βίντεο).", "linkErrGeneric": "Δεν ήταν δυνατό να ανοίξει η σελίδα."},
+    sv: {"linkLabel": "Eller lägg till en webbsida", "linkAdd": "Lägg till sida", "linkEasy": "Gör det lättare att förstå", "linkFetching": "Hämtar sidan…", "linkSimplifying": "Förenklar… del {i} av {n}", "linkErrBadUrl": "Det ser inte ut som en webbadress.", "linkErrNoText": "Sidan har ingen läsbar text. Videor och sidor som kräver inloggning kan inte läsas.", "linkErrNotPage": "Länken är inte en webbsida (det är en fil eller video).", "linkErrGeneric": "Kunde inte öppna sidan."},
+    uk: {"linkLabel": "Або додайте вебсторінку", "linkAdd": "Додати сторінку", "linkEasy": "Зробити зрозумілішим", "linkFetching": "Завантажую сторінку…", "linkSimplifying": "Спрощую… частина {i} з {n}", "linkErrBadUrl": "Це не схоже на адресу вебсторінки.", "linkErrNoText": "На цій сторінці немає тексту для читання. Відео та сторінки з входом прочитати не можна.", "linkErrNotPage": "Це посилання — не вебсторінка (це файл або відео).", "linkErrGeneric": "Не вдалося відкрити сторінку."},
+    ro: {"linkLabel": "Sau adaugă o pagină web", "linkAdd": "Adaugă pagina", "linkEasy": "Fă-l mai ușor de înțeles", "linkFetching": "Se aduce pagina…", "linkSimplifying": "Se simplifică… partea {i} din {n}", "linkErrBadUrl": "Nu pare o adresă de pagină web.", "linkErrNoText": "Pagina nu are text care să poată fi citit. Videoclipurile și paginile cu autentificare nu pot fi citite.", "linkErrNotPage": "Linkul nu este o pagină web (e un fișier sau un video).", "linkErrGeneric": "Pagina nu a putut fi deschisă."},
+    fa: {"linkLabel": "یا یک صفحهٔ وب اضافه کنید", "linkAdd": "افزودن صفحه", "linkEasy": "ساده‌تر برای فهمیدن", "linkFetching": "در حال دریافت صفحه…", "linkSimplifying": "در حال ساده‌سازی… بخش {i} از {n}", "linkErrBadUrl": "این شبیه نشانی صفحهٔ وب نیست.", "linkErrNoText": "آن صفحه متن قابل‌خواندن ندارد. ویدیوها و صفحه‌هایی که ورود می‌خواهند خوانده نمی‌شوند.", "linkErrNotPage": "آن پیوند صفحهٔ وب نیست (فایل یا ویدیو است).", "linkErrGeneric": "آن صفحه باز نشد."},
+    ur: {"linkLabel": "یا کوئی ویب صفحہ شامل کریں", "linkAdd": "صفحہ شامل کریں", "linkEasy": "سمجھنے میں آسان بنائیں", "linkFetching": "صفحہ لایا جا رہا ہے…", "linkSimplifying": "آسان بنایا جا رہا ہے… حصہ {i} از {n}", "linkErrBadUrl": "یہ ویب صفحے کا پتہ نہیں لگتا۔", "linkErrNoText": "اس صفحے پر پڑھنے کے قابل متن نہیں۔ ویڈیوز اور لاگ اِن والے صفحات نہیں پڑھے جا سکتے۔", "linkErrNotPage": "یہ لنک ویب صفحہ نہیں (یہ فائل یا ویڈیو ہے)۔", "linkErrGeneric": "وہ صفحہ نہیں کھل سکا۔"}
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -3341,7 +3382,11 @@
   }
 
   async function extractTxt(file, onProgress){
-    const raw = await file.text();
+    return splitTextPages(await file.text(), onProgress);
+  }
+
+  // Plain text → "pages" of about 2,800 characters, split at spaces.
+  function splitTextPages(raw, onProgress){
     const chunkSize = 2800;
     const pages = [];
     let i = 0, pageNum = 1;
@@ -3515,6 +3560,27 @@
         $("uploadStatus").textContent = t("readingPage", { i, n: total });
       };
       const pages = isPdf ? await extractPdf(pendingFile, onProgress) : await extractTxt(pendingFile, onProgress);
+      await saveNewBook(pages, { title, subject, isPdf, file: pendingFile });
+    } catch (e) {
+      showUploadError(e);
+    }
+  }
+
+  function showUploadError(e){
+    let msg = t("fileError");
+    if (e && e.message === "pdf_unavailable") msg = t("pdfUnavailable");
+    else if (e && e.message === "empty_text") msg = t("emptyTextError");
+    else if (e && e.message === "pdf_password") msg = t("pdfPasswordError");
+    // A short technical reason helps when someone sends a screenshot.
+    else if (e) msg += " (" + String(e.name && e.name !== "Error" ? e.name + ": " : "") + String(e.message || e).slice(0, 80) + ")";
+    $("uploadStatus").textContent = msg;
+    $("uploadProgressWrap").hidden = true;
+  }
+
+  // Saves a new book (its text, and the original PDF if there is one) and opens it.
+  async function saveNewBook(pages, meta){
+    const { title, subject, isPdf, file, sourceUrl } = meta;
+    {
       const wordCount = pages.reduce((n, p) => n + (p.text.split(/\s+/).filter(Boolean).length), 0);
       if (wordCount < 20) throw new Error("empty_text");
 
@@ -3527,6 +3593,7 @@
         wordCount,
         createdAt: new Date().toISOString()
       };
+      if (sourceUrl) book.sourceUrl = sourceUrl;
 
       let bookId, saveFailed = false;
       if (db && assets) {
@@ -3539,7 +3606,7 @@
             // extraction loses equations, charts and diagrams, so the "View
             // PDF" viewer re-renders the real pages from this.
             try {
-              const pdfUp = await assets.upload(pendingFile, { type: "application/pdf" });
+              const pdfUp = await assets.upload(file, { type: "application/pdf" });
               book.pdfAssetId = pdfUp.id;
             } catch (e) { /* text still works without the visual viewer */ }
           }
@@ -3567,16 +3634,69 @@
       $("uploadPanel").hidden = true;
       openBook(bookId);
       toast(saveFailed ? t("saveBookError") : t("fileReady", { title }));
-    } catch (e) {
-      let msg = t("fileError");
-      if (e && e.message === "pdf_unavailable") msg = t("pdfUnavailable");
-      else if (e && e.message === "empty_text") msg = t("emptyTextError");
-      else if (e && e.message === "pdf_password") msg = t("pdfPasswordError");
-      // A short technical reason helps when someone sends a screenshot.
-      else if (e) msg += " (" + String(e.name && e.name !== "Error" ? e.name + ": " : "") + String(e.message || e).slice(0, 80) + ")";
-      $("uploadStatus").textContent = msg;
-      $("uploadProgressWrap").hidden = true;
     }
+  }
+
+  /* ---- Add a web page by its link (website edition only) ----
+     The site's server fetches the page and keeps its readable text; with
+     "Make it easier to understand" on, the AI rewrites each part in simpler
+     words (same facts, same order) before it becomes a book. */
+  const EASY_MAX_PARTS = 40;
+  function linkErrorMessage(e){
+    const code = e && e.code;
+    if (code === "bad_url") return t("linkErrBadUrl");
+    if (code === "no_text") return t("linkErrNoText");
+    if (code === "not_text") return t("linkErrNotPage");
+    return t("linkErrGeneric") + (e && e.message ? " (" + String(e.message).slice(0, 80) + ")" : "");
+  }
+  async function simplifyPart(title, text){
+    const prompt =
+      "Rewrite this part of a web page so a student can understand it easily.\n" +
+      "- Use simple words and short sentences. When a hard term is needed, keep it and explain it in brackets.\n" +
+      "- Keep every fact, number, name and example, in the same order. Do not add anything that isn't in the text, and do not leave out facts.\n" +
+      "- Skip leftover website clutter (menus, 'share this', cookie notices, ads).\n" +
+      "- Write in the same language as the text.\n" +
+      "- Reply with only the rewritten text.\n\n" +
+      "Page title: " + title + "\n\nText:\n" + text;
+    const r = await sample(prompt, { modelTier: "default", cache: false });
+    const out = String((r && r.text) || "").trim();
+    return out.length > 40 ? out : text;   // keep the original if the rewrite came back empty
+  }
+  async function startLinkImport(){
+    const url = $("linkInput").value.trim();
+    if (!url) { $("linkInput").focus(); return; }
+    const easy = $("linkEasy").checked && !!sample;
+    const subject = $("bookSubject").value;
+    $("linkAdd").disabled = true;
+    $("uploadProgressWrap").hidden = false;
+    $("uploadProgressBar").style.width = "5%";
+    $("uploadStatus").textContent = t("linkFetching");
+    try {
+      const page = await window.__earmarkFetchPage(/^[a-z]+:\/\//i.test(url) ? url : "https://" + url);
+      const title = $("bookTitle").value.trim() || page.title || url;
+      let pages = splitTextPages(page.text);
+      if (easy) {
+        const n = Math.min(pages.length, EASY_MAX_PARTS);
+        for (let i = 0; i < n; i++) {
+          $("uploadStatus").textContent = t("linkSimplifying", { i: i + 1, n });
+          $("uploadProgressBar").style.width = Math.round(10 + 85 * i / n) + "%";
+          try { pages[i] = { pageNum: pages[i].pageNum, text: await simplifyPart(title, pages[i].text) }; }
+          catch (e) { if (e && (e.code === "rate_limited" || e.code === "not_granted")) break; /* keep the original part */ }
+        }
+      }
+      $("linkInput").value = "";
+      await saveNewBook(pages, { title, subject, isPdf: false, sourceUrl: page.url || url });
+    } catch (e) {
+      if (e && e.code) { $("uploadStatus").textContent = linkErrorMessage(e); $("uploadProgressWrap").hidden = true; }
+      else showUploadError(e);
+    } finally {
+      $("linkAdd").disabled = false;
+    }
+  }
+  if (window.__earmarkFetchPage) {
+    $("linkRow").hidden = false;
+    $("linkAdd").addEventListener("click", startLinkImport);
+    $("linkInput").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); startLinkImport(); } });
   }
 
   /* ---------------- book view ---------------- */
@@ -3612,7 +3732,8 @@
     renderLibrary();
 
     $("bvTitle").textContent = book.title;
-    $("bvSub").textContent = t(SUBJECT_KEYS[book.subject] || "subjOther") + " · " + t("pagesCount", { n: book.pageCount || "?" });
+    $("bvSub").textContent = t(SUBJECT_KEYS[book.subject] || "subjOther") + " · " + t("pagesCount", { n: book.pageCount || "?" })
+      + (book.sourceUrl ? " · " + (() => { try { return new URL(book.sourceUrl).hostname.replace(/^www\./, ""); } catch (e) { return ""; } })() : "");
     $("viewPdfBtn").hidden = !book.pdfAssetId;
     $("stripLoc").textContent = "…";
     $("stripSnippet").textContent = "";
