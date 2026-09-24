@@ -144,6 +144,8 @@ export async function onRequestPost({ request, env }) {
   } catch (e) {
     return json(502, { code: "fetch_failed", message: "Couldn't open that page." });
   }
+  // 401/403/429/451: the site refuses apps (bot protection, rate limits, logins).
+  if ([401, 403, 429, 451].includes(res.status)) return json(502, { code: "blocked", message: "That website doesn't allow apps to read it (" + res.status + ")." });
   if (!res.ok) return json(502, { code: "fetch_failed", message: "The page answered with an error (" + res.status + ")." });
 
   const type = (res.headers.get("content-type") || "").toLowerCase();
