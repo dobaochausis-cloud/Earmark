@@ -45,7 +45,7 @@ const SYSTEM_JSON = SYSTEM + " Reply with only the JSON that was asked for: no c
 
 // Best-effort per-visitor limit (each server instance counts on its own).
 // The real safety net is the monthly spend limit you set in the Anthropic Console.
-const WINDOW_MS = 60_000, MAX_PER_WINDOW = 20;
+const WINDOW_MS = 60_000, MAX_PER_WINDOW = 60;
 const hits = new Map();
 function tooMany(ip) {
   const now = Date.now();
@@ -249,7 +249,7 @@ async function askWorkersAI(env, messages, system, tier) {
         }
       }
       await send({ error: usedUpMessage(lastError)
-        ? { code: "rate_limited", message: "Today's free AI allowance is used up. It resets tomorrow." }
+        ? { code: "daily_limit", message: "Today's free AI allowance is used up. It resets tomorrow." }
         : { code: "server_error", message: "The free AI isn't available right now. Try again in a moment." } });
     } catch (e) {
       /* the page went away */
