@@ -117,7 +117,16 @@
     async upload(blob, opts) {
       const id = newId();
       const type = (opts && opts.type) || blob.type || "application/octet-stream";
-      const stored = blob instanceof Blob ? blob : new Blob([blob], { type });
+      // Store plain bytes, not the File object itself: some Safari versions
+      // refuse to put a picked File into IndexedDB.
+      let stored;
+      try {
+        stored = new Blob([blob instanceof Blob ? await blob.arrayBuffer() : blob], { type });
+      } catch (e) {
+        const err = new Error("Couldn't read the file to save it.");
+        err.code = "upload_failed";
+        throw err;
+      }
       try {
         await tx("files", "readwrite", (os) => { os.put(stored, id); });
       } catch (e) {
