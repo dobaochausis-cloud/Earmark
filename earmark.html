@@ -506,6 +506,10 @@
   .setup-fields{ display:flex; gap:10px; width:100%; flex-wrap:wrap; }
   .setup-fields .field{ flex:1 1 160px; min-width:0; }
   .setup .cta{ margin-top:2px; }
+  .page-range{ display:flex; align-items:flex-end; gap:12px 22px; flex-wrap:wrap; }
+  .page-range-field{ display:flex; flex-direction:column; gap:4px; font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; }
+  .page-range-field input{ width:96px; padding:8px 10px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--paper); color:var(--ink); font:inherit; font-size:15px; text-transform:none; letter-spacing:0; }
+  .page-range-of{ font-size:13px; color:var(--ink-soft); padding-bottom:10px; }
   .setup-note{ font-size:12.5px; color:var(--ink-soft); }
   .setup-error{ font-size:13px; color:var(--danger); }
 
@@ -2734,6 +2738,34 @@
     fa: {"gamePreparing": "در حال آماده‌کردن سؤال‌ها… {i} از {n}", "gameTryAgain": "دوباره امتحان کنید", "gameStartAnyway": "شروع با {n} سؤال"},
     ur: {"gamePreparing": "آپ کے سوالات تیار ہو رہے ہیں… {i} از {n}", "gameTryAgain": "دوبارہ کوشش کریں", "gameStartAnyway": "{n} سوالات کے ساتھ شروع کریں"}
   });
+  addStrings({
+    en: {"scopeChapters": "Chapters", "scopeChoosePages": "Choose pages…", "pageFrom": "From page", "pageTo": "To page", "pageOfTotal": "of {n} pages"},
+    vi: {"scopeChapters": "Chương", "scopeChoosePages": "Chọn trang…", "pageFrom": "Từ trang", "pageTo": "Đến trang", "pageOfTotal": "trên {n} trang"},
+    es: {"scopeChapters": "Capítulos", "scopeChoosePages": "Elegir páginas…", "pageFrom": "Desde la página", "pageTo": "Hasta la página", "pageOfTotal": "de {n} páginas"},
+    fr: {"scopeChapters": "Chapitres", "scopeChoosePages": "Choisir des pages…", "pageFrom": "De la page", "pageTo": "À la page", "pageOfTotal": "sur {n} pages"},
+    de: {"scopeChapters": "Kapitel", "scopeChoosePages": "Seiten wählen…", "pageFrom": "Von Seite", "pageTo": "Bis Seite", "pageOfTotal": "von {n} Seiten"},
+    pt: {"scopeChapters": "Capítulos", "scopeChoosePages": "Escolher páginas…", "pageFrom": "Da página", "pageTo": "Até a página", "pageOfTotal": "de {n} páginas"},
+    it: {"scopeChapters": "Capitoli", "scopeChoosePages": "Scegli le pagine…", "pageFrom": "Da pagina", "pageTo": "A pagina", "pageOfTotal": "di {n} pagine"},
+    nl: {"scopeChapters": "Hoofdstukken", "scopeChoosePages": "Pagina's kiezen…", "pageFrom": "Van pagina", "pageTo": "Tot pagina", "pageOfTotal": "van {n} pagina's"},
+    ru: {"scopeChapters": "Главы", "scopeChoosePages": "Выбрать страницы…", "pageFrom": "С страницы", "pageTo": "По страницу", "pageOfTotal": "из {n} стр."},
+    pl: {"scopeChapters": "Rozdziały", "scopeChoosePages": "Wybierz strony…", "pageFrom": "Od strony", "pageTo": "Do strony", "pageOfTotal": "z {n} stron"},
+    tr: {"scopeChapters": "Bölümler", "scopeChoosePages": "Sayfa seç…", "pageFrom": "Başlangıç sayfası", "pageTo": "Bitiş sayfası", "pageOfTotal": "{n} sayfadan"},
+    ar: {"scopeChapters": "الفصول", "scopeChoosePages": "اختر الصفحات…", "pageFrom": "من الصفحة", "pageTo": "إلى الصفحة", "pageOfTotal": "من {n} صفحة"},
+    hi: {"scopeChapters": "अध्याय", "scopeChoosePages": "पेज चुनें…", "pageFrom": "इस पेज से", "pageTo": "इस पेज तक", "pageOfTotal": "{n} पेज में से"},
+    id: {"scopeChapters": "Bab", "scopeChoosePages": "Pilih halaman…", "pageFrom": "Dari halaman", "pageTo": "Sampai halaman", "pageOfTotal": "dari {n} halaman"},
+    th: {"scopeChapters": "บท", "scopeChoosePages": "เลือกหน้า…", "pageFrom": "จากหน้า", "pageTo": "ถึงหน้า", "pageOfTotal": "จาก {n} หน้า"},
+    ja: {"scopeChapters": "章", "scopeChoosePages": "ページを選ぶ…", "pageFrom": "開始ページ", "pageTo": "終了ページ", "pageOfTotal": "全{n}ページ"},
+    ko: {"scopeChapters": "단원", "scopeChoosePages": "페이지 선택…", "pageFrom": "시작 페이지", "pageTo": "끝 페이지", "pageOfTotal": "전체 {n}쪽"},
+    zh: {"scopeChapters": "章节", "scopeChoosePages": "选择页码…", "pageFrom": "起始页", "pageTo": "结束页", "pageOfTotal": "共 {n} 页"},
+    tl: {"scopeChapters": "Mga kabanata", "scopeChoosePages": "Pumili ng pahina…", "pageFrom": "Mula pahina", "pageTo": "Hanggang pahina", "pageOfTotal": "sa {n} pahina"},
+    he: {"scopeChapters": "פרקים", "scopeChoosePages": "בחירת עמודים…", "pageFrom": "מעמוד", "pageTo": "עד עמוד", "pageOfTotal": "מתוך {n} עמודים"},
+    el: {"scopeChapters": "Κεφάλαια", "scopeChoosePages": "Επιλογή σελίδων…", "pageFrom": "Από σελίδα", "pageTo": "Έως σελίδα", "pageOfTotal": "από {n} σελίδες"},
+    sv: {"scopeChapters": "Kapitel", "scopeChoosePages": "Välj sidor…", "pageFrom": "Från sida", "pageTo": "Till sida", "pageOfTotal": "av {n} sidor"},
+    uk: {"scopeChapters": "Розділи", "scopeChoosePages": "Вибрати сторінки…", "pageFrom": "Зі сторінки", "pageTo": "До сторінки", "pageOfTotal": "з {n} стор."},
+    ro: {"scopeChapters": "Capitole", "scopeChoosePages": "Alege paginile…", "pageFrom": "De la pagina", "pageTo": "Până la pagina", "pageOfTotal": "din {n} pagini"},
+    fa: {"scopeChapters": "فصل‌ها", "scopeChoosePages": "انتخاب صفحه‌ها…", "pageFrom": "از صفحه", "pageTo": "تا صفحه", "pageOfTotal": "از {n} صفحه"},
+    ur: {"scopeChapters": "ابواب", "scopeChoosePages": "صفحات منتخب کریں…", "pageFrom": "صفحہ سے", "pageTo": "صفحہ تک", "pageOfTotal": "{n} صفحات میں سے"}
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -3443,6 +3475,21 @@
       throw e;
     }
     const pages = [];
+    // The PDF's own table of contents (bookmarks), if it has one: top level only.
+    try {
+      const outline = await pdf.getOutline();
+      const chapters = [];
+      for (const item of (outline || []).slice(0, 200)) {
+        let dest = item.dest;
+        if (typeof dest === "string") dest = await pdf.getDestination(dest);
+        if (!Array.isArray(dest) || !dest[0]) continue;
+        const idx = typeof dest[0] === "number" ? dest[0] : await pdf.getPageIndex(dest[0]);
+        const title = String(item.title || "").replace(/\s+/g, " ").trim().slice(0, 80);
+        if (title && idx >= 0) chapters.push({ title, page: idx + 1 });
+      }
+      chapters.sort((a, b) => a.page - b.page);
+      if (chapters.length >= 2) pages.outline = chapters;
+    } catch (e) { /* no usable table of contents */ }
     for (let i = 1; i <= pdf.numPages; i++) {
       // One unreadable page (odd font, broken drawing) shouldn't sink the book.
       let text = "";
@@ -3636,7 +3683,7 @@
         $("uploadStatus").textContent = t("readingPage", { i, n: total });
       };
       const pages = isPdf ? await extractPdf(pendingFile, onProgress) : await extractTxt(pendingFile, onProgress);
-      await saveNewBook(pages, { title, subject, isPdf, file: pendingFile });
+      await saveNewBook(pages, { title, subject, isPdf, file: pendingFile, chapters: pages.outline });
     } catch (e) {
       showUploadError(e);
     }
@@ -3655,7 +3702,7 @@
 
   // Saves a new book (its text, and the original PDF if there is one) and opens it.
   async function saveNewBook(pages, meta){
-    const { title, subject, isPdf, file, sourceUrl } = meta;
+    const { title, subject, isPdf, file, sourceUrl, chapters } = meta;
     {
       const wordCount = pages.reduce((n, p) => n + (p.text.split(/\s+/).filter(Boolean).length), 0);
       if (wordCount < 20) throw new Error("empty_text");
@@ -3670,6 +3717,7 @@
         createdAt: new Date().toISOString()
       };
       if (sourceUrl) book.sourceUrl = sourceUrl;
+      if (chapters && chapters.length >= 2) book.chapters = chapters;
 
       let bookId, saveFailed = false;
       if (db && assets) {
@@ -4390,9 +4438,122 @@
     return loaded.chunks[ci];
   }
 
+  /* ---- chapters ----
+     From the PDF's own table of contents when it has one; otherwise from
+     headings in the text such as "Chapter 3", "Part II", "Unit 4", "Chương 5".
+     Each chapter runs from its first page to the page before the next one. */
+  const CH_WORDS = ["chapter", "chương", "chuong", "capítulo", "capitulo", "chapitre", "kapitel", "capitolo", "hoofdstuk", "глава", "rozdział", "bölüm", "kapittel",
+    "unit", "lesson", "module", "part", "phần", "bài", "section"];
+  const NUM_WORDS = ["one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty"];
+  function chapterNumber(tok){
+    tok = tok.toLowerCase();
+    if (/^\d+$/.test(tok)) return parseInt(tok, 10);
+    const w = NUM_WORDS.indexOf(tok);
+    if (w >= 0) return w + 1;
+    if (/^[ivxlc]+$/.test(tok)) {
+      const v = { i: 1, v: 5, x: 10, l: 50, c: 100 };
+      let n = 0;
+      for (let k = 0; k < tok.length; k++) { const a = v[tok[k]], b = v[tok[k + 1]] || 0; n += a < b ? -a : a; }
+      return n;
+    }
+    return -1;
+  }
+  function findChapters(book, loaded){
+    if (loaded.chapters) return loaded.chapters;
+    const pages = loaded.pages || [];
+    const lastPage = pages.length ? pages[pages.length - 1].pageNum : 1;
+    let found = [];
+    if (book && Array.isArray(book.chapters) && book.chapters.length >= 2) {
+      found = book.chapters.map(c => ({ title: c.title, start: c.page }));
+    } else {
+      const re = new RegExp("(?:^|[^\\p{L}])(" + CH_WORDS.join("|") + ")\\s+(\\d{1,3}|[ivxlc]{1,7}|" + NUM_WORDS.join("|") + ")(?![\\p{L}\\d])", "giu");
+      const byWord = new Map();   // keyword → Map(number → [pages])
+      for (const p of pages) {
+        const perPage = new Map();
+        for (const m of (p.text || "").matchAll(re)) {
+          const word = m[1].toLowerCase(), num = chapterNumber(m[2]);
+          if (num < 0 || num > 300) continue;
+          if (!perPage.has(word)) perPage.set(word, { label: m[1], counts: new Map(), shown: new Map() });
+          const info = perPage.get(word);
+          info.counts.set(num, (info.counts.get(num) || 0) + 1);
+          if (!info.shown.has(num)) info.shown.set(num, m[2]);
+        }
+        for (const [word, info] of perPage) {
+          // A table of contents lists many chapters on one page. There, only a
+          // chapter named twice (the list, then its real heading) starts here.
+          const isContents = info.counts.size >= 4;
+          if (!byWord.has(word)) byWord.set(word, { label: info.label, nums: new Map(), shown: new Map() });
+          const e = byWord.get(word);
+          for (const [n, count] of info.counts) {
+            if (isContents && count < 2) continue;
+            if (!e.nums.has(n)) e.nums.set(n, []);
+            e.nums.get(n).push(p.pageNum);
+            if (!e.shown.has(n)) e.shown.set(n, info.shown.get(n));
+          }
+        }
+      }
+      // For each heading word, follow 1, 2, 3… in page order; keep the word that finds the most.
+      for (const word of CH_WORDS) {
+        const e = byWord.get(word);
+        if (!e) continue;
+        const first = e.nums.has(1) ? 1 : (e.nums.has(0) ? 0 : -1);
+        if (first < 0) continue;
+        const seq = [];
+        let prevPage = 0;
+        for (let n = first; e.nums.has(n); n++) {
+          const pg = e.nums.get(n).find(x => x > prevPage || (seq.length === 0 && x >= prevPage));
+          if (pg === undefined) break;
+          const label = e.label.charAt(0).toUpperCase() + e.label.slice(1).toLowerCase();
+          const shown = e.shown.get(n) || String(n);
+          seq.push({ title: label + " " + (/^[ivxlc]+$/i.test(shown) ? shown.toUpperCase() : /^\d+$/.test(shown) ? shown : String(n)), start: pg,
+            heading: new RegExp("(?:^|[^\\p{L}])" + word + "\\s+" + shown + "(?![\\p{L}\\d])", "iu") });
+          prevPage = pg;
+        }
+        if (seq.length >= 2 && seq.length > found.length) found = seq;
+      }
+    }
+    const chapters = found.map((c, i) => {
+      const next = found[i + 1];
+      // A chapter can start part-way down a page; keep that page, and trim it later.
+      const end = next ? (next.heading && next.start > c.start ? next.start : Math.max(c.start, next.start - 1)) : lastPage;
+      return { title: c.title, start: c.start, end, heading: c.heading, nextHeading: next && next.start === end ? next.heading : null };
+    });
+    loaded.chapters = chapters;
+    return chapters;
+  }
+  // Page range for a scope: "ch:3" (a chapter) or "pages:12-30".
+  function scopePages(book, loaded, scope){
+    if (typeof scope !== "string") return null;
+    if (scope.startsWith("ch:")) { const c = findChapters(book, loaded)[parseInt(scope.slice(3), 10)]; return c ? [c.start, c.end, c] : null; }
+    const m = scope.match(/^pages:(\d+)-(\d+)$/);
+    if (m) { const a = parseInt(m[1], 10), b = parseInt(m[2], 10); return [Math.min(a, b), Math.max(a, b)]; }
+    return null;
+  }
+
   function studyExcerpts(bookId, loaded, scope, budget){
-    const chunks = loaded.chunks;
+    let chunks = loaded.chunks;
     if (scope === "passage") return fitChunks([currentPassageChunk(bookId, loaded)], Math.floor(promptBudget() * 0.7));
+    const range = scopePages(state.books.find(b => b.id === bookId), loaded, scope);
+    if (range) {
+      // Cut exactly at the chosen pages, so nothing from the next chapter slips in.
+      let pagesIn = (loaded.pages || []).filter(p => p.pageNum >= range[0] && p.pageNum <= range[1]);
+      const ch = range[2];
+      if (ch && pagesIn.length) {
+        // Start at the chapter's own heading and stop before the next one.
+        pagesIn = pagesIn.map(p => ({ pageNum: p.pageNum, text: p.text || "" }));
+        const first = pagesIn[0], last = pagesIn[pagesIn.length - 1];
+        if (ch.heading) {
+          // If the name appears more than once on its first page (a contents
+          // list, then the real heading), the last one is the heading.
+          const all = [...first.text.matchAll(new RegExp(ch.heading.source, "giu"))];
+          if (all.length) first.text = first.text.slice(all[all.length - 1].index);
+        }
+        if (ch.nextHeading) { const m = last.text.match(ch.nextHeading); if (m && (last !== first || m.index > 0)) last.text = last.text.slice(0, m.index); }
+        pagesIn = pagesIn.filter(p => p.text.trim());
+      }
+      const own = pagesIn.length ? buildChunks(pagesIn) : [];
+      if (own.length) chunks = own;
+    }
     const n = Math.min(budget || 5, chunks.length);
     if (n >= chunks.length) return fitChunks(chunks.slice(), Math.floor(promptBudget() * 0.7));
     const step = chunks.length / n;
@@ -4586,8 +4747,45 @@
     const o2 = el("option"); o2.value = "passage";
     o2.textContent = t("scopePassage") + (stripChunk ? " · p. " + chunkRange(stripChunk) : "");
     s1.appendChild(o2);
+    const book = state.books.find(b => b.id === bookId);
+    const chapters = loaded ? findChapters(book, loaded) : [];
+    if (chapters.length) {
+      const grp = el("optgroup"); grp.label = t("scopeChapters");
+      chapters.forEach((c, i) => {
+        const o = el("option"); o.value = "ch:" + i;
+        o.textContent = c.title + " · p. " + (c.start === c.end ? c.start : c.start + "–" + c.end);
+        grp.appendChild(o);
+      });
+      s1.appendChild(grp);
+    }
+    const o3 = el("option"); o3.value = "pages"; o3.textContent = t("scopeChoosePages"); s1.appendChild(o3);
+    // Page range boxes, shown for "Choose pages…".
+    const lastPage = loaded && loaded.pages && loaded.pages.length ? loaded.pages[loaded.pages.length - 1].pageNum : 1;
+    const rangeKey = kind + "Pages";
+    if (!study.setup[rangeKey] || study.setup[rangeKey].bookId !== bookId) {
+      study.setup[rangeKey] = { bookId, from: stripChunk ? stripChunk.startPage : 1, to: stripChunk ? stripChunk.endPage : lastPage };
+    }
+    const range = el("div", "page-range");
+    const mkNum = (label, key) => {
+      const w = el("label", "page-range-field");
+      const sp = el("span"); sp.textContent = label; w.appendChild(sp);
+      const inp = el("input"); inp.type = "number"; inp.min = "1"; inp.max = String(lastPage); inp.inputMode = "numeric";
+      inp.value = String(study.setup[rangeKey][key]);
+      inp.addEventListener("change", () => {
+        const v = Math.max(1, Math.min(lastPage, parseInt(inp.value, 10) || 1));
+        inp.value = String(v); study.setup[rangeKey][key] = v;
+      });
+      w.appendChild(inp);
+      return w;
+    };
+    range.appendChild(mkNum(t("pageFrom"), "from"));
+    range.appendChild(mkNum(t("pageTo"), "to"));
+    const ofN = el("span", "page-range-of"); ofN.textContent = t("pageOfTotal", { n: lastPage }); range.appendChild(ofN);
+    // Keep only choices this book has (chapter numbers differ from book to book).
     s1.value = study.setup[scopeKey];
-    s1.addEventListener("change", () => { study.setup[scopeKey] = s1.value; });
+    if (s1.value !== study.setup[scopeKey]) { study.setup[scopeKey] = "book"; s1.value = "book"; }
+    range.hidden = s1.value !== "pages";
+    s1.addEventListener("change", () => { study.setup[scopeKey] = s1.value; range.hidden = s1.value !== "pages"; });
     f1.appendChild(s1); fields.appendChild(f1);
 
     const f2 = el("div", "field");
@@ -4600,13 +4798,16 @@
     s2.addEventListener("change", () => { study.setup[countKey] = s2.value; });
     f2.appendChild(s2); fields.appendChild(f2);
     box.appendChild(fields);
+    box.appendChild(range);
 
     const go = el("button", "cta"); go.type = "button";
     go.textContent = t(kind === "cards" ? "makeCards" : "startQuiz");
     go.addEventListener("click", () => {
       const count = parseInt(study.setup[countKey], 10);
-      if (kind === "cards") makeCards(bookId, study.setup[scopeKey], count, false);
-      else makeQuiz(bookId, study.setup[scopeKey], count);
+      let scope = study.setup[scopeKey];
+      if (scope === "pages") { const r = study.setup[rangeKey]; scope = "pages:" + r.from + "-" + r.to; }
+      if (kind === "cards") makeCards(bookId, scope, count, false);
+      else makeQuiz(bookId, scope, count);
     });
     box.appendChild(go);
 
