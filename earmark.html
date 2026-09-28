@@ -373,6 +373,7 @@
     flex:1; min-width:0;
   }
   .listen-controls{display:flex; align-items:center; gap:6px; flex-shrink:0;}
+  .reader .para-gap{ display:block; height:.6em; }
   .translate-btn{ display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 12px; margin-left:4px; border-radius:999px; cursor:pointer;
     background:var(--paper-raised); border:1px solid var(--line); color:var(--ink); font:inherit; font-size:13px; font-weight:600; }
   .translate-btn:hover, .translate-btn[aria-expanded="true"]{ border-color:var(--accent); color:var(--accent); }
@@ -2890,6 +2891,34 @@
     fa: {"translateThisPage": "همین صفحه", "translateWholeBook": "کل کتاب", "translateStop": "توقف", "translateProgress": "در حال ترجمهٔ صفحهٔ {i} از {n}…", "translateDone": "همهٔ {n} صفحه ترجمه شد.", "translateStopped": "پس از {i} از {n} صفحه متوقف شد.", "translateStoppedByYou": "متوقف شد. برای ادامه، کل کتاب را بزن.", "translateSnippetLabel": "ترجمهٔ یک واژه یا جمله", "translateSnippetPlaceholder": "اینجا بنویس یا جای‌گذاری کن…", "translatingShort": "در حال ترجمه…"},
     ur: {"translateThisPage": "یہ صفحہ", "translateWholeBook": "پوری کتاب", "translateStop": "روکیں", "translateProgress": "صفحہ {i} از {n} کا ترجمہ ہو رہا ہے…", "translateDone": "تمام {n} صفحات کا ترجمہ ہو گیا۔", "translateStopped": "{n} میں سے {i} صفحات کے بعد رک گیا۔", "translateStoppedByYou": "روک دیا۔ جاری رکھنے کے لیے پوری کتاب دبائیں۔", "translateSnippetLabel": "کسی لفظ یا جملے کا ترجمہ کریں", "translateSnippetPlaceholder": "یہاں لکھیں یا پیسٹ کریں…", "translatingShort": "ترجمہ ہو رہا ہے…"}
   });
+  addStrings({
+    en: {"improvingText": "Improving this book's text…"},
+    vi: {"improvingText": "Đang cải thiện chữ của sách…"},
+    es: {"improvingText": "Mejorando el texto del libro…"},
+    fr: {"improvingText": "Amélioration du texte du livre…"},
+    de: {"improvingText": "Buchtext wird verbessert…"},
+    pt: {"improvingText": "Melhorando o texto do livro…"},
+    it: {"improvingText": "Miglioro il testo del libro…"},
+    nl: {"improvingText": "Tekst van het boek wordt verbeterd…"},
+    ru: {"improvingText": "Улучшаю текст книги…"},
+    pl: {"improvingText": "Poprawiam tekst książki…"},
+    tr: {"improvingText": "Kitabın metni iyileştiriliyor…"},
+    ar: {"improvingText": "جارٍ تحسين نص الكتاب…"},
+    hi: {"improvingText": "किताब का टेक्स्ट बेहतर किया जा रहा है…"},
+    id: {"improvingText": "Memperbaiki teks buku…"},
+    th: {"improvingText": "กำลังปรับปรุงข้อความของหนังสือ…"},
+    ja: {"improvingText": "本の文章を整えています…"},
+    ko: {"improvingText": "책의 글을 다듬는 중…"},
+    zh: {"improvingText": "正在改进这本书的文字…"},
+    tl: {"improvingText": "Pinapaganda ang teksto ng aklat…"},
+    he: {"improvingText": "משפר את טקסט הספר…"},
+    el: {"improvingText": "Βελτίωση του κειμένου του βιβλίου…"},
+    sv: {"improvingText": "Förbättrar bokens text…"},
+    uk: {"improvingText": "Покращую текст книги…"},
+    ro: {"improvingText": "Se îmbunătățește textul cărții…"},
+    fa: {"improvingText": "در حال بهبود متن کتاب…"},
+    ur: {"improvingText": "کتاب کا متن بہتر کیا جا رہا ہے…"}
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -3602,9 +3631,115 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
   }
 
+  /* ---- PDF text layout (version 2) ----
+     Rebuilds each page's lines from where the letters really are, so the
+     text keeps the book's line breaks and paragraphs; letters drawn twice
+     for a "bold" effect count once; a big first letter joins its word
+     ("R obert" → "Robert"). Headers, footers and page numbers that repeat
+     on every page are left out. The PDF viewer uses the same steps, so
+     read-along still lands on the right word. */
+  const PDF_LAYOUT = 2;
+  function layoutPdfPage(content){
+    const lines = [];
+    let cur = null, prev = null, pendingBreak = false;
+    const kept = [];
+    const newLine = (para) => { cur = { text: "", boxes: [], para: !!para }; lines.push(cur); };
+    for (const it of content.items) {
+      const str = it.str || "";
+      if (!str) { if (it.hasEOL) pendingBreak = true; continue; }
+      const tr = it.transform || [1, 0, 0, 1, 0, 0];
+      const fs = Math.hypot(tr[2], tr[3]) || it.height || 10;
+      const x = tr[4], y = tr[5], w = it.width || fs * 0.5 * str.length;
+      // The same text drawn again on top of itself (fake bold, shadows): keep once.
+      if (str.trim() && kept.some(k => k.s === str && Math.abs(k.x - x) < fs * 0.35 && Math.abs(k.y - y) < fs * 0.35)) continue;
+      if (str.trim()) { kept.push({ s: str, x, y }); if (kept.length > 12) kept.shift(); }
+      if (!cur) newLine(false);
+      else if (prev) {
+        const dy = y - prev.y;
+        if (Math.abs(dy) > fs * 0.5 || pendingBreak) {
+          const para = (prev.y - y) > Math.max(fs, prev.fs) * 1.9 || dy > fs * 0.5   // a big gap, or back up (a new column)
+            || Math.abs(fs - prev.fs) > Math.max(fs, prev.fs) * 0.18;              // a heading and its text
+          newLine(para);
+        } else {
+          const gap = x - prev.end;
+          if (gap > fs * 0.22 && !/\s$/.test(cur.text) && !/^\s/.test(str)) { cur.text += " "; cur.boxes.push(null); }
+        }
+      }
+      pendingBreak = !!it.hasEOL;
+      for (let k = 0; k < str.length; k++) {
+        cur.text += str[k];
+        cur.boxes.push(/\s/.test(str[k]) ? null : [x + w * k / str.length, y - fs * 0.22, x + w * (k + 1) / str.length, y + fs * 0.88]);
+      }
+      prev = { y, fs, end: x + w };
+    }
+    // A line printed with every letter doubled ("AAmmeerriiccaa") → single letters.
+    for (const ln of lines) {
+      const chars = [], boxes = [];
+      for (let k = 0; k < ln.text.length; k++) if (!/\s/.test(ln.text[k])) { chars.push(ln.text[k]); boxes.push(ln.boxes[k]); }
+      if (chars.length >= 8 && chars.length % 2 === 0) {
+        let pairs = 0;
+        for (let k = 0; k < chars.length; k += 2) if (chars[k] === chars[k + 1]) pairs++;
+        if (pairs >= chars.length / 2 * 0.9) {
+          ln.text = ""; ln.boxes = [];
+          for (let k = 0; k < chars.length; k += 2) { ln.text += chars[k]; ln.boxes.push(boxes[k]); }
+        }
+      }
+    }
+    return lines.filter(l => l.text.trim());
+  }
+  const normLine = (t) => t.toLowerCase().replace(/\d+/g, "#").replace(/\s+/g, " ").trim();
+  const PAGE_NUMBER_LINE = /^\s*(?:page|p\.|trang|página|seite|pagina|стр\.?)?\s*\d{1,4}(?:\s*(?:of|\/|de|von|di|из|trên)\s*\d{1,4})?\s*$/i;
+  // Lines near the top or bottom that repeat on most pages: headers and footers.
+  function findPageFurniture(allLines){
+    const n = allLines.length;
+    if (n < 3) return [];
+    const count = new Map();
+    for (const lines of allLines) {
+      const edge = new Set([...lines.slice(0, 3), ...lines.slice(-3)].map(l => normLine(l.text)));
+      for (const k of edge) if (k.length >= 3) count.set(k, (count.get(k) || 0) + 1);
+    }
+    const need = Math.max(3, Math.ceil(n * 0.5));
+    return [...count].filter(([, c]) => c >= need).map(([k]) => k).slice(0, 40);
+  }
+  // Page text plus one box per word, in the same order as the text's words.
+  function pageTextFromLines(lines, furniture){
+    const skip = new Set(furniture || []);
+    const keep = lines.filter((l, i) => !PAGE_NUMBER_LINE.test(l.text) && !((i < 3 || i >= lines.length - 3) && skip.has(normLine(l.text))));
+    // A line that runs to the right margin just wraps onto the next one; a
+    // line that stops early (a heading, a list item, a poem line) really ends.
+    const ends = keep.map(l => { let e = -Infinity; for (const b of l.boxes) if (b && b[2] > e) e = b[2]; return e; });
+    const sorted = ends.filter(isFinite).sort((p, q) => p - q);
+    const right = sorted.length ? sorted[Math.floor(sorted.length * 0.9)] : 0;
+    const left = Math.min(...keep.map(l => { const b = l.boxes.find(Boolean); return b ? b[0] : Infinity; }));
+    const width = Math.max(1, right - left);
+    let text = "";
+    const boxes = [];
+    keep.forEach((l, i) => {
+      if (i) {
+        const listItem = /^\s*([•▪◦‣\-–—*]|\(?\d{1,3}[.)]|\(?[a-z][.)])\s/i.test(l.text);
+        text += l.para ? "\n\n" : (ends[i - 1] < right - width * 0.12 || listItem) ? "\n" : " ";
+      }
+      const re = /\S+/g;
+      let m;
+      while ((m = re.exec(l.text))) {
+        let box = null;
+        for (let k = m.index; k < m.index + m[0].length; k++) {
+          const b = l.boxes[k];
+          if (!b) continue;
+          box = box ? [Math.min(box[0], b[0]), Math.min(box[1], b[1]), Math.max(box[2], b[2]), Math.max(box[3], b[3])] : b.slice();
+        }
+        boxes.push(box || [0, 0, 0, 0]);
+      }
+      text += l.text.trim();
+    });
+    return { text, boxes };
+  }
+
   async function extractPdf(file, onProgress){
+    return extractPdfData(await file.arrayBuffer(), onProgress);
+  }
+  async function extractPdfData(buf, onProgress){
     if (!window.pdfjsLib) throw new Error("pdf_unavailable");
-    const buf = await file.arrayBuffer();
     let pdf;
     try {
       pdf = await pdfjsLib.getDocument({ data: buf }).promise;
@@ -3628,17 +3763,20 @@
       chapters.sort((a, b) => a.page - b.page);
       if (chapters.length >= 2) pages.outline = chapters;
     } catch (e) { /* no usable table of contents */ }
+    const allLines = [];
     for (let i = 1; i <= pdf.numPages; i++) {
       // One unreadable page (odd font, broken drawing) shouldn't sink the book.
-      let text = "";
+      let lines = [];
       try {
         const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        text = content.items.map(it => it.str).join(" ");
+        lines = layoutPdfPage(await page.getTextContent());
       } catch (e) { /* skip this page's text */ }
-      pages.push({ pageNum: i, text });
+      allLines.push(lines);
       if (onProgress) onProgress(i, pdf.numPages);
     }
+    const furniture = findPageFurniture(allLines);
+    allLines.forEach((lines, k) => pages.push({ pageNum: k + 1, text: pageTextFromLines(lines, furniture).text }));
+    pages.furniture = furniture;
     return pages;
   }
 
@@ -3822,7 +3960,7 @@
         $("uploadStatus").textContent = t("readingPage", { i, n: total });
       };
       const pages = isPdf ? await extractPdf(pendingFile, onProgress) : await extractTxt(pendingFile, onProgress);
-      await saveNewBook(pages, { title, subject, isPdf, file: pendingFile, chapters: pages.outline });
+      await saveNewBook(pages, { title, subject, isPdf, file: pendingFile, chapters: pages.outline, furniture: pages.furniture });
     } catch (e) {
       showUploadError(e);
     }
@@ -3841,7 +3979,7 @@
 
   // Saves a new book (its text, and the original PDF if there is one) and opens it.
   async function saveNewBook(pages, meta){
-    const { title, subject, isPdf, file, sourceUrl, chapters } = meta;
+    const { title, subject, isPdf, file, sourceUrl, chapters, furniture } = meta;
     {
       const wordCount = pages.reduce((n, p) => n + (p.text.split(/\s+/).filter(Boolean).length), 0);
       if (wordCount < 20) throw new Error("empty_text");
@@ -3857,6 +3995,7 @@
       };
       if (sourceUrl) book.sourceUrl = sourceUrl;
       if (chapters && chapters.length >= 2) book.chapters = chapters;
+      if (isPdf) { book.textLayout = PDF_LAYOUT; book.furniture = furniture || []; }
 
       let bookId, saveFailed = false;
       if (db && assets) {
@@ -3976,12 +4115,37 @@
     renderLibrary();
   }
 
+  // Re-reads an older PDF book with the newer layout (keeps line breaks,
+  // drops repeating headers) and saves the result, once.
+  async function upgradePdfBook(book, oldPages){
+    if (state.currentBookId === book.id) $("stripLoc").textContent = t("improvingText");
+    const buf = await (await assetFetch(book.pdfAssetId)).arrayBuffer();
+    const pages = await extractPdfData(buf);
+    const words = pages.reduce((n, p) => n + p.text.split(/\s+/).filter(Boolean).length, 0);
+    if (words < 20) return oldPages;
+    const patch = { textLayout: PDF_LAYOUT, furniture: pages.furniture || [], pageCount: pages.length };
+    if (pages.outline && !book.chapters) patch.chapters = pages.outline;
+    if (db && assets) {
+      const up = await assets.upload(new Blob([JSON.stringify(pages)], { type: "application/json" }), { type: "application/json" });
+      const oldId = book.pagesAssetId;
+      patch.pagesAssetId = up.id;
+      await db.doc("books/" + book.id).update(patch);
+      assets.delete(oldId).catch(() => {});
+    }
+    Object.assign(book, patch);
+    if (pdfBookId === book.id) pdfWordBoxes.clear();
+    return pages;
+  }
+
   async function ensureBookLoaded(bookId){
     if (state.loaded.has(bookId)) return state.loaded.get(bookId);
     const book = state.books.find(b => b.id === bookId);
     if (!book || !book.pagesAssetId) throw new Error("no_source");
     const res = await assetFetch(book.pagesAssetId);
-    const pages = await res.json();
+    let pages = await res.json();
+    if (book.pdfAssetId && book.textLayout !== PDF_LAYOUT && window.pdfjsLib) {
+      try { pages = await upgradePdfBook(book, pages); } catch (e) { /* keep the text we have */ }
+    }
     const chunks = buildChunks(pages);
     const entry = { pages, chunks, index: buildIndex(chunks) };
     state.loaded.set(bookId, entry);
@@ -4041,20 +4205,29 @@
      that page] — which is how the PDF viewer finds the word on the page. */
   function buildReader(pages){
     let text = "";
-    const words = [], pos = [], pageFirst = [];
+    const words = [], pos = [], pageFirst = [], breaks = [];
     for (const p of pages) {
-      const ws = (p.text || "").split(/\s+/).filter(Boolean);
+      const src = p.text || "";
+      const ws = [], brk = [];
+      const re = /(\s*)(\S+)/g;
+      let m;
+      while ((m = re.exec(src))) {
+        ws.push(m[2]);
+        // 1 = new line, 2 = new paragraph, in the source's own layout.
+        brk.push(ws.length === 1 ? 0 : /\n[^\S\n]*\n/.test(m[1]) ? 2 : m[1].includes("\n") ? 1 : 0);
+      }
       if (!ws.length) continue;
       pageFirst.push([p.pageNum, words.length]);
       if (text) text += "\n"; // a page break is a natural pause when read aloud
       ws.forEach((w, idx) => {
         if (idx) text += " ";
         words.push({ start: text.length, end: text.length + w.length });
+        breaks.push(brk[idx]);
         text += w;
         pos.push([p.pageNum, idx]);
       });
     }
-    return { text, words, pos, pageFirst };
+    return { text, words, pos, pageFirst, breaks };
   }
   function getReader(loaded){ return loaded.reader || (loaded.reader = buildReader(loaded.pages)); }
 
@@ -4088,7 +4261,12 @@
         span.textContent = reader.text.slice(w.start, w.end);
         span.dataset.i = i;
         block.appendChild(span);
-        if (i + 1 < last) block.appendChild(document.createTextNode(" "));
+        if (i + 1 < last) {
+          const b = reader.breaks ? reader.breaks[i + 1] : 0;
+          if (b === 2) block.appendChild(el("span", "para-gap"));
+          else if (b === 1) block.appendChild(document.createElement("br"));
+          else block.appendChild(document.createTextNode(" "));
+        }
         spanEls[i] = span;
       }
       frag.appendChild(block);
@@ -7799,6 +7977,12 @@
     if (pdfWordBoxes.has(num)) return pdfWordBoxes.get(num);
     const page = await pdfDoc.getPage(num);
     const content = await page.getTextContent();
+    const vbook = state.books.find(b => b.id === pdfBookId);
+    if (vbook && vbook.textLayout === PDF_LAYOUT) {
+      const laid = pageTextFromLines(layoutPdfPage(content), vbook.furniture).boxes;
+      pdfWordBoxes.set(num, laid);
+      return laid;
+    }
     const boxes = [];
     for (const it of content.items) {
       const str = it.str || "";
