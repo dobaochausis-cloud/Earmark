@@ -373,6 +373,18 @@
     flex:1; min-width:0;
   }
   .listen-controls{display:flex; align-items:center; gap:6px; flex-shrink:0;}
+  .translate-btn{ display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 12px; margin-left:4px; border-radius:999px; cursor:pointer;
+    background:var(--paper-raised); border:1px solid var(--line); color:var(--ink); font:inherit; font-size:13px; font-weight:600; }
+  .translate-btn:hover, .translate-btn[aria-expanded="true"]{ border-color:var(--accent); color:var(--accent); }
+  .translate-panel{ background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-sm); padding:10px 12px; display:flex; flex-direction:column; gap:10px; }
+  .tr-head{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .tr-lang{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; }
+  .tr-lang select{ padding:6px 8px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--paper); color:var(--ink); font:inherit; font-size:14px; text-transform:none; letter-spacing:0; max-width:260px; }
+  .tr-nav{ display:flex; align-items:center; gap:6px; }
+  .tr-page{ font-size:13px; color:var(--ink-soft); min-width:64px; text-align:center; }
+  .tr-listen{ margin-left:auto; }
+  .tr-body{ font-family:var(--font-display); font-size:15px; line-height:var(--lh-read); color:var(--ink); max-height:var(--strip-h, 240px); overflow-y:auto; white-space:pre-wrap; }
+  .tr-body .busy{ font-family:inherit; }
   .ictrl{
     background:var(--paper-raised); border:1px solid var(--line); color:var(--ink);
     width:32px;height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center;
@@ -922,11 +934,30 @@
             <button class="ictrl" id="nextChunk" aria-label="Next page">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 4v16M18 12L6 4v16l12-8z"/></svg>
             </button>
+            <button type="button" class="translate-btn" id="translateBtn" aria-expanded="false" aria-controls="translatePanel">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+              <span data-i18n="translate">Translate</span>
+            </button>
           </div>
         </div>
         <div class="snippet reader" id="stripSnippet">—</div>
         <button type="button" class="sync-btn" id="backToSync" hidden><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke-linecap="round"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg><span data-i18n="backToSync">Back to sync</span></button>
         <div class="reader-hint" data-i18n="readerHint">Tap any word to start reading from there.</div>
+        <div class="translate-panel" id="translatePanel" hidden>
+          <div class="tr-head">
+            <label class="tr-lang"><span data-i18n="translateTo">Translate to</span>
+              <select id="translateLang"></select>
+            </label>
+            <div class="tr-nav">
+              <button type="button" class="ictrl" id="trPrev" aria-label="Previous page"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <span class="tr-page" id="trPage"></span>
+              <button type="button" class="ictrl" id="trNext" aria-label="Next page"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+            <span class="tr-listen" id="trListen"></span>
+            <button type="button" class="ictrl" id="trClose" aria-label="Close" data-i18n-aria="translateClose"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          </div>
+          <div class="tr-body" id="translateText"></div>
+        </div>
         <div class="resize-handle" id="stripResize" role="separator" aria-orientation="horizontal" tabindex="0" data-i18n-title="resizeHint" title="Drag to make this taller or shorter"><span></span></div>
       </div>
 
@@ -2766,6 +2797,34 @@
     fa: {"scopeChapters": "فصل‌ها", "scopeChoosePages": "انتخاب صفحه‌ها…", "pageFrom": "از صفحه", "pageTo": "تا صفحه", "pageOfTotal": "از {n} صفحه"},
     ur: {"scopeChapters": "ابواب", "scopeChoosePages": "صفحات منتخب کریں…", "pageFrom": "صفحہ سے", "pageTo": "صفحہ تک", "pageOfTotal": "{n} صفحات میں سے"}
   });
+  addStrings({
+    en: {"translate": "Translate", "translateTo": "Translate to", "translatePick": "Choose your language", "translatePickHint": "Choose your home language above to see this page in it.", "translating": "Translating page {n}…", "translatePageLabel": "Page {n}", "translateClose": "Close", "translateEmpty": "This page has no text to translate."},
+    vi: {"translate": "Dịch", "translateTo": "Dịch sang", "translatePick": "Chọn ngôn ngữ của bạn", "translatePickHint": "Chọn tiếng mẹ đẻ ở trên để xem trang này bằng ngôn ngữ đó.", "translating": "Đang dịch trang {n}…", "translatePageLabel": "Trang {n}", "translateClose": "Đóng", "translateEmpty": "Trang này không có chữ để dịch."},
+    es: {"translate": "Traducir", "translateTo": "Traducir al", "translatePick": "Elige tu idioma", "translatePickHint": "Elige tu idioma arriba para ver esta página en él.", "translating": "Traduciendo la página {n}…", "translatePageLabel": "Página {n}", "translateClose": "Cerrar", "translateEmpty": "Esta página no tiene texto para traducir."},
+    fr: {"translate": "Traduire", "translateTo": "Traduire en", "translatePick": "Choisissez votre langue", "translatePickHint": "Choisissez votre langue ci-dessus pour voir cette page traduite.", "translating": "Traduction de la page {n}…", "translatePageLabel": "Page {n}", "translateClose": "Fermer", "translateEmpty": "Cette page n'a pas de texte à traduire."},
+    de: {"translate": "Übersetzen", "translateTo": "Übersetzen in", "translatePick": "Wähle deine Sprache", "translatePickHint": "Wähle oben deine Sprache, um diese Seite darin zu sehen.", "translating": "Seite {n} wird übersetzt…", "translatePageLabel": "Seite {n}", "translateClose": "Schließen", "translateEmpty": "Diese Seite hat keinen Text zum Übersetzen."},
+    pt: {"translate": "Traduzir", "translateTo": "Traduzir para", "translatePick": "Escolha seu idioma", "translatePickHint": "Escolha seu idioma acima para ver esta página nele.", "translating": "Traduzindo a página {n}…", "translatePageLabel": "Página {n}", "translateClose": "Fechar", "translateEmpty": "Esta página não tem texto para traduzir."},
+    it: {"translate": "Traduci", "translateTo": "Traduci in", "translatePick": "Scegli la tua lingua", "translatePickHint": "Scegli la tua lingua qui sopra per vedere questa pagina tradotta.", "translating": "Traduzione della pagina {n}…", "translatePageLabel": "Pagina {n}", "translateClose": "Chiudi", "translateEmpty": "Questa pagina non ha testo da tradurre."},
+    nl: {"translate": "Vertalen", "translateTo": "Vertalen naar", "translatePick": "Kies je taal", "translatePickHint": "Kies hierboven je taal om deze pagina daarin te zien.", "translating": "Pagina {n} wordt vertaald…", "translatePageLabel": "Pagina {n}", "translateClose": "Sluiten", "translateEmpty": "Deze pagina heeft geen tekst om te vertalen."},
+    ru: {"translate": "Перевести", "translateTo": "Перевести на", "translatePick": "Выберите язык", "translatePickHint": "Выберите свой язык выше, чтобы увидеть эту страницу на нём.", "translating": "Перевожу страницу {n}…", "translatePageLabel": "Страница {n}", "translateClose": "Закрыть", "translateEmpty": "На этой странице нет текста для перевода."},
+    pl: {"translate": "Tłumacz", "translateTo": "Tłumacz na", "translatePick": "Wybierz swój język", "translatePickHint": "Wybierz swój język powyżej, aby zobaczyć tę stronę przetłumaczoną.", "translating": "Tłumaczę stronę {n}…", "translatePageLabel": "Strona {n}", "translateClose": "Zamknij", "translateEmpty": "Na tej stronie nie ma tekstu do przetłumaczenia."},
+    tr: {"translate": "Çevir", "translateTo": "Şu dile çevir", "translatePick": "Dilini seç", "translatePickHint": "Bu sayfayı kendi dilinde görmek için yukarıdan dilini seç.", "translating": "{n}. sayfa çevriliyor…", "translatePageLabel": "Sayfa {n}", "translateClose": "Kapat", "translateEmpty": "Bu sayfada çevrilecek metin yok."},
+    ar: {"translate": "ترجمة", "translateTo": "ترجمة إلى", "translatePick": "اختر لغتك", "translatePickHint": "اختر لغتك الأم في الأعلى لترى هذه الصفحة بها.", "translating": "جارٍ ترجمة الصفحة {n}…", "translatePageLabel": "صفحة {n}", "translateClose": "إغلاق", "translateEmpty": "لا يوجد نص في هذه الصفحة للترجمة."},
+    hi: {"translate": "अनुवाद", "translateTo": "इसमें अनुवाद करें", "translatePick": "अपनी भाषा चुनें", "translatePickHint": "इस पेज को अपनी भाषा में देखने के लिए ऊपर भाषा चुनें।", "translating": "पेज {n} का अनुवाद हो रहा है…", "translatePageLabel": "पेज {n}", "translateClose": "बंद करें", "translateEmpty": "इस पेज पर अनुवाद के लिए टेक्स्ट नहीं है।"},
+    id: {"translate": "Terjemahkan", "translateTo": "Terjemahkan ke", "translatePick": "Pilih bahasamu", "translatePickHint": "Pilih bahasamu di atas untuk melihat halaman ini dalam bahasa itu.", "translating": "Menerjemahkan halaman {n}…", "translatePageLabel": "Halaman {n}", "translateClose": "Tutup", "translateEmpty": "Halaman ini tidak punya teks untuk diterjemahkan."},
+    th: {"translate": "แปล", "translateTo": "แปลเป็น", "translatePick": "เลือกภาษาของคุณ", "translatePickHint": "เลือกภาษาของคุณด้านบนเพื่อดูหน้านี้เป็นภาษานั้น", "translating": "กำลังแปลหน้า {n}…", "translatePageLabel": "หน้า {n}", "translateClose": "ปิด", "translateEmpty": "หน้านี้ไม่มีข้อความให้แปล"},
+    ja: {"translate": "翻訳", "translateTo": "翻訳先", "translatePick": "言語を選んでください", "translatePickHint": "上で母語を選ぶと、このページがその言語で表示されます。", "translating": "{n}ページを翻訳中…", "translatePageLabel": "{n}ページ", "translateClose": "閉じる", "translateEmpty": "このページには翻訳する文章がありません。"},
+    ko: {"translate": "번역", "translateTo": "번역할 언어", "translatePick": "언어를 고르세요", "translatePickHint": "위에서 모국어를 고르면 이 페이지를 그 언어로 볼 수 있어요.", "translating": "{n}쪽 번역 중…", "translatePageLabel": "{n}쪽", "translateClose": "닫기", "translateEmpty": "이 페이지에는 번역할 글이 없어요."},
+    zh: {"translate": "翻译", "translateTo": "翻译成", "translatePick": "选择你的语言", "translatePickHint": "在上方选择你的母语，即可用它查看这一页。", "translating": "正在翻译第 {n} 页…", "translatePageLabel": "第 {n} 页", "translateClose": "关闭", "translateEmpty": "这一页没有可翻译的文字。"},
+    tl: {"translate": "Isalin", "translateTo": "Isalin sa", "translatePick": "Piliin ang wika mo", "translatePickHint": "Piliin ang sariling wika sa itaas para makita ang pahinang ito rito.", "translating": "Isinasalin ang pahina {n}…", "translatePageLabel": "Pahina {n}", "translateClose": "Isara", "translateEmpty": "Walang tekstong maisasalin sa pahinang ito."},
+    he: {"translate": "תרגום", "translateTo": "לתרגם ל", "translatePick": "בחרו את השפה שלכם", "translatePickHint": "בחרו למעלה את שפת האם כדי לראות את הדף בה.", "translating": "מתרגם את עמוד {n}…", "translatePageLabel": "עמוד {n}", "translateClose": "סגירה", "translateEmpty": "אין בדף הזה טקסט לתרגום."},
+    el: {"translate": "Μετάφραση", "translateTo": "Μετάφραση σε", "translatePick": "Διάλεξε τη γλώσσα σου", "translatePickHint": "Διάλεξε παραπάνω τη μητρική σου γλώσσα για να δεις τη σελίδα σε αυτήν.", "translating": "Μετάφραση σελίδας {n}…", "translatePageLabel": "Σελίδα {n}", "translateClose": "Κλείσιμο", "translateEmpty": "Αυτή η σελίδα δεν έχει κείμενο για μετάφραση."},
+    sv: {"translate": "Översätt", "translateTo": "Översätt till", "translatePick": "Välj ditt språk", "translatePickHint": "Välj ditt språk ovan för att se sidan på det.", "translating": "Översätter sida {n}…", "translatePageLabel": "Sida {n}", "translateClose": "Stäng", "translateEmpty": "Den här sidan har ingen text att översätta."},
+    uk: {"translate": "Перекласти", "translateTo": "Перекласти на", "translatePick": "Оберіть мову", "translatePickHint": "Оберіть рідну мову вгорі, щоб побачити цю сторінку нею.", "translating": "Перекладаю сторінку {n}…", "translatePageLabel": "Сторінка {n}", "translateClose": "Закрити", "translateEmpty": "На цій сторінці немає тексту для перекладу."},
+    ro: {"translate": "Traduce", "translateTo": "Tradu în", "translatePick": "Alege-ți limba", "translatePickHint": "Alege-ți limba maternă mai sus ca să vezi pagina în ea.", "translating": "Se traduce pagina {n}…", "translatePageLabel": "Pagina {n}", "translateClose": "Închide", "translateEmpty": "Pagina aceasta nu are text de tradus."},
+    fa: {"translate": "ترجمه", "translateTo": "ترجمه به", "translatePick": "زبانت را انتخاب کن", "translatePickHint": "زبان مادری‌ات را در بالا انتخاب کن تا این صفحه را به آن زبان ببینی.", "translating": "در حال ترجمهٔ صفحهٔ {n}…", "translatePageLabel": "صفحهٔ {n}", "translateClose": "بستن", "translateEmpty": "این صفحه متنی برای ترجمه ندارد."},
+    ur: {"translate": "ترجمہ", "translateTo": "اس میں ترجمہ کریں", "translatePick": "اپنی زبان منتخب کریں", "translatePickHint": "یہ صفحہ اپنی زبان میں دیکھنے کے لیے اوپر اپنی مادری زبان منتخب کریں۔", "translating": "صفحہ {n} کا ترجمہ ہو رہا ہے…", "translatePageLabel": "صفحہ {n}", "translateClose": "بند کریں", "translateEmpty": "اس صفحے پر ترجمے کے لیے متن نہیں۔"}
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -2846,6 +2905,14 @@
     if (v.localService === false) score += 2;
     if (v.default) score += 1;
     return score;
+  }
+  // The best installed voice for a language like "vi-VN" (null if none).
+  function voiceForLang(bcp){
+    const prefix = String(bcp || "").split("-")[0].toLowerCase();
+    const voices = (availableVoices.length ? availableVoices : (speech.supported ? window.speechSynthesis.getVoices() : []))
+      .filter(v => (v.lang || "").toLowerCase().startsWith(prefix));
+    if (speech.voice && (speech.voice.lang || "").toLowerCase().startsWith(prefix)) return speech.voice;
+    return voices.sort((a, b) => scoreVoice(b, prefix) - scoreVoice(a, prefix))[0] || null;
   }
   function populateVoiceList(){
     if (!speech.supported) return;
@@ -3151,7 +3218,13 @@
       const jitterPitch = (Math.random() - 0.5) * 0.03;
       u.rate = speech.rate * unit.style.rate * jitterRate;
       u.pitch = Math.min(2, Math.max(0, speech.pitch + unit.style.pitch + jitterPitch));
-      if (speech.voice) u.voice = speech.voice;
+      // A translation is read in its own language's voice.
+      const langVoice = map.lang ? voiceForLang(map.lang) : null;
+      if (map.lang) u.lang = map.lang;
+      try {
+        if (langVoice) u.voice = langVoice;
+        else if (speech.voice && !map.lang) u.voice = speech.voice;
+      } catch (e) { /* the browser picks a voice for u.lang */ }
       u.onboundary = (ev) => {
         if (myToken !== speechToken) return;
         if (ev.name === "sentence") return;
@@ -3548,6 +3621,7 @@
   })();
 
   function updateSessionNote(){
+    if ($("translateBtn")) $("translateBtn").hidden = !sample;
     const note = $("sessionNote");
     if (!note) return;
     if (!db || !assets) {
@@ -3869,6 +3943,7 @@
     // The reader box was just emptied, so it must be built again — even when
     // this is the same book as before (going back to the library and in again).
     readerBookId = null; stripWordMap = null; readerBlocks = []; spotEl = null;
+    if (!$("translatePanel").hidden) closeTranslate();
 
     renderChat(bookId);
     setTab(study.tab);
@@ -4069,6 +4144,109 @@
     if (wasPlaying) toggleStripSpeech(); else updateStripLoc();
     updateSyncButtons();
   }
+
+  /* ---- Translate ----
+     Shows the page you're reading in another language (your home language),
+     one page at a time, so it's quick and only uses the AI for pages you
+     actually open. Translations are kept for this visit. */
+  const translations = new Map();   // "bookId|page|lang" → text
+  const tr = { page: 1, lang: "", token: 0, map: null };
+  function trBookPages(){
+    const loaded = state.loaded.get(state.currentBookId);
+    return loaded && loaded.pages ? loaded.pages.filter(p => (p.text || "").trim()) : [];
+  }
+  function fillTranslateLangs(){
+    const sel = $("translateLang");
+    sel.innerHTML = "";
+    const pick = el("option"); pick.value = ""; pick.textContent = t("translatePick"); sel.appendChild(pick);
+    for (const l of LANGS) { const o = el("option"); o.value = l.code; o.textContent = l.native + (l.native !== l.name ? " · " + l.name : ""); sel.appendChild(o); }
+    sel.value = tr.lang;
+  }
+  function openTranslate(){
+    if (!sample) return;
+    const blk = visibleBlock();
+    tr.page = blk ? blk.page : ((trBookPages()[0] || {}).pageNum || 1);
+    tr.lang = safeStorage("get", "earmark_translate_lang") || (currentLang !== "en" ? currentLang : "");
+    fillTranslateLangs();
+    $("translatePanel").hidden = false;
+    $("translateBtn").setAttribute("aria-expanded", "true");
+    showTranslation();
+  }
+  function closeTranslate(){
+    tr.token++;
+    if (activeSpeechOwner && String(activeSpeechOwner).startsWith("tr:")) pauseSpeech();
+    $("translatePanel").hidden = true;
+    $("translateBtn").setAttribute("aria-expanded", "false");
+  }
+  async function showTranslation(){
+    const my = ++tr.token;
+    const body = $("translateText"), listenSlot = $("trListen");
+    const pages = trBookPages();
+    const idx = pages.findIndex(p => p.pageNum === tr.page);
+    const page = pages[idx >= 0 ? idx : 0];
+    listenSlot.innerHTML = "";
+    body.removeAttribute("dir");
+    $("trPage").textContent = t("translatePageLabel", { n: page ? page.pageNum : tr.page });
+    $("trPrev").disabled = idx <= 0;
+    $("trNext").disabled = idx < 0 || idx >= pages.length - 1;
+    if (!tr.lang) { body.textContent = t("translatePickHint"); return; }
+    if (!page) { body.textContent = t("translateEmpty"); return; }
+    const meta = LANGS.find(l => l.code === tr.lang) || LANGS[0];
+    if (["ar", "he", "fa", "ur"].includes(meta.code)) body.setAttribute("dir", "rtl");
+    const key = state.currentBookId + "|" + page.pageNum + "|" + meta.code;
+    const show = (text) => {
+      const map = renderWordSpans(body, text);
+      map.lang = meta.speech;
+      tr.map = map;
+      listenSlot.appendChild(listenButton("tr:" + key, () => tr.map));
+    };
+    if (translations.has(key)) { show(translations.get(key)); return; }
+    body.innerHTML = "";
+    body.appendChild(busyNote(t("translating", { n: page.pageNum })));
+    const prompt =
+      "Translate this page of a book into " + meta.name + ". It is for a student who is learning English and reads " + meta.name + " best.\n" +
+      "- Keep the meaning, names, numbers and paragraph breaks.\n" +
+      "- Use clear, everyday " + meta.name + ". Do not summarize, skip or add anything, and do not explain the translation.\n" +
+      "- If a part is already in " + meta.name + ", keep it as it is.\n" +
+      "- Reply with only the translation.\n\nPage text:\n" + page.text;
+    try {
+      let shown = false;
+      const r = await sample(prompt, { modelTier: "default", cache: false, onText: ({ text }) => {
+        if (my !== tr.token) return;
+        if (!shown) { body.innerHTML = ""; shown = true; }
+        body.textContent = text;
+      } });
+      if (my !== tr.token) return;
+      const out = String((r && r.text) || "").trim();
+      if (!out) throw { code: "empty" };
+      translations.set(key, out);
+      show(out);
+    } catch (e) {
+      if (my !== tr.token) return;
+      body.innerHTML = "";
+      const err = el("div", "setup-error"); err.setAttribute("role", "alert"); err.textContent = sampleErrorText(e); body.appendChild(err);
+    }
+  }
+  function stepTranslate(d){
+    const pages = trBookPages();
+    const idx = pages.findIndex(p => p.pageNum === tr.page);
+    const next = pages[Math.max(0, Math.min(pages.length - 1, idx + d))];
+    if (!next) return;
+    tr.page = next.pageNum;
+    // Keep the book in view on the same page.
+    const k = readerBlocks.findIndex(b => b.page === tr.page);
+    if (k >= 0) { leaveSync(); scrollToBlock(k); }
+    showTranslation();
+  }
+  $("translateBtn").addEventListener("click", () => { $("translatePanel").hidden ? openTranslate() : closeTranslate(); });
+  $("trClose").addEventListener("click", closeTranslate);
+  $("trPrev").addEventListener("click", () => stepTranslate(-1));
+  $("trNext").addEventListener("click", () => stepTranslate(1));
+  $("translateLang").addEventListener("change", (e) => {
+    tr.lang = e.target.value;
+    safeStorage("set", "earmark_translate_lang", tr.lang);
+    showTranslation();
+  });
 
   /* ---- "Back to sync" ----
      Scrolling the reader yourself (wheel, swipe, scrollbar, keys, page
