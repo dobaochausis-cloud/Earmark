@@ -43,17 +43,26 @@ const SYSTEM =
   "and write clearly for a student.";
 const SYSTEM_JSON = SYSTEM + " Reply with only the JSON that was asked for: no code fences and no other text.";
 
-// Best-effort per-visitor limit (each server instance counts on its own).
+// Best-effort limits (each server instance counts on its own). A whole
+// school often reaches the internet through ONE address, so each student's
+// browser is counted on its own (x-earmark-device, a random id it keeps),
+// with a much higher cap for the address as a whole.
 // The real safety net is the monthly spend limit you set in the Anthropic Console.
-const WINDOW_MS = 60_000, MAX_PER_WINDOW = 60;
+const WINDOW_MS = 60_000, PER_DEVICE = 40, PER_ADDRESS = 600;
 const hits = new Map();
-function tooMany(ip) {
+function count(key) {
   const now = Date.now();
-  const recent = (hits.get(ip) || []).filter((t) => now - t < WINDOW_MS);
+  const recent = (hits.get(key) || []).filter((t) => now - t < WINDOW_MS);
   recent.push(now);
-  hits.set(ip, recent);
-  if (hits.size > 5000) hits.clear();
-  return recent.length > MAX_PER_WINDOW;
+  hits.set(key, recent);
+  if (hits.size > 20000) hits.clear();
+  return recent.length;
+}
+function tooMany(request) {
+  const ip = request.headers.get("cf-connecting-ip") || "local";
+  const dev = (request.headers.get("x-earmark-device") || "").toLowerCase();
+  const device = /^[a-z0-9]{8,40}$/.test(dev) ? dev : "none";
+  return count("ip:" + ip) > PER_ADDRESS || count("dev:" + ip + ":" + device) > PER_DEVICE;
 }
 
 const json = (status, body) =>
@@ -95,8 +104,7 @@ export async function onRequestPost({ request, env }) {
   if (env.ACCESS_CODE && request.headers.get("x-earmark-code") !== env.ACCESS_CODE) {
     return json(401, { code: "not_granted", message: "A class code is needed to use the AI." });
   }
-  const ip = request.headers.get("cf-connecting-ip") || "local";
-  if (tooMany(ip)) return json(429, { code: "rate_limited", message: "Slow down a little — try again in a minute." });
+  if (tooMany(request)) return json(429, { code: "rate_limited", message: "Slow down a little — try again in a minute." });
 
   const raw = await request.text();
   if (raw.length > PROMPT_BYTES[provider] + 4096) {
@@ -246,6 +254,8 @@ async function askWorkersAI(env, messages, system, tier) {
           lastError = String((err && err.message) || err);
           if (usedUpMessage(lastError)) break;
           if (sent > 0) break;   // part of an answer already went out; don't mix in another
+          // Busy for a moment (a whole class asking at once): wait, then try the next attempt.
+          if (/capacity|too many|overloaded|3040|429|503/i.test(lastError)) await new Promise((r) => setTimeout(r, 1500 + Math.random() * 1500));
         }
       }
       await send({ error: usedUpMessage(lastError)

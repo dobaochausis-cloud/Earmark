@@ -7,7 +7,8 @@ This folder is Earmark as a normal website that anyone can open, with no Claude 
 | `public/index.html` | The app. Built from `earmark.html`, the same file that runs on claude.ai. |
 | `public/platform.js` | Saves each person's books, flashcards and scores **in their own browser**. Sends AI questions to the server. |
 | `functions/api/sample.js` | The only server code. It asks Cloudflare's free AI, or Claude if you add an Anthropic API key (the key stays secret on the server). |
-| `functions/api/fetch.js` | Reads a web page someone adds by link (Add a book → Or add a web page) and keeps only its readable text. Refuses private and local addresses, and uses the same class code as the AI. |
+| `functions/api/fetch.js` | Reads a web page someone adds by link (Add a book → Or add a web page) and keeps its readable text and layout (headings, lists, pictures) for "View page". Refuses private and local addresses, and uses the same class code as the AI. |
+| `functions/api/tts.js` | The natural, human-sounding reading voice (Cloudflare Workers AI). Every clip is cached, so a class listening to the same book only uses the allowance once. |
 
 Nobody's books are uploaded to your server. Each student's library stays on their own device and browser.
 
@@ -52,12 +53,27 @@ To get Claude's better answers later, add these in your Pages project under **Se
 | `MODEL` | Text (optional) | which Claude model to use (see costs below) |
 | `FREE_MODEL` | Text (optional) | a different Workers AI model, for example `@cf/meta/llama-3.3-70b-instruct-fp8-fast` |
 
+## The natural reading voice
+
+Read-aloud uses a lifelike voice from Cloudflare's AI (**MeloTTS**) for English, Spanish, French, Chinese, Japanese and Korean. It's on by default and needs no setup: it uses the same `AI` binding as the free AI answers. Other languages, and any time the voice service is busy, use the voice built into each person's device. Students can switch it off in **Settings → Natural human voice**.
+
+- **Check it:** open `https://YOUR-SITE.pages.dev/api/tts?test=1` (add `&code=YOUR_CLASS_CODE` if you set one).
+- **The most human voice:** add a Text variable `TTS_MODEL` = `aura-2` (Deepgram Aura 2, English and Spanish). It sounds the most like a real person, but it costs much more per word than MeloTTS, so it needs Cloudflare's **Workers Paid** plan ($5 a month) for real classroom use. `TTS_VOICE` picks the speaker (for example `luna` or `thalia`).
+- **Turn it off:** add `TTS` = `off`.
+- **Free tip:** in Microsoft Edge, the device voices named "Natural" (for example "Microsoft Aria Online (Natural)") are also very human-sounding and free. Pick one in **Settings → Voice**.
+
+## Using it with a whole class
+
+- Each student's browser gets its own per-minute limit, so a school where everyone shares one internet address still works.
+- Cloudflare's **free daily AI allowance is shared by everyone** using your site. With a big class it can run out part-way through the day, and students then see "Today's free AI allowance is used up". To avoid that, either add an `ANTHROPIC_API_KEY` (see above), or upgrade the Cloudflare account to **Workers Paid** ($5 a month, with a much larger allowance).
+- To save the allowance, Earmark keeps the game and quiz questions it makes for each book and reuses them. It also reads long books only once to build their book guide.
+
 ## What it costs
 
 - **Free AI (no key):** $0. Hosting on Cloudflare is free too.
 - **Claude (with a key):** you pay Anthropic per use from credit you add ahead of time. With the default **Claude Opus 5**, asking a question or making flashcards or a quiz costs about 5–15¢, and a word look-up about 1¢. Set `MODEL` to `claude-sonnet-5` (about 2½× cheaper) or `claude-haiku-4-5` (about 5× cheaper) to spend less.
 
-Read-aloud, the PDF viewer and the games never use the AI.
+Read-aloud with the device's own voice, the PDF and web page viewers never use the AI. Games use it to write questions, then reuse them.
 
 ## Updating the site later
 

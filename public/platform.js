@@ -176,6 +176,18 @@
   }
 
   function readCode() { try { return localStorage.getItem(CODE_KEY) || ""; } catch (e) { return ""; } }
+  // A random id for this browser, so the server's per-minute limit counts
+  // each student separately even when a whole school shares one address.
+  let deviceId = "";
+  function device() {
+    if (deviceId) return deviceId;
+    try { deviceId = localStorage.getItem("earmark_device") || ""; } catch (e) {}
+    if (!/^[a-z0-9]{8,40}$/.test(deviceId)) {
+      deviceId = Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) => (b % 36).toString(36)).join("");
+      try { localStorage.setItem("earmark_device", deviceId); } catch (e) {}
+    }
+    return deviceId;
+  }
   function saveCode(v) { try { localStorage.setItem(CODE_KEY, v); } catch (e) { /* private window */ } }
 
   async function callServer(input, opts, asJson) {
@@ -190,7 +202,7 @@
       try {
         res = await fetch("/api/sample", {
           method: "POST",
-          headers: { "content-type": "application/json", "x-earmark-code": readCode() },
+          headers: { "content-type": "application/json", "x-earmark-code": readCode(), "x-earmark-device": device() },
           body,
           signal: opts.signal,
         });
@@ -269,6 +281,38 @@
   };
   sampleApi.limits = async () => ({ maxPromptBytes: (await serverLimits()).maxPromptBytes, images: false });
 
+  /* ---------------- the natural reading voice (/api/tts) ---------------- */
+  // info() → { available, langs }; speak(text, lang) → an audio Blob.
+  let ttsInfo = null;
+  window.__earmarkTTS = {
+    info() {
+      if (!ttsInfo) {
+        ttsInfo = fetch("/api/tts", { method: "GET" })
+          .then((r) => (r.ok ? r.json() : { available: false, langs: [] }))
+          .catch(() => ({ available: false, langs: [] }));
+      }
+      return ttsInfo;
+    },
+    async speak(text, lang) {
+      let res;
+      try {
+        res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "content-type": "application/json", "x-earmark-code": readCode(), "x-earmark-device": device() },
+          body: JSON.stringify({ text, lang }),
+        });
+      } catch (e) {
+        throw fail("network", "Couldn't reach the server.");
+      }
+      if (!res.ok) {
+        let info = {};
+        try { info = await res.json(); } catch (e) { /* not JSON */ }
+        throw fail(info.code || "server_error", info.message || "The reading voice isn't available.");
+      }
+      return res.blob();
+    },
+  };
+
   /* ---------------- reading a web page (Add a book → Link) ---------------- */
   // Resolves { title, text, url }; rejects with an Error carrying .code.
   window.__earmarkFetchPage = async (url) => {
@@ -277,7 +321,7 @@
       try {
         res = await fetch("/api/fetch", {
           method: "POST",
-          headers: { "content-type": "application/json", "x-earmark-code": readCode() },
+          headers: { "content-type": "application/json", "x-earmark-code": readCode(), "x-earmark-device": device() },
           body: JSON.stringify({ url }),
         });
       } catch (e) {

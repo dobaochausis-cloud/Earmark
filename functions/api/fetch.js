@@ -32,14 +32,22 @@ function checkUrl(raw, allowLocal) {
   return u;
 }
 
+// Per student browser (x-earmark-device), with a higher cap for a whole
+// school sharing one internet address.
 const hits = new Map();
-function tooMany(ip) {
+function count(key) {
   const now = Date.now();
-  const recent = (hits.get(ip) || []).filter((t) => now - t < 60000);
+  const recent = (hits.get(key) || []).filter((t) => now - t < 60000);
   recent.push(now);
-  hits.set(ip, recent);
-  if (hits.size > 5000) hits.clear();
-  return recent.length > 10;
+  hits.set(key, recent);
+  if (hits.size > 20000) hits.clear();
+  return recent.length;
+}
+function tooMany(request) {
+  const ip = request.headers.get("cf-connecting-ip") || "local";
+  const dev = (request.headers.get("x-earmark-device") || "").toLowerCase();
+  const device = /^[a-z0-9]{8,40}$/.test(dev) ? dev : "none";
+  return count("ip:" + ip) > 150 || count("dev:" + ip + ":" + device) > 10;
 }
 
 const NAMED = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", ndash: "–", mdash: "—", hellip: "…",
@@ -62,29 +70,97 @@ function stripBlocks(html, tags) {
   return html;
 }
 
-function htmlToText(html) {
+/* The page as reading blocks, in order:
+     { k: "h1".."h4" | "p" | "li" | "quote" | "pre" | "cap", t: "text" }
+     { k: "img", src: "https://…", alt: "…" }
+   The book text is made from the same blocks, so the "View page" reader can
+   light up each word as it is read aloud. */
+const BLOCK_TAGS = new Set(["p", "div", "section", "article", "main", "blockquote", "pre", "li", "ul", "ol", "dl", "dt", "dd",
+  "figure", "figcaption", "caption", "table", "tr", "h1", "h2", "h3", "h4", "h5", "h6", "header", "br", "hr", "td", "th"]);
+const MAX_IMAGES = 40;
+
+function attr(tag, name) {
+  const m = tag.match(new RegExp("\\s" + name + "\\s*=\\s*(\"([^\"]*)\"|'([^']*)'|([^\\s>]+))", "i"));
+  return m ? decodeEntities(m[2] ?? m[3] ?? m[4] ?? "") : "";
+}
+function imageFrom(tag, base) {
+  let src = attr(tag, "data-src") || attr(tag, "data-original") || attr(tag, "src");
+  if (!src || /^data:/i.test(src)) src = (attr(tag, "srcset") || attr(tag, "data-srcset")).split(",")[0].trim().split(/\s+/)[0];
+  if (!src || /^data:/i.test(src)) return null;
+  const w = parseInt(attr(tag, "width"), 10), h = parseInt(attr(tag, "height"), 10);
+  if ((w && w < 48) || (h && h < 48)) return null;             // icons, spacers, tracking pixels
+  if (/sprite|pixel|spacer|logo|icon|avatar|badge/i.test(src)) return null;
+  let u;
+  try { u = new URL(src, base); } catch (e) { return null; }
+  if (u.protocol !== "https:" && u.protocol !== "http:") return null;
+  return { k: "img", src: u.toString(), alt: attr(tag, "alt").replace(/\s+/g, " ").trim().slice(0, 200) };
+}
+
+function htmlToBlocks(html, base) {
   html = html.replace(/<!--[\s\S]*?-->/g, " ");
   html = stripBlocks(html, ["script", "style", "noscript", "svg", "template", "iframe", "canvas", "select", "button"]);
   // Prefer the main content when the page marks it.
   const main = html.match(/<(article|main)\b[\s\S]*<\/\1\s*>/i);
   let body = main ? main[0] : (html.match(/<body\b[\s\S]*<\/body\s*>/i) || [html])[0];
   body = stripBlocks(body, ["nav", "header", "footer", "aside", "form"]);
-  body = body
-    .replace(/<li\b[^>]*>/gi, "\n• ")
-    .replace(/<(h[1-6])\b[^>]*>/gi, "\n\n")
-    .replace(/<\/(h[1-6])\s*>/gi, "\n")
-    .replace(/<(br|hr)\b[^>]*>/gi, "\n")
-    .replace(/<\/?(p|div|section|article|main|blockquote|pre|tr|table|ul|ol|dl|dt|dd|figure|figcaption|caption)\b[^>]*>/gi, "\n")
-    .replace(/<(td|th)\b[^>]*>/gi, " ")
-    .replace(/<[^>]+>/g, "");
-  const lines = decodeEntities(body).split("\n").map((l) => l.replace(/[ \t ]+/g, " ").trim());
-  const out = [];
-  for (const l of lines) {
-    if (!l || l === "•") { if (out.length && out[out.length - 1] !== "") out.push(""); continue; }
-    if (out.length && out[out.length - 1] === l) continue;   // repeated line (menus, captions)
-    out.push(l);
+
+  const blocks = [];
+  const stack = [];         // open block tags, innermost last
+  let buf = "", images = 0;
+  const kind = () => {
+    for (let i = stack.length - 1; i >= 0; i--) {
+      const t = stack[i];
+      if (/^h[1-6]$/.test(t)) return "h" + Math.min(4, Number(t[1]));
+      if (t === "li" || t === "dt" || t === "dd") return "li";
+      if (t === "blockquote") return "quote";
+      if (t === "pre") return "pre";
+      if (t === "figcaption" || t === "caption") return "cap";
+    }
+    return "p";
+  };
+  const flush = () => {
+    const k = kind();
+    const text = decodeEntities(buf).replace(k === "pre" ? /[ \t\u00a0]+/g : /[\s\u00a0]+/g, " ").trim();
+    buf = "";
+    if (!text) return;
+    const last = blocks[blocks.length - 1];
+    if (last && last.t === text) return;                       // repeated line (menus, captions)
+    blocks.push({ k, t: text.slice(0, 20000) });
+  };
+  const re = /<(\/?)([a-z][a-z0-9]*)\b[^>]*>|[^<]+/gi;
+  let m;
+  while ((m = re.exec(body))) {
+    if (!m[2]) { buf += m[0]; continue; }
+    const tag = m[2].toLowerCase(), closing = m[1] === "/";
+    if (tag === "img" && !closing) {
+      const img = images < MAX_IMAGES ? imageFrom(m[0], base) : null;
+      if (img) { flush(); blocks.push(img); images++; }
+      continue;
+    }
+    if (!BLOCK_TAGS.has(tag)) { if (tag === "td" || tag === "th") buf += " "; continue; }
+    flush();
+    if (tag === "br" || tag === "hr") continue;
+    if (closing) { const at = stack.lastIndexOf(tag); if (at >= 0) stack.length = at; }
+    else stack.push(tag);
   }
-  return out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+  flush();
+  // Drop pictures that only sit next to nothing (galleries at the very end).
+  while (blocks.length && blocks[blocks.length - 1].k === "img") blocks.pop();
+  return blocks;
+}
+
+// The book text: headings and paragraphs on their own lines, list items as "• …".
+function blocksToText(blocks) {
+  const out = [];
+  let prev = "";
+  for (const b of blocks) {
+    if (b.k === "img") continue;
+    const line = b.k === "li" ? "• " + b.t : b.t;
+    if (out.length) out.push(b.k === "li" && prev === "li" ? "\n" : "\n\n");
+    out.push(line);
+    prev = b.k;
+  }
+  return out.join("").trim();
 }
 
 function pageTitle(html, fallback) {
@@ -116,8 +192,7 @@ export async function onRequestPost({ request, env }) {
   if (env.ACCESS_CODE && request.headers.get("x-earmark-code") !== env.ACCESS_CODE) {
     return json(401, { code: "not_granted", message: "A class code is needed." });
   }
-  const ip = request.headers.get("cf-connecting-ip") || "local";
-  if (tooMany(ip)) return json(429, { code: "rate_limited", message: "Slow down a little — try again in a minute." });
+  if (tooMany(request)) return json(429, { code: "rate_limited", message: "Slow down a little — try again in a minute." });
 
   let body;
   try { body = await request.json(); } catch (e) { body = {}; }
@@ -156,9 +231,12 @@ export async function onRequestPost({ request, env }) {
   const raw = await readCapped(res);
   if (raw === null) return json(413, { code: "too_big", message: "That page is too big to read." });
 
-  const text = (isHtml ? htmlToText(raw) : raw.trim()).slice(0, MAX_TEXT_CHARS);
+  const blocks = isHtml ? htmlToBlocks(raw, res.url || url.toString()) : null;
+  const text = (isHtml ? blocksToText(blocks) : raw.trim()).slice(0, MAX_TEXT_CHARS);
   if (text.replace(/\s+/g, " ").length < 200) {
     return json(422, { code: "no_text", message: "That page has no readable text." });
   }
-  return json(200, { title: isHtml ? pageTitle(raw, url.hostname) : url.hostname, text, url: url.toString() });
+  const reply = { title: isHtml ? pageTitle(raw, url.hostname) : url.hostname, text, url: url.toString() };
+  if (blocks && text.length < MAX_TEXT_CHARS) reply.blocks = blocks;   // cut-off text wouldn't match its blocks
+  return json(200, reply);
 }
