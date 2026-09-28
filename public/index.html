@@ -393,6 +393,26 @@
   .tr-listen{ margin-left:auto; }
   .tr-body{ font-family:var(--font-display); font-size:15px; line-height:var(--lh-read); color:var(--ink); max-height:var(--strip-h, 240px); overflow-y:auto; white-space:pre-wrap; }
   .tr-body .busy{ font-family:inherit; }
+  .tr-mode{ display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:2px; gap:2px; background:var(--paper-sunken); }
+  .tr-mode-btn{ border:none; background:none; color:var(--ink); font:inherit; font-size:13px; font-weight:600; padding:5px 11px; border-radius:999px; cursor:pointer; }
+  .tr-mode-btn[aria-pressed="true"]{ background:var(--accent); color:#fff; }
+  .tr-progress{ display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-soft); }
+  .tr-progress .prep-bar{ flex:1; }
+  .tr-book-page{ margin-bottom:14px; }
+  .tr-book-page h4{ margin:0 0 4px; font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--listen); display:flex; align-items:center; gap:8px; }
+  .tr-book-page h4 .pill-btn{ font-size:12px; padding:3px 9px; text-transform:none; letter-spacing:0; }
+  .tr-snippet{ border-top:1px solid var(--line); padding-top:10px; display:flex; flex-direction:column; gap:6px; }
+  .tr-snippet label{ font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; }
+  .tr-snippet-row{ display:flex; gap:8px; }
+  .tr-snippet-row input{ flex:1; min-width:0; padding:8px 10px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--paper); color:var(--ink); font:inherit; font-size:14px; }
+  .tr-snippet-out, .sel-tr-body{ font-family:var(--font-display); font-size:15px; line-height:1.5; color:var(--ink); white-space:pre-wrap; }
+  .sel-tr-chip{ position:fixed; z-index:90; display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px; border:none; cursor:pointer;
+    background:var(--accent); color:#fff; font:inherit; font-size:13px; font-weight:700; box-shadow:var(--shadow); }
+  .sel-tr-pop{ position:fixed; z-index:91; width:min(340px, calc(100vw - 24px)); background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-sm);
+    box-shadow:var(--shadow); padding:12px; display:flex; flex-direction:column; gap:8px; }
+  .sel-tr-src{ font-size:13px; color:var(--ink-soft); max-height:4.5em; overflow:hidden; }
+  .sel-tr-row{ display:flex; align-items:center; gap:8px; }
+  .sel-tr-row .sel-tr-lang{ flex:1; font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; }
   .ictrl{
     background:var(--paper-raised); border:1px solid var(--line); color:var(--ink);
     width:32px;height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center;
@@ -958,7 +978,11 @@
             <label class="tr-lang"><span data-i18n="translateTo">Translate to</span>
               <select id="translateLang"></select>
             </label>
-            <div class="tr-nav">
+            <div class="tr-mode" role="group">
+              <button type="button" class="tr-mode-btn" id="trModePage" data-i18n="translateThisPage">This page</button>
+              <button type="button" class="tr-mode-btn" id="trModeBook" data-i18n="translateWholeBook">Whole book</button>
+            </div>
+            <div class="tr-nav" id="trNav">
               <button type="button" class="ictrl" id="trPrev" aria-label="Previous page"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               <span class="tr-page" id="trPage"></span>
               <button type="button" class="ictrl" id="trNext" aria-label="Next page"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -966,7 +990,20 @@
             <span class="tr-listen" id="trListen"></span>
             <button type="button" class="ictrl" id="trClose" aria-label="Close" data-i18n-aria="translateClose"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
           </div>
+          <div class="tr-progress" id="trProgress" hidden>
+            <div class="prep-bar"><div id="trProgressFill"></div></div>
+            <span id="trProgressText"></span>
+            <button type="button" class="pill-btn" id="trStop" data-i18n="translateStop">Stop</button>
+          </div>
           <div class="tr-body" id="translateText"></div>
+          <div class="tr-snippet">
+            <label for="trSnippetInput" data-i18n="translateSnippetLabel">Translate a word or sentence</label>
+            <div class="tr-snippet-row">
+              <input type="text" id="trSnippetInput" autocomplete="off" data-i18n-placeholder="translateSnippetPlaceholder" placeholder="Type or paste here…">
+              <button type="button" class="pill-btn primary" id="trSnippetGo" data-i18n="translate">Translate</button>
+            </div>
+            <div class="tr-snippet-out" id="trSnippetOut" hidden></div>
+          </div>
         </div>
         <div class="resize-handle" id="stripResize" role="separator" aria-orientation="horizontal" tabindex="0" data-i18n-title="resizeHint" title="Drag to make this taller or shorter"><span></span></div>
       </div>
@@ -2835,6 +2872,34 @@
     fa: {"translate": "ترجمه", "translateTo": "ترجمه به", "translatePick": "زبانت را انتخاب کن", "translatePickHint": "زبان مادری‌ات را در بالا انتخاب کن تا این صفحه را به آن زبان ببینی.", "translating": "در حال ترجمهٔ صفحهٔ {n}…", "translatePageLabel": "صفحهٔ {n}", "translateClose": "بستن", "translateEmpty": "این صفحه متنی برای ترجمه ندارد."},
     ur: {"translate": "ترجمہ", "translateTo": "اس میں ترجمہ کریں", "translatePick": "اپنی زبان منتخب کریں", "translatePickHint": "یہ صفحہ اپنی زبان میں دیکھنے کے لیے اوپر اپنی مادری زبان منتخب کریں۔", "translating": "صفحہ {n} کا ترجمہ ہو رہا ہے…", "translatePageLabel": "صفحہ {n}", "translateClose": "بند کریں", "translateEmpty": "اس صفحے پر ترجمے کے لیے متن نہیں۔"}
   });
+  addStrings({
+    en: {"translateThisPage": "This page", "translateWholeBook": "Whole book", "translateStop": "Stop", "translateProgress": "Translating page {i} of {n}…", "translateDone": "All {n} pages translated.", "translateStopped": "Stopped after {i} of {n} pages.", "translateStoppedByYou": "Stopped. Press Whole book again to continue.", "translateSnippetLabel": "Translate a word or sentence", "translateSnippetPlaceholder": "Type or paste here…", "translatingShort": "Translating…"},
+    vi: {"translateThisPage": "Trang này", "translateWholeBook": "Cả cuốn sách", "translateStop": "Dừng", "translateProgress": "Đang dịch trang {i}/{n}…", "translateDone": "Đã dịch xong cả {n} trang.", "translateStopped": "Đã dừng sau {i}/{n} trang.", "translateStoppedByYou": "Đã dừng. Bấm Cả cuốn sách để tiếp tục.", "translateSnippetLabel": "Dịch một từ hoặc câu", "translateSnippetPlaceholder": "Gõ hoặc dán vào đây…", "translatingShort": "Đang dịch…"},
+    es: {"translateThisPage": "Esta página", "translateWholeBook": "Todo el libro", "translateStop": "Detener", "translateProgress": "Traduciendo la página {i} de {n}…", "translateDone": "Las {n} páginas están traducidas.", "translateStopped": "Se detuvo tras {i} de {n} páginas.", "translateStoppedByYou": "Detenido. Pulsa Todo el libro para seguir.", "translateSnippetLabel": "Traduce una palabra o frase", "translateSnippetPlaceholder": "Escribe o pega aquí…", "translatingShort": "Traduciendo…"},
+    fr: {"translateThisPage": "Cette page", "translateWholeBook": "Tout le livre", "translateStop": "Arrêter", "translateProgress": "Traduction de la page {i} sur {n}…", "translateDone": "Les {n} pages sont traduites.", "translateStopped": "Arrêté après {i} pages sur {n}.", "translateStoppedByYou": "Arrêté. Appuyez sur Tout le livre pour continuer.", "translateSnippetLabel": "Traduire un mot ou une phrase", "translateSnippetPlaceholder": "Tapez ou collez ici…", "translatingShort": "Traduction…"},
+    de: {"translateThisPage": "Diese Seite", "translateWholeBook": "Ganzes Buch", "translateStop": "Stopp", "translateProgress": "Seite {i} von {n} wird übersetzt…", "translateDone": "Alle {n} Seiten übersetzt.", "translateStopped": "Nach {i} von {n} Seiten gestoppt.", "translateStoppedByYou": "Gestoppt. Tippe auf Ganzes Buch, um weiterzumachen.", "translateSnippetLabel": "Ein Wort oder einen Satz übersetzen", "translateSnippetPlaceholder": "Hier tippen oder einfügen…", "translatingShort": "Wird übersetzt…"},
+    pt: {"translateThisPage": "Esta página", "translateWholeBook": "Livro inteiro", "translateStop": "Parar", "translateProgress": "Traduzindo a página {i} de {n}…", "translateDone": "Todas as {n} páginas traduzidas.", "translateStopped": "Parou após {i} de {n} páginas.", "translateStoppedByYou": "Parado. Toque em Livro inteiro para continuar.", "translateSnippetLabel": "Traduzir uma palavra ou frase", "translateSnippetPlaceholder": "Digite ou cole aqui…", "translatingShort": "Traduzindo…"},
+    it: {"translateThisPage": "Questa pagina", "translateWholeBook": "Tutto il libro", "translateStop": "Stop", "translateProgress": "Traduzione della pagina {i} di {n}…", "translateDone": "Tutte le {n} pagine tradotte.", "translateStopped": "Interrotto dopo {i} di {n} pagine.", "translateStoppedByYou": "Interrotto. Premi Tutto il libro per continuare.", "translateSnippetLabel": "Traduci una parola o una frase", "translateSnippetPlaceholder": "Scrivi o incolla qui…", "translatingShort": "Traduzione…"},
+    nl: {"translateThisPage": "Deze pagina", "translateWholeBook": "Hele boek", "translateStop": "Stop", "translateProgress": "Pagina {i} van {n} wordt vertaald…", "translateDone": "Alle {n} pagina's vertaald.", "translateStopped": "Gestopt na {i} van {n} pagina's.", "translateStoppedByYou": "Gestopt. Tik op Hele boek om verder te gaan.", "translateSnippetLabel": "Een woord of zin vertalen", "translateSnippetPlaceholder": "Typ of plak hier…", "translatingShort": "Bezig met vertalen…"},
+    ru: {"translateThisPage": "Эта страница", "translateWholeBook": "Вся книга", "translateStop": "Стоп", "translateProgress": "Перевожу страницу {i} из {n}…", "translateDone": "Все {n} страниц переведены.", "translateStopped": "Остановлено после {i} из {n} страниц.", "translateStoppedByYou": "Остановлено. Нажмите «Вся книга», чтобы продолжить.", "translateSnippetLabel": "Перевести слово или фразу", "translateSnippetPlaceholder": "Напишите или вставьте сюда…", "translatingShort": "Перевожу…"},
+    pl: {"translateThisPage": "Ta strona", "translateWholeBook": "Cała książka", "translateStop": "Stop", "translateProgress": "Tłumaczę stronę {i} z {n}…", "translateDone": "Przetłumaczono wszystkie {n} stron.", "translateStopped": "Zatrzymano po {i} z {n} stron.", "translateStoppedByYou": "Zatrzymano. Naciśnij Cała książka, aby kontynuować.", "translateSnippetLabel": "Przetłumacz słowo lub zdanie", "translateSnippetPlaceholder": "Wpisz lub wklej tutaj…", "translatingShort": "Tłumaczę…"},
+    tr: {"translateThisPage": "Bu sayfa", "translateWholeBook": "Tüm kitap", "translateStop": "Durdur", "translateProgress": "{i}/{n}. sayfa çevriliyor…", "translateDone": "{n} sayfanın hepsi çevrildi.", "translateStopped": "{n} sayfadan {i} tanesinden sonra durdu.", "translateStoppedByYou": "Durduruldu. Devam etmek için Tüm kitap'a bas.", "translateSnippetLabel": "Bir kelime veya cümle çevir", "translateSnippetPlaceholder": "Buraya yaz veya yapıştır…", "translatingShort": "Çevriliyor…"},
+    ar: {"translateThisPage": "هذه الصفحة", "translateWholeBook": "الكتاب كله", "translateStop": "إيقاف", "translateProgress": "جارٍ ترجمة الصفحة {i} من {n}…", "translateDone": "تمت ترجمة جميع الصفحات ({n}).", "translateStopped": "توقفت بعد {i} من {n} صفحة.", "translateStoppedByYou": "تم الإيقاف. اضغط الكتاب كله للمتابعة.", "translateSnippetLabel": "ترجمة كلمة أو جملة", "translateSnippetPlaceholder": "اكتب أو الصق هنا…", "translatingShort": "جارٍ الترجمة…"},
+    hi: {"translateThisPage": "यह पेज", "translateWholeBook": "पूरी किताब", "translateStop": "रोकें", "translateProgress": "पेज {i} / {n} का अनुवाद हो रहा है…", "translateDone": "सभी {n} पेजों का अनुवाद हो गया।", "translateStopped": "{n} में से {i} पेज के बाद रुका।", "translateStoppedByYou": "रोक दिया। जारी रखने के लिए पूरी किताब दबाएँ।", "translateSnippetLabel": "कोई शब्द या वाक्य अनुवाद करें", "translateSnippetPlaceholder": "यहाँ लिखें या पेस्ट करें…", "translatingShort": "अनुवाद हो रहा है…"},
+    id: {"translateThisPage": "Halaman ini", "translateWholeBook": "Seluruh buku", "translateStop": "Berhenti", "translateProgress": "Menerjemahkan halaman {i} dari {n}…", "translateDone": "Semua {n} halaman sudah diterjemahkan.", "translateStopped": "Berhenti setelah {i} dari {n} halaman.", "translateStoppedByYou": "Dihentikan. Tekan Seluruh buku untuk melanjutkan.", "translateSnippetLabel": "Terjemahkan kata atau kalimat", "translateSnippetPlaceholder": "Ketik atau tempel di sini…", "translatingShort": "Menerjemahkan…"},
+    th: {"translateThisPage": "หน้านี้", "translateWholeBook": "ทั้งเล่ม", "translateStop": "หยุด", "translateProgress": "กำลังแปลหน้า {i} จาก {n}…", "translateDone": "แปลครบทั้ง {n} หน้าแล้ว", "translateStopped": "หยุดหลังจาก {i} จาก {n} หน้า", "translateStoppedByYou": "หยุดแล้ว กด ทั้งเล่ม เพื่อทำต่อ", "translateSnippetLabel": "แปลคำหรือประโยค", "translateSnippetPlaceholder": "พิมพ์หรือวางที่นี่…", "translatingShort": "กำลังแปล…"},
+    ja: {"translateThisPage": "このページ", "translateWholeBook": "本全体", "translateStop": "停止", "translateProgress": "{i} / {n}ページを翻訳中…", "translateDone": "全{n}ページの翻訳が完了しました。", "translateStopped": "{n}ページ中{i}ページで止まりました。", "translateStoppedByYou": "停止しました。続けるには「本全体」を押してください。", "translateSnippetLabel": "単語や文を翻訳", "translateSnippetPlaceholder": "ここに入力または貼り付け…", "translatingShort": "翻訳中…"},
+    ko: {"translateThisPage": "이 페이지", "translateWholeBook": "책 전체", "translateStop": "중지", "translateProgress": "{n}쪽 중 {i}쪽 번역 중…", "translateDone": "{n}쪽 모두 번역했어요.", "translateStopped": "{n}쪽 중 {i}쪽에서 멈췄어요.", "translateStoppedByYou": "멈췄어요. 계속하려면 책 전체를 누르세요.", "translateSnippetLabel": "단어나 문장 번역", "translateSnippetPlaceholder": "여기에 입력하거나 붙여 넣으세요…", "translatingShort": "번역 중…"},
+    zh: {"translateThisPage": "这一页", "translateWholeBook": "整本书", "translateStop": "停止", "translateProgress": "正在翻译第 {i}/{n} 页…", "translateDone": "全部 {n} 页已翻译完成。", "translateStopped": "在第 {i}/{n} 页后停止。", "translateStoppedByYou": "已停止。点击“整本书”继续。", "translateSnippetLabel": "翻译一个词或句子", "translateSnippetPlaceholder": "在此输入或粘贴…", "translatingShort": "正在翻译…"},
+    tl: {"translateThisPage": "Pahinang ito", "translateWholeBook": "Buong aklat", "translateStop": "Itigil", "translateProgress": "Isinasalin ang pahina {i} sa {n}…", "translateDone": "Naisalin na ang lahat ng {n} pahina.", "translateStopped": "Huminto pagkatapos ng {i} sa {n} pahina.", "translateStoppedByYou": "Itinigil. Pindutin ang Buong aklat para ituloy.", "translateSnippetLabel": "Magsalin ng salita o pangungusap", "translateSnippetPlaceholder": "Mag-type o mag-paste dito…", "translatingShort": "Isinasalin…"},
+    he: {"translateThisPage": "הדף הזה", "translateWholeBook": "כל הספר", "translateStop": "עצירה", "translateProgress": "מתרגם עמוד {i} מתוך {n}…", "translateDone": "כל {n} העמודים תורגמו.", "translateStopped": "נעצר אחרי {i} מתוך {n} עמודים.", "translateStoppedByYou": "נעצר. לחצו על כל הספר כדי להמשיך.", "translateSnippetLabel": "תרגום מילה או משפט", "translateSnippetPlaceholder": "הקלידו או הדביקו כאן…", "translatingShort": "מתרגם…"},
+    el: {"translateThisPage": "Αυτή η σελίδα", "translateWholeBook": "Όλο το βιβλίο", "translateStop": "Διακοπή", "translateProgress": "Μετάφραση σελίδας {i} από {n}…", "translateDone": "Μεταφράστηκαν και οι {n} σελίδες.", "translateStopped": "Σταμάτησε μετά από {i} από {n} σελίδες.", "translateStoppedByYou": "Διακόπηκε. Πατήστε Όλο το βιβλίο για συνέχεια.", "translateSnippetLabel": "Μετάφραση λέξης ή πρότασης", "translateSnippetPlaceholder": "Γράψτε ή επικολλήστε εδώ…", "translatingShort": "Μετάφραση…"},
+    sv: {"translateThisPage": "Den här sidan", "translateWholeBook": "Hela boken", "translateStop": "Stoppa", "translateProgress": "Översätter sida {i} av {n}…", "translateDone": "Alla {n} sidor är översatta.", "translateStopped": "Stoppade efter {i} av {n} sidor.", "translateStoppedByYou": "Stoppad. Tryck på Hela boken för att fortsätta.", "translateSnippetLabel": "Översätt ett ord eller en mening", "translateSnippetPlaceholder": "Skriv eller klistra in här…", "translatingShort": "Översätter…"},
+    uk: {"translateThisPage": "Ця сторінка", "translateWholeBook": "Уся книга", "translateStop": "Стоп", "translateProgress": "Перекладаю сторінку {i} з {n}…", "translateDone": "Усі {n} сторінок перекладено.", "translateStopped": "Зупинено після {i} з {n} сторінок.", "translateStoppedByYou": "Зупинено. Натисніть «Уся книга», щоб продовжити.", "translateSnippetLabel": "Перекласти слово чи речення", "translateSnippetPlaceholder": "Напишіть або вставте сюди…", "translatingShort": "Перекладаю…"},
+    ro: {"translateThisPage": "Pagina aceasta", "translateWholeBook": "Toată cartea", "translateStop": "Oprește", "translateProgress": "Se traduce pagina {i} din {n}…", "translateDone": "Toate cele {n} pagini sunt traduse.", "translateStopped": "Oprit după {i} din {n} pagini.", "translateStoppedByYou": "Oprit. Apasă Toată cartea ca să continui.", "translateSnippetLabel": "Tradu un cuvânt sau o propoziție", "translateSnippetPlaceholder": "Scrie sau lipește aici…", "translatingShort": "Se traduce…"},
+    fa: {"translateThisPage": "همین صفحه", "translateWholeBook": "کل کتاب", "translateStop": "توقف", "translateProgress": "در حال ترجمهٔ صفحهٔ {i} از {n}…", "translateDone": "همهٔ {n} صفحه ترجمه شد.", "translateStopped": "پس از {i} از {n} صفحه متوقف شد.", "translateStoppedByYou": "متوقف شد. برای ادامه، کل کتاب را بزن.", "translateSnippetLabel": "ترجمهٔ یک واژه یا جمله", "translateSnippetPlaceholder": "اینجا بنویس یا جای‌گذاری کن…", "translatingShort": "در حال ترجمه…"},
+    ur: {"translateThisPage": "یہ صفحہ", "translateWholeBook": "پوری کتاب", "translateStop": "روکیں", "translateProgress": "صفحہ {i} از {n} کا ترجمہ ہو رہا ہے…", "translateDone": "تمام {n} صفحات کا ترجمہ ہو گیا۔", "translateStopped": "{n} میں سے {i} صفحات کے بعد رک گیا۔", "translateStoppedByYou": "روک دیا۔ جاری رکھنے کے لیے پوری کتاب دبائیں۔", "translateSnippetLabel": "کسی لفظ یا جملے کا ترجمہ کریں", "translateSnippetPlaceholder": "یہاں لکھیں یا پیسٹ کریں…", "translatingShort": "ترجمہ ہو رہا ہے…"}
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -4156,11 +4221,14 @@
   }
 
   /* ---- Translate ----
-     Shows the page you're reading in another language (your home language),
-     one page at a time, so it's quick and only uses the AI for pages you
-     actually open. Translations are kept for this visit. */
+     "This page" shows the page you're reading in your home language;
+     "Whole book" translates every page in turn (with a Stop button); the
+     box at the bottom, and the pop-up that appears when you select text,
+     translate any word or sentence. Translations are kept for this visit. */
   const translations = new Map();   // "bookId|page|lang" → text
-  const tr = { page: 1, lang: "", token: 0, map: null };
+  const tr = { page: 1, lang: "", mode: "page", token: 0, map: null, bookRun: 0 };
+  const RTL_CODES = ["ar", "he", "fa", "ur"];
+  function trMeta(code){ return LANGS.find(l => l.code === (code || tr.lang)) || null; }
   function trBookPages(){
     const loaded = state.loaded.get(state.currentBookId);
     return loaded && loaded.pages ? loaded.pages.filter(p => (p.text || "").trim()) : [];
@@ -4172,22 +4240,63 @@
     for (const l of LANGS) { const o = el("option"); o.value = l.code; o.textContent = l.native + (l.native !== l.name ? " · " + l.name : ""); sel.appendChild(o); }
     sel.value = tr.lang;
   }
+  function savedTranslateLang(){ return safeStorage("get", "earmark_translate_lang") || (currentLang !== "en" ? currentLang : ""); }
   function openTranslate(){
     if (!sample) return;
     const blk = visibleBlock();
     tr.page = blk ? blk.page : ((trBookPages()[0] || {}).pageNum || 1);
-    tr.lang = safeStorage("get", "earmark_translate_lang") || (currentLang !== "en" ? currentLang : "");
+    tr.lang = savedTranslateLang();
     fillTranslateLangs();
     $("translatePanel").hidden = false;
     $("translateBtn").setAttribute("aria-expanded", "true");
-    showTranslation();
+    renderTranslateMode();
   }
   function closeTranslate(){
-    tr.token++;
+    tr.token++; tr.bookRun++;
     if (activeSpeechOwner && String(activeSpeechOwner).startsWith("tr:")) pauseSpeech();
     $("translatePanel").hidden = true;
+    $("trProgress").hidden = true;
     $("translateBtn").setAttribute("aria-expanded", "false");
   }
+  function renderTranslateMode(){
+    $("trModePage").setAttribute("aria-pressed", tr.mode === "page" ? "true" : "false");
+    $("trModeBook").setAttribute("aria-pressed", tr.mode === "book" ? "true" : "false");
+    $("trNav").hidden = tr.mode !== "page";
+    $("trListen").hidden = tr.mode !== "page";
+    if (tr.mode === "page") { tr.bookRun++; $("trProgress").hidden = true; showTranslation(); }
+    else translateWholeBook();
+  }
+
+  function translatePrompt(meta, text){
+    return "Translate this page of a book into " + meta.name + ". It is for a student who is learning English and reads " + meta.name + " best.\n" +
+      "- Translate EVERY sentence, from the first to the last, in the same order. Do not summarize, shorten, skip, or turn the text into bullet points or a list.\n" +
+      "- Keep the meaning, names, numbers and paragraph breaks. Use clear, everyday " + meta.name + ". Do not add explanations or notes.\n" +
+      "- If a part is already in " + meta.name + ", keep it as it is.\n" +
+      "- Reply with only the translation.\n\nPage text:\n" + text;
+  }
+  // Translates one page (long pages in parts, so nothing gets cut off).
+  async function translatePage(page, meta, onText){
+    const key = state.currentBookId + "|" + page.pageNum + "|" + meta.code;
+    if (translations.has(key)) return translations.get(key);
+    const parts = [];
+    let rest = page.text;
+    while (rest.length > 2400) {
+      let cut = rest.lastIndexOf(". ", 2400); if (cut < 1200) cut = rest.lastIndexOf(" ", 2400); if (cut < 1) cut = 2400;
+      parts.push(rest.slice(0, cut + 1)); rest = rest.slice(cut + 1);
+    }
+    if (rest.trim()) parts.push(rest);
+    let done = "";
+    for (const part of parts) {
+      const r = await sample(translatePrompt(meta, part), { modelTier: "default", cache: false,
+        onText: onText ? ({ text }) => onText((done ? done + "\n\n" : "") + text) : undefined });
+      const out = String((r && r.text) || "").trim();
+      if (!out) throw { code: "empty" };
+      done += (done ? "\n\n" : "") + out;
+    }
+    translations.set(key, done);
+    return done;
+  }
+
   async function showTranslation(){
     const my = ++tr.token;
     const body = $("translateText"), listenSlot = $("trListen");
@@ -4199,10 +4308,10 @@
     $("trPage").textContent = t("translatePageLabel", { n: page ? page.pageNum : tr.page });
     $("trPrev").disabled = idx <= 0;
     $("trNext").disabled = idx < 0 || idx >= pages.length - 1;
-    if (!tr.lang) { body.textContent = t("translatePickHint"); return; }
+    const meta = trMeta();
+    if (!meta) { body.textContent = t("translatePickHint"); return; }
     if (!page) { body.textContent = t("translateEmpty"); return; }
-    const meta = LANGS.find(l => l.code === tr.lang) || LANGS[0];
-    if (["ar", "he", "fa", "ur"].includes(meta.code)) body.setAttribute("dir", "rtl");
+    if (RTL_CODES.includes(meta.code)) body.setAttribute("dir", "rtl");
     const key = state.currentBookId + "|" + page.pageNum + "|" + meta.code;
     const show = (text) => {
       const map = renderWordSpans(body, text);
@@ -4213,30 +4322,59 @@
     if (translations.has(key)) { show(translations.get(key)); return; }
     body.innerHTML = "";
     body.appendChild(busyNote(t("translating", { n: page.pageNum })));
-    const prompt =
-      "Translate this page of a book into " + meta.name + ". It is for a student who is learning English and reads " + meta.name + " best.\n" +
-      "- Keep the meaning, names, numbers and paragraph breaks.\n" +
-      "- Use clear, everyday " + meta.name + ". Do not summarize, skip or add anything, and do not explain the translation.\n" +
-      "- If a part is already in " + meta.name + ", keep it as it is.\n" +
-      "- Reply with only the translation.\n\nPage text:\n" + page.text;
     try {
-      let shown = false;
-      const r = await sample(prompt, { modelTier: "default", cache: false, onText: ({ text }) => {
-        if (my !== tr.token) return;
-        if (!shown) { body.innerHTML = ""; shown = true; }
-        body.textContent = text;
-      } });
-      if (my !== tr.token) return;
-      const out = String((r && r.text) || "").trim();
-      if (!out) throw { code: "empty" };
-      translations.set(key, out);
-      show(out);
+      const out = await translatePage(page, meta, (text) => { if (my === tr.token) body.textContent = text; });
+      if (my === tr.token) show(out);
     } catch (e) {
       if (my !== tr.token) return;
       body.innerHTML = "";
       const err = el("div", "setup-error"); err.setAttribute("role", "alert"); err.textContent = sampleErrorText(e); body.appendChild(err);
     }
   }
+
+  // Whole book: every page in order, shown as it arrives, each with its own Listen.
+  async function translateWholeBook(){
+    const run = ++tr.bookRun; tr.token++;
+    const body = $("translateText");
+    body.innerHTML = ""; body.removeAttribute("dir");
+    const meta = trMeta();
+    if (!meta) { $("trProgress").hidden = true; body.textContent = t("translatePickHint"); return; }
+    if (RTL_CODES.includes(meta.code)) body.setAttribute("dir", "rtl");
+    const pages = trBookPages();
+    const bookId = state.currentBookId;
+    $("trProgress").hidden = false;
+    $("trStop").hidden = false;
+    const progress = (i) => {
+      $("trProgressFill").style.width = Math.round(100 * i / Math.max(1, pages.length)) + "%";
+      $("trProgressText").textContent = i >= pages.length ? t("translateDone", { n: pages.length }) : t("translateProgress", { i: i + 1, n: pages.length });
+    };
+    for (let i = 0; i < pages.length; i++) {
+      if (run !== tr.bookRun || bookId !== state.currentBookId) return;
+      progress(i);
+      const page = pages[i];
+      const sec = el("section", "tr-book-page");
+      const h = el("h4"); h.textContent = t("translatePageLabel", { n: page.pageNum }); sec.appendChild(h);
+      const txt = el("div"); sec.appendChild(txt);
+      body.appendChild(sec);
+      try {
+        const out = await translatePage(page, meta, (text) => { if (run === tr.bookRun) txt.textContent = text; });
+        if (run !== tr.bookRun) return;
+        const map = renderWordSpans(txt, out);
+        map.lang = meta.speech;
+        h.appendChild(listenButton("tr:" + bookId + "|" + page.pageNum + "|" + meta.code, () => map));
+      } catch (e) {
+        if (run !== tr.bookRun) return;
+        txt.innerHTML = "";
+        const err = el("div", "setup-error"); err.setAttribute("role", "alert"); err.textContent = sampleErrorText(e); txt.appendChild(err);
+        $("trProgressText").textContent = t("translateStopped", { i, n: pages.length });
+        $("trStop").hidden = true;
+        return;
+      }
+    }
+    progress(pages.length);
+    $("trStop").hidden = true;
+  }
+
   function stepTranslate(d){
     const pages = trBookPages();
     const idx = pages.findIndex(p => p.pageNum === tr.page);
@@ -4248,14 +4386,138 @@
     if (k >= 0) { leaveSync(); scrollToBlock(k); }
     showTranslation();
   }
+
+  // A word or sentence → your language (the box in the panel and the selection pop-up).
+  async function translateSnippet(text, meta){
+    const oneWord = !/\s/.test(text.trim());
+    const prompt = "Translate this " + (oneWord ? "word" : "text") + " into " + meta.name + " for a student who is learning English.\n" +
+      (oneWord ? "Give the translation on the first line. On a second line, give a very short meaning in " + meta.name + " as it is usually used.\n"
+               : "Translate all of it, in full, keeping the meaning. Do not summarize or explain.\n") +
+      "Reply with only that.\n\nText: " + text;
+    const r = await sample(prompt, { modelTier: "quick", cache: false });
+    return String((r && r.text) || "").trim();
+  }
+  function showSnippetResult(box, text, meta, key){
+    box.innerHTML = "";
+    if (RTL_CODES.includes(meta.code)) box.setAttribute("dir", "rtl"); else box.removeAttribute("dir");
+    const out = el("div"); box.appendChild(out);
+    const map = renderWordSpans(out, text); map.lang = meta.speech;
+    const row = el("div", "sel-tr-row"); row.appendChild(listenButton("tr:snip:" + key, () => map)); box.appendChild(row);
+  }
+  async function runSnippetBox(){
+    const text = $("trSnippetInput").value.trim();
+    const box = $("trSnippetOut");
+    if (!text) { $("trSnippetInput").focus(); return; }
+    const meta = trMeta();
+    box.hidden = false;
+    if (!meta) { box.textContent = t("translatePickHint"); return; }
+    box.innerHTML = ""; box.appendChild(busyNote(t("translatingShort")));
+    try { showSnippetResult(box, await translateSnippet(text, meta), meta, "box"); }
+    catch (e) { box.innerHTML = ""; const err = el("div", "setup-error"); err.textContent = sampleErrorText(e); box.appendChild(err); }
+  }
+
+  // Select any text → a small "Translate" button appears next to it.
+  let selChip = null, selPop = null;
+  function hideSelTranslate(){ if (selChip) selChip.hidden = true; }
+  function closeSelPopup(){ if (selPop) selPop.hidden = true; if (activeSpeechOwner === "tr:snip:sel") pauseSpeech(); }
+  function selectedText(){
+    const sel = window.getSelection && window.getSelection();
+    if (!sel || sel.isCollapsed || !sel.rangeCount) return null;
+    const text = sel.toString().replace(/\s+/g, " ").trim();
+    if (!text || text.length > 600) return null;
+    const node = sel.anchorNode && (sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement);
+    if (!node || node.closest("input, textarea, select, .sel-tr-pop")) return null;
+    if (!node.closest("#bookView, #pdfBackdrop")) return null;
+    return { text, rect: sel.getRangeAt(0).getBoundingClientRect() };
+  }
+  function onSelectionDone(e){
+    if (e && e.target && e.target.closest && e.target.closest(".sel-tr-chip, .sel-tr-pop")) return;
+    setTimeout(() => {
+      if (!sample) return;
+      if (selPop && !selPop.hidden) { hideSelTranslate(); return; }
+      const found = selectedText();
+      if (!found) { hideSelTranslate(); return; }
+      if (!selChip) {
+        selChip = el("button", "sel-tr-chip"); selChip.type = "button";
+        selChip.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg><span></span>';
+        selChip.addEventListener("mousedown", (e) => e.preventDefault());   // keep the selection
+        selChip.addEventListener("click", () => openSelPopup(selChip._text, selChip._rect));
+        document.body.appendChild(selChip);
+      }
+      selChip.querySelector("span").textContent = t("translate");
+      selChip._text = found.text; selChip._rect = found.rect;
+      selChip.hidden = false;
+      const top = found.rect.top > 50 ? found.rect.top - 42 : found.rect.bottom + 8;
+      selChip.style.top = Math.max(8, top) + "px";
+      selChip.style.left = Math.max(8, Math.min(window.innerWidth - 130, found.rect.left + found.rect.width / 2 - 55)) + "px";
+    }, 10);
+  }
+  async function openSelPopup(text, rect){
+    hideSelTranslate();
+    hideGlossaryTip();
+    if (!selPop) {
+      selPop = el("div", "sel-tr-pop"); selPop.setAttribute("role", "dialog");
+      selPop.innerHTML = '<div class="sel-tr-row"><span class="sel-tr-lang"></span><select class="sel-tr-select"></select>' +
+        '<button type="button" class="ictrl sel-tr-close" aria-label="Close"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
+        '<div class="sel-tr-src"></div><div class="sel-tr-body"></div>';
+      selPop.querySelector(".sel-tr-close").addEventListener("click", closeSelPopup);
+      selPop.querySelector(".sel-tr-select").addEventListener("change", (e) => {
+        tr.lang = e.target.value; safeStorage("set", "earmark_translate_lang", tr.lang);
+        if (!$("translatePanel").hidden) { $("translateLang").value = tr.lang; }
+        openSelPopup(selPop._text, null);
+      });
+      document.body.appendChild(selPop);
+    }
+    selPop._text = text;
+    tr.lang = tr.lang || savedTranslateLang();
+    const sel = selPop.querySelector(".sel-tr-select");
+    sel.innerHTML = "";
+    const pick = el("option"); pick.value = ""; pick.textContent = t("translatePick"); sel.appendChild(pick);
+    for (const l of LANGS) { const o = el("option"); o.value = l.code; o.textContent = l.native; sel.appendChild(o); }
+    sel.value = tr.lang;
+    selPop.querySelector(".sel-tr-lang").textContent = t("translateTo");
+    selPop.querySelector(".sel-tr-src").textContent = text;
+    const body = selPop.querySelector(".sel-tr-body");
+    selPop.hidden = false;
+    if (rect) {
+      const w = Math.min(340, window.innerWidth - 24);
+      selPop.style.left = Math.max(12, Math.min(window.innerWidth - w - 12, rect.left + rect.width / 2 - w / 2)) + "px";
+      selPop.style.top = Math.max(12, Math.min(window.innerHeight - 260, rect.bottom + 10)) + "px";
+    }
+    const meta = trMeta();
+    if (!meta) { body.textContent = t("translatePickHint"); return; }
+    body.innerHTML = ""; body.appendChild(busyNote(t("translatingShort")));
+    const my = ++selPop._token || (selPop._token = 1);
+    try { const out = await translateSnippet(text, meta); if (my === selPop._token && !selPop.hidden) showSnippetResult(body, out, meta, "sel"); }
+    catch (e) { if (my === selPop._token) { body.innerHTML = ""; const err = el("div", "setup-error"); err.textContent = sampleErrorText(e); body.appendChild(err); } }
+  }
+  document.addEventListener("mouseup", onSelectionDone);
+  document.addEventListener("touchend", onSelectionDone, { passive: true });
+  document.addEventListener("keyup", (e) => { if (e.shiftKey) onSelectionDone(); });
+  document.addEventListener("mousedown", (e) => {
+    if (selChip && !selChip.contains(e.target)) hideSelTranslate();
+    if (selPop && !selPop.hidden && !selPop.contains(e.target)) closeSelPopup();
+  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { hideSelTranslate(); closeSelPopup(); } });
+
   $("translateBtn").addEventListener("click", () => { $("translatePanel").hidden ? openTranslate() : closeTranslate(); });
   $("trClose").addEventListener("click", closeTranslate);
   $("trPrev").addEventListener("click", () => stepTranslate(-1));
   $("trNext").addEventListener("click", () => stepTranslate(1));
+  $("trModePage").addEventListener("click", () => { if (tr.mode !== "page") { tr.mode = "page"; renderTranslateMode(); } });
+  $("trModeBook").addEventListener("click", () => { if (tr.mode !== "book") { tr.mode = "book"; renderTranslateMode(); } });
+  $("trStop").addEventListener("click", () => {
+    tr.bookRun++;
+    $("trStop").hidden = true;
+    $("trProgressText").textContent = t("translateStoppedByYou");
+  });
+  $("trSnippetGo").addEventListener("click", runSnippetBox);
+  $("trSnippetInput").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); runSnippetBox(); } });
   $("translateLang").addEventListener("change", (e) => {
     tr.lang = e.target.value;
     safeStorage("set", "earmark_translate_lang", tr.lang);
-    showTranslation();
+    renderTranslateMode();
+    if (!$("trSnippetOut").hidden && $("trSnippetInput").value.trim()) runSnippetBox();
   });
 
   /* ---- "Back to sync" ----
