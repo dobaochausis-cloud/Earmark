@@ -293,13 +293,13 @@
       }
       return ttsInfo;
     },
-    async speak(text, lang) {
+    async speak(text, lang, voice) {
       let res;
       try {
         res = await fetch("/api/tts", {
           method: "POST",
           headers: { "content-type": "application/json", "x-earmark-code": readCode(), "x-earmark-device": device() },
-          body: JSON.stringify({ text, lang }),
+          body: JSON.stringify({ text, lang, voice: voice === "male" ? "male" : "female" }),
         });
       } catch (e) {
         throw fail("network", "Couldn't reach the server.");

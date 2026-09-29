@@ -55,12 +55,14 @@ To get Claude's better answers later, add these in your Pages project under **Se
 
 ## The natural reading voice
 
-Read-aloud uses a lifelike voice from Cloudflare's AI (**MeloTTS**) for English, Spanish, French, Chinese, Japanese and Korean. It's on by default and needs no setup: it uses the same `AI` binding as the free AI answers. Other languages, and any time the voice service is busy, use the voice built into each person's device. Students can switch it off in **Settings → Natural human voice**.
+In **Settings → Voice**, students pick **Female** or **Male**. "Preview voice" plays exactly the voice the book will be read in.
 
+- **Female:** a natural voice from Cloudflare's AI (**MeloTTS**) for English, Spanish, French, Chinese, Japanese and Korean. It's free, and every clip is cached so a class reading the same book only uses the allowance once. It needs no setup: it uses the same `AI` binding as the free AI answers.
+- **Male:** MeloTTS has only one voice, so by default the male voice is the most human-sounding male voice on each student's device (novelty voices like "Bubbles" are never used). For a natural **male** voice in English, add a Text variable `TTS_MALE` = `aura-1` (or `aura-2`). That's Deepgram Aura on Cloudflare, which costs much more per word than MeloTTS. On Cloudflare's free plan it works until the day's allowance runs out (then the device voice takes over, at no charge), and it shares that allowance with the AI answers. For a class, it needs **Workers Paid** ($5 a month). `TTS_MALE_VOICE` picks the speaker (default `orion`).
+- **Other languages**, and any time the voice service is busy, use the device's own female or male voice.
 - **Check it:** open `https://YOUR-SITE.pages.dev/api/tts?test=1` (add `&code=YOUR_CLASS_CODE` if you set one).
-- **The most human voice:** add a Text variable `TTS_MODEL` = `aura-2` (Deepgram Aura 2, English and Spanish). It sounds the most like a real person, but it costs much more per word than MeloTTS, so it needs Cloudflare's **Workers Paid** plan ($5 a month) for real classroom use. `TTS_VOICE` picks the speaker (for example `luna` or `thalia`).
-- **Turn it off:** add `TTS` = `off`.
-- **Free tip:** in Microsoft Edge, the device voices named "Natural" (for example "Microsoft Aria Online (Natural)") are also very human-sounding and free. Pick one in **Settings → Voice**.
+- **Turn the natural voice off:** add `TTS` = `off`.
+- **Free tip:** in Microsoft Edge, the device voices are very human-sounding ("Aria", "Guy", "Jenny"…), for both female and male.
 
 ## Using it with a whole class
 
