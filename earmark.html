@@ -406,14 +406,26 @@
   .translate-btn{ display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 12px; margin-left:4px; border-radius:999px; cursor:pointer;
     background:var(--paper-raised); border:1px solid var(--line); color:var(--ink); font:inherit; font-size:13px; font-weight:600; }
   .translate-btn:hover, .translate-btn[aria-expanded="true"]{ border-color:var(--accent); color:var(--accent); }
-  .translate-panel{ background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-sm); padding:10px 12px; display:flex; flex-direction:column; gap:10px; }
+  /* Translate: a panel docked on the right side of the screen. On wide
+     screens the book moves over to make room; on smaller ones it slides
+     over the page. */
+  .translate-panel{ position:fixed; top:var(--tr-top, 60px); right:0; bottom:0; width:min(var(--tr-w), 100vw); z-index:40;
+    background:var(--paper-raised); border-left:1px solid var(--line); box-shadow:-8px 0 24px rgba(0,0,0,.12);
+    padding:14px 16px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; }
+  .translate-panel[hidden]{ display:none; }
+  :root{ --tr-w:420px; }
+  @media (min-width:1000px){ body.tr-open .main{ margin-right:var(--tr-w); } }
+  .translate-panel .tr-head{ position:sticky; top:-14px; margin:-14px -16px 0; padding:12px 16px 10px; background:var(--paper-raised); border-bottom:1px solid var(--line); z-index:1; }
+  .translate-panel #trClose{ margin-left:auto; order:-1; }
+  .translate-panel .tr-lang{ flex:1 1 100%; min-width:0; }
+  .translate-panel .tr-lang select{ flex:1; min-width:0; max-width:none; }
   .tr-head{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   .tr-lang{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; }
   .tr-lang select{ padding:6px 8px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--paper); color:var(--ink); font:inherit; font-size:14px; text-transform:none; letter-spacing:0; max-width:260px; }
   .tr-nav{ display:flex; align-items:center; gap:6px; }
   .tr-page{ font-size:13px; color:var(--ink-soft); min-width:64px; text-align:center; }
   .tr-listen{ margin-left:auto; }
-  .tr-body{ font-family:var(--font-display); font-size:15px; line-height:var(--lh-read); color:var(--ink); max-height:var(--strip-h, 240px); overflow-y:auto; white-space:pre-wrap; }
+  .tr-body{ font-family:var(--font-display); font-size:15px; line-height:var(--lh-read); color:var(--ink); flex:1 0 auto; white-space:pre-wrap; }
   .tr-body .busy{ font-family:inherit; }
   .tr-mode{ display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:2px; gap:2px; background:var(--paper-sunken); }
   .tr-mode-btn{ border:none; background:none; color:var(--ink); font:inherit; font-size:13px; font-weight:600; padding:5px 11px; border-radius:999px; cursor:pointer; }
@@ -3223,6 +3235,8 @@
   // Whether a voice sounds female or male, from its name (browsers don't say).
   const FEMALE_NAMES = /\b(female|woman|aria|jenny|emma|ava|michelle|sonia|libby|maisie|natasha|clara|leah|samantha|karen|moira|tessa|veena|fiona|allison|susan|zira|hazel|heera|catherine|nicky|serena|kate|joanna|salli|kimberly|ivy|kendra|martha|isha|neerja|ana|sara|nancy|jane|amber|ashley|cora|elizabeth|monica|mónica|linh|hoaimy|elvira|dalia|paulina|helena|laura|sabina|marisol|lucia|lucía|penelope|conchita|denise|amelie|amélie|audrey|aurelie|marie|julie|hortense|sylvie|brigitte|katja|anna|hedda|petra|francisca|luciana|joana|raquel|maria|ines|inês|camila|vitoria|elsa|isabella|alice|federica|carla|giorgia|nanami|kyoko|ayumi|haruka|sayaka|mizuki|sunhi|yuna|heami|seoyeon|xiaoxiao|xiaoyi|tingting|ting-ting|meijia|sinji|huihui|yaoyao|lili|hanhan|svetlana|milena|irina|katya|tatyana|salma|zariyah|laila|hoda|zeina|swara|lekha|kalpana|gadis|damayanti|premwadee|kanya|zofia|ewa|zosia|emel|yelda|filiz|colette|fenna|claire|ellen|hanna|lotte|hila|carmit|athina|melina|sofie|alva|klara|hillevi|astrid|polina|lesya|alina|ioana|dilara|uzma|gul|blessica)\b/i;
   const MALE_NAMES = /\b(male|guy|davis|andrew|brian|christopher|eric|roger|steffan|ryan|thomas|william|mark|david|george|james|richard|alex|daniel|oliver|arthur|aaron|rishi|gordon|liam|jacob|tony|evan|nathan|tom|matthew|justin|joey|russell|namminh|alvaro|álvaro|jorge|juan|diego|pablo|raul|raúl|enrique|miguel|carlos|henri|paul|claude|antoine|jean|mathieu|conrad|markus|stefan|yannick|hans|antonio|duarte|felipe|ricardo|cristiano|luca|cosimo|giorgio|keita|otoya|ichiro|takumi|injoon|minsu|yunxi|yunyang|kangkang|zhiwei|dmitry|yuri|pavel|maxim|ivan|shakir|hamed|maged|tarik|naayf|madhur|hemant|neel|ardi|andika|niwat|pattara|marek|krzysztof|adam|jan|filip|ahmet|tolga|cem|maarten|frank|ruben|avri|asaf|nestoras|stefanos|nikos|mattias|oskar|bengt|mads|ostap|emil|andrei|farid|asad|salman|angelo)\b/i;
+  const SOFT_MALE = /\b(andrew|brian|christopher|ryan|thomas|liam|daniel|oliver|evan|nathan|aaron|google uk english male|namminh|alvaro|álvaro|henri|conrad|antonio|diego|keita|injoon|yunxi|dmitry|hamed|madhur|ardi|niwat|ahmet|maarten|mattias|emil|farid|asad|angelo)\b/i;
+  const HARD_MALE = /\b(guy|davis|eric|roger|alex|tony|fred|mark|david|george)\b/i;
   function voiceGender(v){
     const n = v.name || "";
     if (/\bfemale\b/i.test(n)) return "female";
@@ -3253,7 +3267,9 @@
   function pickDeviceVoice(bcp, gender){
     const prefix = String(bcp || "").split("-")[0].toLowerCase();
     const inLang = deviceVoices().filter(v => (v.lang || "").toLowerCase().replace("_", "-").startsWith(prefix));
-    const best = (list) => list.sort((a, b) => scoreVoice(b, prefix) - scoreVoice(a, prefix))[0] || null;
+    // Male: the warmer, softer-spoken voices first (not the announcer-style ones).
+    const soft = (v) => gender === "male" ? (SOFT_MALE.test(v.name || "") ? 4 : HARD_MALE.test(v.name || "") ? -2 : 0) : 0;
+    const best = (list) => list.sort((a, b) => (scoreVoice(b, prefix) + soft(b)) - (scoreVoice(a, prefix) + soft(a)))[0] || null;
     const same = best(inLang.filter(v => voiceGender(v) === gender));
     if (same) return { voice: same, exact: true };
     const unknown = best(inLang.filter(v => !voiceGender(v)));
@@ -3676,8 +3692,12 @@
       queued.add(i);
       const unit = units[i];
       const u = new SpeechSynthesisUtterance(map.text.slice(unit.start, unit.end));
-      u.rate = speech.rate * unit.style.rate;
-      u.pitch = Math.min(2, Math.max(0, speech.pitch + unit.style.pitch));
+      // The male voice reads a touch slower and quieter, and doesn't lift its
+      // pitch on "!" and "?", which makes it sound calmer and more natural.
+      const male = speech.gender === "male";
+      u.rate = speech.rate * (male ? 0.94 : unit.style.rate);
+      u.pitch = male ? 1 : Math.min(2, Math.max(0, speech.pitch + unit.style.pitch));
+      u.volume = male ? 0.88 : 1;
       // A translation is read in its own language's voice.
       const langVoice = map.lang ? voiceForLang(map.lang) : null;
       if (map.lang) u.lang = map.lang;
@@ -3719,7 +3739,9 @@
         if (!cloudAudio) cloudAudio = new Audio();
         const audio = cloudAudio;
         audio.src = url;
-        audio.playbackRate = Math.min(2, Math.max(0.5, speech.rate * unit.style.rate));
+        const male = speech.gender === "male";
+        audio.playbackRate = Math.min(2, Math.max(0.5, speech.rate * (male ? 0.94 : unit.style.rate)));
+        audio.volume = male ? 0.88 : 1;
         const weights = charWeights(raw);
         const total = weights[raw.length] || 1;
         let raf = 0;
@@ -4664,6 +4686,7 @@
   /* ---------------- book view ---------------- */
   function showEmptyState(){
     if (typeof leaveGame === "function") leaveGame();
+    if (!$("translatePanel").hidden) closeTranslate();
     state.currentBookId = null;
     $("emptyState").hidden = false;
     $("bookView").hidden = true;
@@ -5006,7 +5029,11 @@
     tr.page = blk ? blk.page : ((trBookPages()[0] || {}).pageNum || 1);
     tr.lang = savedTranslateLang();
     fillTranslateLangs();
+    // Dock it on the right, just under the top bar.
+    const bar = document.querySelector(".appbar");
+    document.documentElement.style.setProperty("--tr-top", (bar ? Math.round(bar.getBoundingClientRect().bottom) : 60) + "px");
     $("translatePanel").hidden = false;
+    document.body.classList.add("tr-open");
     $("translateBtn").setAttribute("aria-expanded", "true");
     renderTranslateMode();
   }
@@ -5014,6 +5041,7 @@
     tr.token++; tr.bookRun++;
     if (activeSpeechOwner && String(activeSpeechOwner).startsWith("tr:")) pauseSpeech();
     $("translatePanel").hidden = true;
+    document.body.classList.remove("tr-open");
     $("trProgress").hidden = true;
     $("translateBtn").setAttribute("aria-expanded", "false");
   }
@@ -5259,6 +5287,8 @@
   });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") { hideSelTranslate(); closeSelPopup(); } });
 
+  // The panel lives at the side of the page, not under the reading box.
+  document.body.appendChild($("translatePanel"));
   $("translateBtn").addEventListener("click", () => { $("translatePanel").hidden ? openTranslate() : closeTranslate(); });
   $("trClose").addEventListener("click", closeTranslate);
   $("trPrev").addEventListener("click", () => stepTranslate(-1));
