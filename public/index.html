@@ -483,7 +483,6 @@
     position:fixed; z-index:80; max-width:260px;
     background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-sm);
     box-shadow:var(--shadow); padding:10px 12px; font-size:13px; line-height:1.45;
-    pointer-events:none;
   }
   .gt-word{font-family:var(--font-display); font-weight:600; font-size:14.5px; color:var(--ink);}
   .gt-pos{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--listen); font-weight:600; margin-top:2px;}
@@ -512,6 +511,38 @@
   .msg.user .bubble{background:var(--accent); color:#fff; border-bottom-right-radius:4px;}
   .msg.assistant .bubble{background:var(--paper-raised); border:1px solid var(--line); border-bottom-left-radius:4px;}
   .msg.assistant .bubble.pending{color:var(--ink-soft); font-style:italic;}
+  /* Answers laid out with real headings, bold and lists (no * or # showing). */
+  .bubble.rich{ white-space:normal; }
+  .bubble.rich p{ margin:0 0 .7em; }
+  .bubble.rich h4{ margin:.9em 0 .35em; font-size:1em; font-weight:800; color:var(--accent-strong); }
+  .bubble.rich h4:first-child{ margin-top:0; }
+  .bubble.rich ul, .bubble.rich ol{ margin:.2em 0 .7em; padding-left:1.3em; }
+  .bubble.rich ol{ list-style:none; padding-left:.2em; }
+  .bubble.rich li{ margin:.25em 0; }
+  .bubble.rich > :last-child{ margin-bottom:0; }
+  .word.w-b{ font-weight:800; }
+  /* My words */
+  .vocab-head h3{ margin:0 0 4px; }
+  .vocab-head p{ margin:0 0 12px; color:var(--ink-soft); }
+  .vocab-form{ display:flex; flex-direction:column; gap:8px; background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px; margin-bottom:14px; }
+  .vocab-word-in, .vocab-def-in{ width:100%; box-sizing:border-box; padding:9px 11px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--paper); color:var(--ink); font:inherit; font-size:15px; }
+  .vocab-word-in{ font-weight:700; }
+  .vocab-def-in{ resize:vertical; line-height:1.45; }
+  .vocab-count{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); margin-bottom:6px; }
+  .vocab-list{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:10px; }
+  .vocab-card{ background:var(--paper-raised); border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:var(--radius-sm); padding:10px 12px; display:flex; flex-direction:column; gap:6px; }
+  .vocab-top{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .vocab-w{ font-family:var(--font-display); font-weight:800; font-size:18px; flex:1 1 auto; min-width:0; overflow-wrap:break-word; }
+  .vocab-top .listen{ font-size:12px; padding:4px 10px; }
+  .vocab-def{ font-size:14.5px; line-height:1.5; white-space:pre-wrap; }
+  .vocab-def.empty{ color:var(--ink-faint); font-style:italic; }
+  .vocab-actions{ display:flex; gap:12px; flex-wrap:wrap; }
+  .link-btn{ border:none; background:none; padding:0; font:inherit; font-size:13px; font-weight:700; color:var(--accent-strong); cursor:pointer; }
+  .link-btn:disabled{ opacity:.5; cursor:default; }
+  .link-btn:hover:not(:disabled){ text-decoration:underline; }
+  .gt-add{ margin-top:8px; border:1px solid var(--accent); background:none; color:var(--accent-strong); border-radius:99px; padding:4px 10px; font:inherit; font-size:12.5px; font-weight:700; cursor:pointer; }
+  .gt-add:disabled{ opacity:.5; }
+  .word.w-i{ font-style:italic; }
   .msg-meta{display:flex; align-items:center; gap:8px; font-size:11.5px; color:var(--ink-faint); padding:0 3px;}
   .read-btn{
     display:inline-flex; align-items:center; gap:4px;
@@ -1043,6 +1074,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 6V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2"/></svg>
           <span data-i18n="tabCards">Flashcards</span>
         </button>
+        <button class="tab" type="button" role="tab" id="tabVocab" data-tab="vocab" aria-selected="false" aria-controls="panelVocab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z" stroke-linejoin="round"/><path d="M8 7h7M8 11h5" stroke-linecap="round"/></svg>
+          <span data-i18n="tabVocab">My words</span>
+        </button>
         <button class="tab" type="button" role="tab" id="tabQuiz" data-tab="quiz" aria-selected="false" aria-controls="panelQuiz">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round"/></svg>
           <span data-i18n="tabQuiz">Quiz</span>
@@ -1128,6 +1163,7 @@
       </div>
 
       <div class="tab-panel study" id="panelCards" role="tabpanel" aria-labelledby="tabCards" hidden></div>
+      <div class="tab-panel study" id="panelVocab" role="tabpanel" aria-labelledby="tabVocab" hidden></div>
       <div class="tab-panel study" id="panelQuiz" role="tabpanel" aria-labelledby="tabQuiz" hidden></div>
       <div class="tab-panel game-panel" id="panelGame" role="tabpanel" aria-labelledby="tabGame" hidden></div>
     </div>
@@ -3173,6 +3209,62 @@
     fa: {"voiceFemale": "زن", "voiceMale": "مرد", "voiceNatural": "صدای طبیعی انسان.", "voiceDevice": "صدای این دستگاه: {name}", "voiceNoMale": "این دستگاه صدای مرد به {lang} ندارد، پس از صدای دیگری استفاده می‌شود.", "voiceNoFemale": "این دستگاه صدای زن به {lang} ندارد، پس از صدای دیگری استفاده می‌شود."},
     ur: {"voiceFemale": "خاتون", "voiceMale": "مرد", "voiceNatural": "قدرتی انسانی آواز۔", "voiceDevice": "اس ڈیوائس کی آواز: {name}", "voiceNoMale": "اس ڈیوائس پر {lang} میں مردانہ آواز نہیں، اس لیے دوسری آواز استعمال ہو رہی ہے۔", "voiceNoFemale": "اس ڈیوائس پر {lang} میں زنانہ آواز نہیں، اس لیے دوسری آواز استعمال ہو رہی ہے۔"}
   });
+  addStrings({
+    en: {"monkeyClimbsLeft": "{n} left"},
+    vi: {"monkeyClimbsLeft": "còn {n} lượt"},
+    es: {"monkeyClimbsLeft": "quedan {n} oportunidades"},
+    fr: {"monkeyClimbsLeft": "encore {n} chances"},
+    de: {"monkeyClimbsLeft": "noch {n} Chancen"},
+    pt: {"monkeyClimbsLeft": "restam {n} chances"},
+    it: {"monkeyClimbsLeft": "ancora {n} possibilità"},
+    nl: {"monkeyClimbsLeft": "nog {n} kansen"},
+    ru: {"monkeyClimbsLeft": "осталось попыток: {n}"},
+    pl: {"monkeyClimbsLeft": "zostało szans: {n}"},
+    tr: {"monkeyClimbsLeft": "{n} hak kaldı"},
+    ar: {"monkeyClimbsLeft": "تبقّت {n} فرص"},
+    hi: {"monkeyClimbsLeft": "{n} मौके बाकी"},
+    id: {"monkeyClimbsLeft": "sisa {n} kesempatan"},
+    th: {"monkeyClimbsLeft": "เหลือ {n} ครั้ง"},
+    ja: {"monkeyClimbsLeft": "あと{n}回"},
+    ko: {"monkeyClimbsLeft": "기회 {n}번 남음"},
+    zh: {"monkeyClimbsLeft": "还剩 {n} 次机会"},
+    tl: {"monkeyClimbsLeft": "{n} pagkakataon pa"},
+    he: {"monkeyClimbsLeft": "נותרו {n} הזדמנויות"},
+    el: {"monkeyClimbsLeft": "απομένουν {n} ευκαιρίες"},
+    sv: {"monkeyClimbsLeft": "{n} chanser kvar"},
+    uk: {"monkeyClimbsLeft": "залишилось спроб: {n}"},
+    ro: {"monkeyClimbsLeft": "mai ai {n} șanse"},
+    fa: {"monkeyClimbsLeft": "{n} فرصت مانده"},
+    ur: {"monkeyClimbsLeft": "{n} موقع باقی"}
+  });
+  addStrings({
+    en: {"tabVocab": "My words", "vocabTitle": "My vocabulary", "vocabDesc": "Keep the words you're learning from this book. Write the meaning yourself, or let Earmark do it for you.", "vocabWordPh": "A new word", "vocabDefPh": "Its meaning (optional: write it yourself, or tap “Define it for me”)", "vocabDefineForMe": "✨ Define it for me", "vocabDefining": "Looking it up…", "vocabAdd": "Add word", "vocabHave": "“{w}” is already in your list.", "vocabEmpty": "No words yet. Add one above, or hold the mouse on a word in the book and press “Add to my words”.", "vocabCount": "{n} words", "vocabDelete": "Delete {w}", "vocabSave": "Save", "vocabCancel": "Cancel", "vocabNoDef": "No meaning yet.", "vocabRedefine": "Define it again", "vocabEdit": "Edit", "vocabAddLookup": "Add to my words", "vocabAdded": "Added “{w}” to My words."},
+    vi: {"tabVocab": "Từ của tôi", "vocabTitle": "Từ vựng của tôi", "vocabDesc": "Lưu những từ bạn đang học trong cuốn sách này. Tự viết nghĩa, hoặc để Earmark làm giúp.", "vocabWordPh": "Một từ mới", "vocabDefPh": "Nghĩa của từ (tuỳ chọn: tự viết, hoặc bấm “Định nghĩa giúp tôi”)", "vocabDefineForMe": "✨ Định nghĩa giúp tôi", "vocabDefining": "Đang tra…", "vocabAdd": "Thêm từ", "vocabHave": "“{w}” đã có trong danh sách.", "vocabEmpty": "Chưa có từ nào. Thêm ở trên, hoặc giữ chuột trên một từ trong sách rồi bấm “Thêm vào từ của tôi”.", "vocabCount": "{n} từ", "vocabDelete": "Xoá {w}", "vocabSave": "Lưu", "vocabCancel": "Huỷ", "vocabNoDef": "Chưa có nghĩa.", "vocabRedefine": "Định nghĩa lại", "vocabEdit": "Sửa", "vocabAddLookup": "Thêm vào từ của tôi", "vocabAdded": "Đã thêm “{w}” vào Từ của tôi."},
+    es: {"tabVocab": "Mis palabras", "vocabTitle": "Mi vocabulario", "vocabDesc": "Guarda las palabras que aprendes con este libro. Escribe tú el significado o deja que Earmark lo haga.", "vocabWordPh": "Una palabra nueva", "vocabDefPh": "Su significado (opcional: escríbelo tú o toca “Defínela por mí”)", "vocabDefineForMe": "✨ Defínela por mí", "vocabDefining": "Buscando…", "vocabAdd": "Añadir palabra", "vocabHave": "“{w}” ya está en tu lista.", "vocabEmpty": "Aún no hay palabras. Añade una arriba, o mantén el ratón sobre una palabra del libro y pulsa “Añadir a mis palabras”.", "vocabCount": "{n} palabras", "vocabDelete": "Borrar {w}", "vocabSave": "Guardar", "vocabCancel": "Cancelar", "vocabNoDef": "Aún sin significado.", "vocabRedefine": "Definir de nuevo", "vocabEdit": "Editar", "vocabAddLookup": "Añadir a mis palabras", "vocabAdded": "“{w}” añadida a Mis palabras."},
+    fr: {"tabVocab": "Mes mots", "vocabTitle": "Mon vocabulaire", "vocabDesc": "Garde les mots que tu apprends dans ce livre. Écris toi-même le sens, ou laisse Earmark le faire.", "vocabWordPh": "Un nouveau mot", "vocabDefPh": "Son sens (facultatif : écris-le, ou touche « Définis-le pour moi »)", "vocabDefineForMe": "✨ Définis-le pour moi", "vocabDefining": "Recherche…", "vocabAdd": "Ajouter le mot", "vocabHave": "« {w} » est déjà dans ta liste.", "vocabEmpty": "Aucun mot pour l'instant. Ajoute-en un ci-dessus, ou garde la souris sur un mot du livre et appuie sur « Ajouter à mes mots ».", "vocabCount": "{n} mots", "vocabDelete": "Supprimer {w}", "vocabSave": "Enregistrer", "vocabCancel": "Annuler", "vocabNoDef": "Pas encore de sens.", "vocabRedefine": "Redéfinir", "vocabEdit": "Modifier", "vocabAddLookup": "Ajouter à mes mots", "vocabAdded": "« {w} » ajouté à Mes mots."},
+    de: {"tabVocab": "Meine Wörter", "vocabTitle": "Mein Wortschatz", "vocabDesc": "Sammle die Wörter, die du aus diesem Buch lernst. Schreib die Bedeutung selbst oder lass Earmark das machen.", "vocabWordPh": "Ein neues Wort", "vocabDefPh": "Bedeutung (freiwillig: selbst schreiben oder „Für mich erklären“ tippen)", "vocabDefineForMe": "✨ Für mich erklären", "vocabDefining": "Wird nachgeschlagen…", "vocabAdd": "Wort hinzufügen", "vocabHave": "„{w}“ ist schon in deiner Liste.", "vocabEmpty": "Noch keine Wörter. Füge oben eins hinzu oder halte die Maus auf ein Wort im Buch und tippe „Zu meinen Wörtern“.", "vocabCount": "{n} Wörter", "vocabDelete": "{w} löschen", "vocabSave": "Speichern", "vocabCancel": "Abbrechen", "vocabNoDef": "Noch keine Bedeutung.", "vocabRedefine": "Neu erklären", "vocabEdit": "Bearbeiten", "vocabAddLookup": "Zu meinen Wörtern", "vocabAdded": "„{w}“ zu Meine Wörter hinzugefügt."},
+    pt: {"tabVocab": "Minhas palavras", "vocabTitle": "Meu vocabulário", "vocabDesc": "Guarde as palavras que você aprende neste livro. Escreva o significado você mesmo ou deixe o Earmark fazer isso.", "vocabWordPh": "Uma palavra nova", "vocabDefPh": "Significado (opcional: escreva você ou toque em “Defina para mim”)", "vocabDefineForMe": "✨ Defina para mim", "vocabDefining": "Procurando…", "vocabAdd": "Adicionar palavra", "vocabHave": "“{w}” já está na sua lista.", "vocabEmpty": "Nenhuma palavra ainda. Adicione acima ou deixe o mouse sobre uma palavra do livro e toque em “Adicionar às minhas palavras”.", "vocabCount": "{n} palavras", "vocabDelete": "Apagar {w}", "vocabSave": "Salvar", "vocabCancel": "Cancelar", "vocabNoDef": "Sem significado ainda.", "vocabRedefine": "Definir de novo", "vocabEdit": "Editar", "vocabAddLookup": "Adicionar às minhas palavras", "vocabAdded": "“{w}” adicionada a Minhas palavras."},
+    it: {"tabVocab": "Le mie parole", "vocabTitle": "Il mio vocabolario", "vocabDesc": "Conserva le parole che impari da questo libro. Scrivi tu il significato o lascia fare a Earmark.", "vocabWordPh": "Una parola nuova", "vocabDefPh": "Il significato (facoltativo: scrivilo tu o tocca “Definiscila per me”)", "vocabDefineForMe": "✨ Definiscila per me", "vocabDefining": "Cerco…", "vocabAdd": "Aggiungi parola", "vocabHave": "“{w}” è già nella tua lista.", "vocabEmpty": "Ancora nessuna parola. Aggiungine una sopra, o tieni il mouse su una parola del libro e premi “Aggiungi alle mie parole”.", "vocabCount": "{n} parole", "vocabDelete": "Elimina {w}", "vocabSave": "Salva", "vocabCancel": "Annulla", "vocabNoDef": "Nessun significato ancora.", "vocabRedefine": "Ridefinisci", "vocabEdit": "Modifica", "vocabAddLookup": "Aggiungi alle mie parole", "vocabAdded": "“{w}” aggiunta a Le mie parole."},
+    nl: {"tabVocab": "Mijn woorden", "vocabTitle": "Mijn woordenschat", "vocabDesc": "Bewaar de woorden die je uit dit boek leert. Schrijf zelf de betekenis of laat Earmark het doen.", "vocabWordPh": "Een nieuw woord", "vocabDefPh": "Betekenis (optioneel: schrijf hem zelf of tik op “Leg het me uit”)", "vocabDefineForMe": "✨ Leg het me uit", "vocabDefining": "Opzoeken…", "vocabAdd": "Woord toevoegen", "vocabHave": "“{w}” staat al in je lijst.", "vocabEmpty": "Nog geen woorden. Voeg er hierboven een toe, of houd de muis op een woord in het boek en tik op “Toevoegen aan mijn woorden”.", "vocabCount": "{n} woorden", "vocabDelete": "{w} verwijderen", "vocabSave": "Opslaan", "vocabCancel": "Annuleren", "vocabNoDef": "Nog geen betekenis.", "vocabRedefine": "Opnieuw uitleggen", "vocabEdit": "Bewerken", "vocabAddLookup": "Toevoegen aan mijn woorden", "vocabAdded": "“{w}” toegevoegd aan Mijn woorden."},
+    ru: {"tabVocab": "Мои слова", "vocabTitle": "Мой словарь", "vocabDesc": "Сохраняйте слова, которые учите по этой книге. Напишите значение сами или доверьте это Earmark.", "vocabWordPh": "Новое слово", "vocabDefPh": "Значение (по желанию: напишите сами или нажмите «Объясни за меня»)", "vocabDefineForMe": "✨ Объясни за меня", "vocabDefining": "Ищу…", "vocabAdd": "Добавить слово", "vocabHave": "«{w}» уже есть в списке.", "vocabEmpty": "Слов пока нет. Добавьте слово выше или задержите мышь на слове в книге и нажмите «Добавить в мои слова».", "vocabCount": "Слов: {n}", "vocabDelete": "Удалить {w}", "vocabSave": "Сохранить", "vocabCancel": "Отмена", "vocabNoDef": "Значения пока нет.", "vocabRedefine": "Объяснить заново", "vocabEdit": "Изменить", "vocabAddLookup": "Добавить в мои слова", "vocabAdded": "«{w}» добавлено в Мои слова."},
+    pl: {"tabVocab": "Moje słowa", "vocabTitle": "Moje słownictwo", "vocabDesc": "Zbieraj słowa, których uczysz się z tej książki. Wpisz znaczenie sam albo pozwól zrobić to Earmark.", "vocabWordPh": "Nowe słowo", "vocabDefPh": "Znaczenie (opcjonalnie: wpisz sam lub stuknij „Wyjaśnij za mnie”)", "vocabDefineForMe": "✨ Wyjaśnij za mnie", "vocabDefining": "Szukam…", "vocabAdd": "Dodaj słowo", "vocabHave": "„{w}” jest już na liście.", "vocabEmpty": "Brak słów. Dodaj słowo powyżej albo przytrzymaj mysz na słowie w książce i stuknij „Dodaj do moich słów”.", "vocabCount": "Słowa: {n}", "vocabDelete": "Usuń {w}", "vocabSave": "Zapisz", "vocabCancel": "Anuluj", "vocabNoDef": "Brak znaczenia.", "vocabRedefine": "Wyjaśnij ponownie", "vocabEdit": "Edytuj", "vocabAddLookup": "Dodaj do moich słów", "vocabAdded": "Dodano „{w}” do Moich słów."},
+    tr: {"tabVocab": "Kelimelerim", "vocabTitle": "Kelime listem", "vocabDesc": "Bu kitaptan öğrendiğin kelimeleri sakla. Anlamını kendin yaz ya da Earmark yazsın.", "vocabWordPh": "Yeni bir kelime", "vocabDefPh": "Anlamı (isteğe bağlı: kendin yaz ya da “Benim için tanımla”ya dokun)", "vocabDefineForMe": "✨ Benim için tanımla", "vocabDefining": "Aranıyor…", "vocabAdd": "Kelime ekle", "vocabHave": "“{w}” zaten listende.", "vocabEmpty": "Henüz kelime yok. Yukarıdan ekle ya da kitaptaki bir kelimenin üzerinde fareyi tut ve “Kelimelerime ekle”ye bas.", "vocabCount": "{n} kelime", "vocabDelete": "{w} sil", "vocabSave": "Kaydet", "vocabCancel": "İptal", "vocabNoDef": "Henüz anlam yok.", "vocabRedefine": "Yeniden tanımla", "vocabEdit": "Düzenle", "vocabAddLookup": "Kelimelerime ekle", "vocabAdded": "“{w}” Kelimelerim'e eklendi."},
+    ar: {"tabVocab": "كلماتي", "vocabTitle": "مفرداتي", "vocabDesc": "احفظ الكلمات التي تتعلّمها من هذا الكتاب. اكتب المعنى بنفسك أو دع Earmark يفعل ذلك.", "vocabWordPh": "كلمة جديدة", "vocabDefPh": "المعنى (اختياري: اكتبه بنفسك أو اضغط «عرّفها لي»)", "vocabDefineForMe": "✨ عرّفها لي", "vocabDefining": "جارٍ البحث…", "vocabAdd": "أضف الكلمة", "vocabHave": "«{w}» موجودة في قائمتك.", "vocabEmpty": "لا توجد كلمات بعد. أضف كلمة بالأعلى، أو ضع الفأرة على كلمة في الكتاب واضغط «أضف إلى كلماتي».", "vocabCount": "{n} كلمة", "vocabDelete": "احذف {w}", "vocabSave": "حفظ", "vocabCancel": "إلغاء", "vocabNoDef": "لا يوجد معنى بعد.", "vocabRedefine": "عرّفها مجددًا", "vocabEdit": "تعديل", "vocabAddLookup": "أضف إلى كلماتي", "vocabAdded": "أُضيفت «{w}» إلى كلماتي."},
+    hi: {"tabVocab": "मेरे शब्द", "vocabTitle": "मेरी शब्दावली", "vocabDesc": "इस किताब से सीखे जा रहे शब्द सहेजें। मतलब खुद लिखें या Earmark से लिखवाएँ।", "vocabWordPh": "नया शब्द", "vocabDefPh": "मतलब (वैकल्पिक: खुद लिखें या “मेरे लिए बताओ” दबाएँ)", "vocabDefineForMe": "✨ मेरे लिए बताओ", "vocabDefining": "ढूँढ रहे हैं…", "vocabAdd": "शब्द जोड़ें", "vocabHave": "“{w}” पहले से आपकी सूची में है।", "vocabEmpty": "अभी कोई शब्द नहीं। ऊपर जोड़ें, या किताब के किसी शब्द पर माउस रोककर “मेरे शब्दों में जोड़ें” दबाएँ।", "vocabCount": "{n} शब्द", "vocabDelete": "{w} हटाएँ", "vocabSave": "सहेजें", "vocabCancel": "रद्द करें", "vocabNoDef": "अभी कोई मतलब नहीं।", "vocabRedefine": "फिर से बताओ", "vocabEdit": "बदलें", "vocabAddLookup": "मेरे शब्दों में जोड़ें", "vocabAdded": "“{w}” मेरे शब्दों में जुड़ गया।"},
+    id: {"tabVocab": "Kataku", "vocabTitle": "Kosakataku", "vocabDesc": "Simpan kata-kata yang kamu pelajari dari buku ini. Tulis artinya sendiri, atau biar Earmark yang menulis.", "vocabWordPh": "Kata baru", "vocabDefPh": "Artinya (opsional: tulis sendiri atau ketuk “Artikan untukku”)", "vocabDefineForMe": "✨ Artikan untukku", "vocabDefining": "Mencari…", "vocabAdd": "Tambah kata", "vocabHave": "“{w}” sudah ada di daftarmu.", "vocabEmpty": "Belum ada kata. Tambahkan di atas, atau tahan mouse di satu kata dalam buku lalu tekan “Tambah ke kataku”.", "vocabCount": "{n} kata", "vocabDelete": "Hapus {w}", "vocabSave": "Simpan", "vocabCancel": "Batal", "vocabNoDef": "Belum ada arti.", "vocabRedefine": "Artikan lagi", "vocabEdit": "Ubah", "vocabAddLookup": "Tambah ke kataku", "vocabAdded": "“{w}” ditambahkan ke Kataku."},
+    th: {"tabVocab": "คำศัพท์ของฉัน", "vocabTitle": "คลังคำศัพท์ของฉัน", "vocabDesc": "เก็บคำที่คุณเรียนจากหนังสือเล่มนี้ เขียนความหมายเอง หรือให้ Earmark ช่วย", "vocabWordPh": "คำใหม่", "vocabDefPh": "ความหมาย (ไม่บังคับ: เขียนเอง หรือแตะ “ช่วยให้ความหมาย”)", "vocabDefineForMe": "✨ ช่วยให้ความหมาย", "vocabDefining": "กำลังค้นหา…", "vocabAdd": "เพิ่มคำ", "vocabHave": "“{w}” มีอยู่ในรายการแล้ว", "vocabEmpty": "ยังไม่มีคำ เพิ่มด้านบน หรือวางเมาส์ค้างบนคำในหนังสือแล้วกด “เพิ่มในคำศัพท์ของฉัน”", "vocabCount": "{n} คำ", "vocabDelete": "ลบ {w}", "vocabSave": "บันทึก", "vocabCancel": "ยกเลิก", "vocabNoDef": "ยังไม่มีความหมาย", "vocabRedefine": "ให้ความหมายใหม่", "vocabEdit": "แก้ไข", "vocabAddLookup": "เพิ่มในคำศัพท์ของฉัน", "vocabAdded": "เพิ่ม “{w}” ในคำศัพท์ของฉันแล้ว"},
+    ja: {"tabVocab": "わたしの単語", "vocabTitle": "単語帳", "vocabDesc": "この本で覚えたい単語を保存しよう。意味は自分で書いても、Earmarkに任せてもOK。", "vocabWordPh": "新しい単語", "vocabDefPh": "意味（自由：自分で書くか「意味を調べて」をタップ）", "vocabDefineForMe": "✨ 意味を調べて", "vocabDefining": "調べています…", "vocabAdd": "単語を追加", "vocabHave": "「{w}」はもうリストにあります。", "vocabEmpty": "まだ単語がありません。上で追加するか、本の単語にマウスを置いて「単語帳に追加」を押そう。", "vocabCount": "{n}語", "vocabDelete": "{w}を削除", "vocabSave": "保存", "vocabCancel": "キャンセル", "vocabNoDef": "まだ意味がありません。", "vocabRedefine": "もう一度調べる", "vocabEdit": "編集", "vocabAddLookup": "単語帳に追加", "vocabAdded": "「{w}」を単語帳に追加しました。"},
+    ko: {"tabVocab": "내 단어", "vocabTitle": "내 단어장", "vocabDesc": "이 책에서 배우는 단어를 모아 두세요. 뜻은 직접 쓰거나 Earmark에게 맡기세요.", "vocabWordPh": "새 단어", "vocabDefPh": "뜻 (선택: 직접 쓰거나 “뜻 찾아 줘”를 누르세요)", "vocabDefineForMe": "✨ 뜻 찾아 줘", "vocabDefining": "찾는 중…", "vocabAdd": "단어 추가", "vocabHave": "“{w}”은(는) 이미 목록에 있어요.", "vocabEmpty": "아직 단어가 없어요. 위에서 추가하거나, 책의 단어에 마우스를 올리고 “내 단어에 추가”를 누르세요.", "vocabCount": "단어 {n}개", "vocabDelete": "{w} 삭제", "vocabSave": "저장", "vocabCancel": "취소", "vocabNoDef": "아직 뜻이 없어요.", "vocabRedefine": "다시 찾기", "vocabEdit": "수정", "vocabAddLookup": "내 단어에 추가", "vocabAdded": "“{w}”을(를) 내 단어에 추가했어요."},
+    zh: {"tabVocab": "我的生词", "vocabTitle": "我的生词本", "vocabDesc": "把这本书里正在学的词存起来。释义可以自己写，也可以让 Earmark 帮你写。", "vocabWordPh": "一个新词", "vocabDefPh": "释义（可选：自己写，或点“帮我解释”）", "vocabDefineForMe": "✨ 帮我解释", "vocabDefining": "正在查找…", "vocabAdd": "添加生词", "vocabHave": "“{w}”已经在列表里了。", "vocabEmpty": "还没有生词。在上面添加，或把鼠标停在书中的词上，然后点“加入我的生词”。", "vocabCount": "{n} 个词", "vocabDelete": "删除 {w}", "vocabSave": "保存", "vocabCancel": "取消", "vocabNoDef": "还没有释义。", "vocabRedefine": "重新解释", "vocabEdit": "编辑", "vocabAddLookup": "加入我的生词", "vocabAdded": "已把“{w}”加入我的生词。"},
+    tl: {"tabVocab": "Aking mga salita", "vocabTitle": "Aking bokabularyo", "vocabDesc": "Itabi ang mga salitang natututunan mo sa aklat na ito. Isulat mo ang kahulugan, o hayaan ang Earmark.", "vocabWordPh": "Bagong salita", "vocabDefPh": "Kahulugan (opsyonal: isulat mo o i-tap ang “Ipaliwanag para sa akin”)", "vocabDefineForMe": "✨ Ipaliwanag para sa akin", "vocabDefining": "Hinahanap…", "vocabAdd": "Idagdag ang salita", "vocabHave": "Nasa listahan mo na ang “{w}”.", "vocabEmpty": "Wala pang salita. Magdagdag sa itaas, o itutok ang mouse sa isang salita sa aklat at pindutin ang “Idagdag sa aking mga salita”.", "vocabCount": "{n} salita", "vocabDelete": "Burahin ang {w}", "vocabSave": "I-save", "vocabCancel": "Kanselahin", "vocabNoDef": "Wala pang kahulugan.", "vocabRedefine": "Ipaliwanag muli", "vocabEdit": "I-edit", "vocabAddLookup": "Idagdag sa aking mga salita", "vocabAdded": "Naidagdag ang “{w}” sa Aking mga salita."},
+    he: {"tabVocab": "המילים שלי", "vocabTitle": "אוצר המילים שלי", "vocabDesc": "שמרו מילים שאתם לומדים מהספר. כתבו את הפירוש בעצמכם, או תנו ל-Earmark לעשות זאת.", "vocabWordPh": "מילה חדשה", "vocabDefPh": "הפירוש (רשות: כתבו בעצמכם או הקישו „תסביר לי”)", "vocabDefineForMe": "✨ תסביר לי", "vocabDefining": "מחפש…", "vocabAdd": "הוספת מילה", "vocabHave": "„{w}” כבר ברשימה.", "vocabEmpty": "אין עדיין מילים. הוסיפו למעלה, או השאירו את העכבר על מילה בספר ולחצו „הוספה למילים שלי”.", "vocabCount": "{n} מילים", "vocabDelete": "מחיקת {w}", "vocabSave": "שמירה", "vocabCancel": "ביטול", "vocabNoDef": "אין עדיין פירוש.", "vocabRedefine": "להסביר שוב", "vocabEdit": "עריכה", "vocabAddLookup": "הוספה למילים שלי", "vocabAdded": "„{w}” נוספה למילים שלי."},
+    el: {"tabVocab": "Οι λέξεις μου", "vocabTitle": "Το λεξιλόγιό μου", "vocabDesc": "Κράτα τις λέξεις που μαθαίνεις από αυτό το βιβλίο. Γράψε μόνος τη σημασία ή άφησε το Earmark να το κάνει.", "vocabWordPh": "Νέα λέξη", "vocabDefPh": "Η σημασία (προαιρετικά: γράψ' τη ή πάτα «Εξήγησέ τη μου»)", "vocabDefineForMe": "✨ Εξήγησέ τη μου", "vocabDefining": "Αναζήτηση…", "vocabAdd": "Προσθήκη λέξης", "vocabHave": "Η «{w}» είναι ήδη στη λίστα.", "vocabEmpty": "Δεν υπάρχουν λέξεις. Πρόσθεσε μία παραπάνω ή κράτα το ποντίκι σε μια λέξη του βιβλίου και πάτα «Προσθήκη στις λέξεις μου».", "vocabCount": "{n} λέξεις", "vocabDelete": "Διαγραφή {w}", "vocabSave": "Αποθήκευση", "vocabCancel": "Άκυρο", "vocabNoDef": "Δεν υπάρχει σημασία ακόμη.", "vocabRedefine": "Εξήγησε ξανά", "vocabEdit": "Επεξεργασία", "vocabAddLookup": "Προσθήκη στις λέξεις μου", "vocabAdded": "Η «{w}» προστέθηκε στις λέξεις μου."},
+    sv: {"tabVocab": "Mina ord", "vocabTitle": "Min ordlista", "vocabDesc": "Spara orden du lär dig i den här boken. Skriv betydelsen själv eller låt Earmark göra det.", "vocabWordPh": "Ett nytt ord", "vocabDefPh": "Betydelse (valfritt: skriv själv eller tryck på ”Förklara åt mig”)", "vocabDefineForMe": "✨ Förklara åt mig", "vocabDefining": "Slår upp…", "vocabAdd": "Lägg till ord", "vocabHave": "”{w}” finns redan i listan.", "vocabEmpty": "Inga ord än. Lägg till ett ovan, eller håll musen på ett ord i boken och tryck på ”Lägg till i mina ord”.", "vocabCount": "{n} ord", "vocabDelete": "Ta bort {w}", "vocabSave": "Spara", "vocabCancel": "Avbryt", "vocabNoDef": "Ingen betydelse än.", "vocabRedefine": "Förklara igen", "vocabEdit": "Redigera", "vocabAddLookup": "Lägg till i mina ord", "vocabAdded": "”{w}” har lagts till i Mina ord."},
+    uk: {"tabVocab": "Мої слова", "vocabTitle": "Мій словник", "vocabDesc": "Зберігайте слова, які вчите з цієї книжки. Напишіть значення самі або доручіть це Earmark.", "vocabWordPh": "Нове слово", "vocabDefPh": "Значення (за бажанням: напишіть самі або натисніть «Поясни за мене»)", "vocabDefineForMe": "✨ Поясни за мене", "vocabDefining": "Шукаю…", "vocabAdd": "Додати слово", "vocabHave": "«{w}» уже є у списку.", "vocabEmpty": "Слів поки немає. Додайте слово вище або затримайте мишу на слові в книжці й натисніть «Додати до моїх слів».", "vocabCount": "Слів: {n}", "vocabDelete": "Видалити {w}", "vocabSave": "Зберегти", "vocabCancel": "Скасувати", "vocabNoDef": "Значення поки немає.", "vocabRedefine": "Пояснити знову", "vocabEdit": "Змінити", "vocabAddLookup": "Додати до моїх слів", "vocabAdded": "«{w}» додано до Моїх слів."},
+    ro: {"tabVocab": "Cuvintele mele", "vocabTitle": "Vocabularul meu", "vocabDesc": "Păstrează cuvintele pe care le înveți din această carte. Scrie singur sensul sau lasă Earmark să o facă.", "vocabWordPh": "Un cuvânt nou", "vocabDefPh": "Sensul (opțional: scrie-l tu sau atinge „Definește-l pentru mine”)", "vocabDefineForMe": "✨ Definește-l pentru mine", "vocabDefining": "Caut…", "vocabAdd": "Adaugă cuvântul", "vocabHave": "„{w}” e deja în listă.", "vocabEmpty": "Niciun cuvânt încă. Adaugă unul mai sus sau ține mouse-ul pe un cuvânt din carte și apasă „Adaugă la cuvintele mele”.", "vocabCount": "{n} cuvinte", "vocabDelete": "Șterge {w}", "vocabSave": "Salvează", "vocabCancel": "Anulează", "vocabNoDef": "Încă fără sens.", "vocabRedefine": "Definește din nou", "vocabEdit": "Editează", "vocabAddLookup": "Adaugă la cuvintele mele", "vocabAdded": "„{w}” a fost adăugat la Cuvintele mele."},
+    fa: {"tabVocab": "واژه‌های من", "vocabTitle": "واژه‌نامه من", "vocabDesc": "واژه‌هایی را که از این کتاب یاد می‌گیری نگه دار. معنی را خودت بنویس یا بگذار Earmark بنویسد.", "vocabWordPh": "یک واژه تازه", "vocabDefPh": "معنی (اختیاری: خودت بنویس یا «برایم تعریف کن» را بزن)", "vocabDefineForMe": "✨ برایم تعریف کن", "vocabDefining": "در حال جستجو…", "vocabAdd": "افزودن واژه", "vocabHave": "«{w}» از قبل در فهرستت هست.", "vocabEmpty": "هنوز واژه‌ای نیست. بالا اضافه کن، یا نشانگر را روی واژه‌ای در کتاب نگه دار و «افزودن به واژه‌های من» را بزن.", "vocabCount": "{n} واژه", "vocabDelete": "حذف {w}", "vocabSave": "ذخیره", "vocabCancel": "لغو", "vocabNoDef": "هنوز معنی ندارد.", "vocabRedefine": "دوباره تعریف کن", "vocabEdit": "ویرایش", "vocabAddLookup": "افزودن به واژه‌های من", "vocabAdded": "«{w}» به واژه‌های من اضافه شد."},
+    ur: {"tabVocab": "میرے الفاظ", "vocabTitle": "میری لغت", "vocabDesc": "اس کتاب سے سیکھے جا رہے الفاظ محفوظ کریں۔ مطلب خود لکھیں یا Earmark سے لکھوائیں۔", "vocabWordPh": "نیا لفظ", "vocabDefPh": "مطلب (اختیاری: خود لکھیں یا “میرے لیے بتاؤ” دبائیں)", "vocabDefineForMe": "✨ میرے لیے بتاؤ", "vocabDefining": "تلاش ہو رہی ہے…", "vocabAdd": "لفظ شامل کریں", "vocabHave": "“{w}” پہلے سے فہرست میں ہے۔", "vocabEmpty": "ابھی کوئی لفظ نہیں۔ اوپر شامل کریں، یا کتاب کے کسی لفظ پر ماؤس روک کر “میرے الفاظ میں شامل کریں” دبائیں۔", "vocabCount": "{n} الفاظ", "vocabDelete": "{w} مٹائیں", "vocabSave": "محفوظ کریں", "vocabCancel": "منسوخ", "vocabNoDef": "ابھی کوئی مطلب نہیں۔", "vocabRedefine": "دوبارہ بتاؤ", "vocabEdit": "ترمیم", "vocabAddLookup": "میرے الفاظ میں شامل کریں", "vocabAdded": "“{w}” میرے الفاظ میں شامل ہو گیا۔"}
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -3339,11 +3431,22 @@
       glossaryTip = el("div", "glossary-tip");
       glossaryTip.hidden = true;
       document.body.appendChild(glossaryTip);
+      // You can move onto the box (to press "Add to my words"); it closes when you leave it.
+      glossaryTip.addEventListener("mouseenter", () => clearTimeout(glossaryHideTimer));
+      glossaryTip.addEventListener("mouseleave", hideGlossaryTip);
+      document.addEventListener("touchstart", (e) => { if (!glossaryTip.hidden && !e.target.closest(".glossary-tip")) hideGlossaryTip(); }, { passive: true });
     }
     return glossaryTip;
   }
 
+  let glossaryHideTimer = 0;
+  function hideGlossarySoon(ms){
+    if (glossaryTimer) { clearTimeout(glossaryTimer); glossaryTimer = null; }   // the hold hadn't finished yet
+    clearTimeout(glossaryHideTimer);
+    glossaryHideTimer = setTimeout(hideGlossaryTip, ms);
+  }
   function hideGlossaryTip(){
+    clearTimeout(glossaryHideTimer);
     if (glossaryTimer) { clearTimeout(glossaryTimer); glossaryTimer = null; }
     glossaryToken++;
     if (glossaryTip) glossaryTip.hidden = true;
@@ -3381,6 +3484,11 @@
       s.appendChild(label);
       s.appendChild(document.createTextNode(syns.join(", ")));
       tip.appendChild(s);
+    }
+    if (state.currentBookId && def) {
+      const addB = el("button", "gt-add"); addB.type = "button"; addB.textContent = "+ " + t("vocabAddLookup");
+      addB.addEventListener("click", (e) => { e.stopPropagation(); addWordFromLookup(word, (pos ? "(" + pos + ") " : "") + def); addB.disabled = true; });
+      tip.appendChild(addB);
     }
   }
 
@@ -3449,11 +3557,97 @@
       }, GLOSSARY_DELAY);
     }
     span.addEventListener("mouseenter", start);
-    span.addEventListener("mouseleave", hideGlossaryTip);
+    span.addEventListener("mouseleave", () => hideGlossarySoon(350));
     span.addEventListener("touchstart", start, { passive: true });
-    span.addEventListener("touchend", hideGlossaryTip);
+    // After a long press the box stays a few seconds, so its button can be tapped.
+    span.addEventListener("touchend", () => { if (glossaryTip && !glossaryTip.hidden) hideGlossarySoon(6000); else hideGlossaryTip(); });
     span.addEventListener("touchcancel", hideGlossaryTip);
     span.addEventListener("touchmove", hideGlossaryTip);
+  }
+
+  /* ---- answers without * and # ----
+     The AI writes a little Markdown (**bold**, # headings, - bullets).
+     Instead of showing those symbols, the answer is laid out with real
+     bold text, headings and lists; the symbols are never shown or read
+     aloud, and each word still lights up as it's read. */
+  function inlineMarks(line){
+    // → { text, marks:[[start, end, "b"|"i"]] } with the symbols removed.
+    let text = "", marks = [], i = 0;
+    const re = /(\*\*|__)(?=\S)([\s\S]*?\S)\1|(^|[^\w*])\*(?=[^\s*])([^*\n]*?[^\s*])\*(?![\w*])|`([^`\n]+)`/g;
+    let m;
+    while ((m = re.exec(line))) {
+      if (m[1]) { text += line.slice(i, m.index); marks.push([text.length, text.length + m[2].length, "b"]); text += m[2]; }
+      else if (m[4] != null) { text += line.slice(i, m.index) + m[3]; marks.push([text.length, text.length + m[4].length, "i"]); text += m[4]; }
+      else { text += line.slice(i, m.index) + m[5]; }
+      i = m.index + m[0].length;
+    }
+    text += line.slice(i);
+    // Any stray markers left over (an unclosed ** while it is still being written).
+    const cleaned = text.replace(/\*\*|__/g, "");
+    if (cleaned !== text) { marks = marks.filter(r => r[1] <= cleaned.length); text = cleaned; }
+    return { text, marks };
+  }
+  function parseAnswer(raw){
+    // → blocks: { kind: "h"|"p"|"li"|"oli", num, text, marks }
+    const blocks = [];
+    for (let line of String(raw || "").replace(/\r/g, "").split("\n")) {
+      if (/^\s*([-*_]\s*){3,}$/.test(line)) continue;                       // --- rules
+      if (/^\s*\|/.test(line)) line = line.replace(/\|/g, " ").replace(/\s+-{2,}\s+/g, " ");   // table rows → plain
+      let kind = "p", num = null, m;
+      if ((m = line.match(/^\s*#{1,6}\s+(.*)$/))) { kind = "h"; line = m[1].replace(/\s*#+\s*$/, ""); }
+      else if ((m = line.match(/^\s*[-*•+]\s+(.*)$/))) { kind = "li"; line = m[1]; }
+      else if ((m = line.match(/^\s*(\d{1,3})[.)]\s+(.*)$/))) { kind = "oli"; num = m[1]; line = m[2]; }
+      else if ((m = line.match(/^\s*>\s?(.*)$/))) line = m[1];
+      const { text, marks } = inlineMarks(line);
+      // A line that is all bold ("**Key points:**") reads as a heading.
+      if (kind === "p" && marks.length === 1 && marks[0][0] === 0 && marks[0][1] >= text.replace(/[:：\s]+$/, "").length && text.length < 80) kind = "h";
+      if (!text.trim()) { if (blocks.length && blocks[blocks.length - 1].kind !== "gap") blocks.push({ kind: "gap" }); continue; }
+      blocks.push({ kind, num, text: kind === "oli" ? num + ". " + text : text, marks: kind === "oli" ? marks.map(r => [r[0] + num.length + 2, r[1] + num.length + 2, r[2]]) : marks });
+    }
+    while (blocks.length && blocks[blocks.length - 1].kind === "gap") blocks.pop();
+    return blocks;
+  }
+  // Plain words only (for text shown while an answer is still arriving).
+  function plainAnswer(raw){ return parseAnswer(raw).map(b => b.kind === "gap" ? "" : (b.kind === "li" ? "• " : "") + b.text).join("\n"); }
+  function renderRichWordSpans(container, raw){
+    hideGlossaryTip();
+    container.innerHTML = "";
+    container.classList.add("rich");
+    const words = [], spanEls = [];
+    let text = "", list = null;
+    for (const b of parseAnswer(raw)) {
+      if (b.kind === "gap") { list = null; continue; }
+      let node;
+      if (b.kind === "li" || b.kind === "oli") {
+        const tag = b.kind === "li" ? "ul" : "ol";
+        if (!list || list.tagName.toLowerCase() !== tag) { list = el(tag); container.appendChild(list); }
+        node = el("li"); list.appendChild(node);
+        if (b.kind === "oli") node.classList.add("num");
+      } else {
+        list = null;
+        node = el(b.kind === "h" ? "h4" : "p");
+        container.appendChild(node);
+      }
+      if (text) text += "\n";
+      const base = text.length;
+      text += b.text;
+      const re = /\S+/g;
+      let m, cursor = 0;
+      while ((m = re.exec(b.text))) {
+        if (m.index > cursor) node.appendChild(document.createTextNode(b.text.slice(cursor, m.index)));
+        const span = el("span", "word");
+        span.textContent = m[0];
+        const mk = b.marks.find(r => m.index < r[1] && m.index + m[0].length > r[0]);
+        if (mk) span.classList.add(mk[2] === "b" ? "w-b" : "w-i");
+        node.appendChild(span);
+        words.push({ start: base + m.index, end: base + m.index + m[0].length });
+        spanEls.push(span);
+        cursor = m.index + m[0].length;
+      }
+    }
+    const map = { words, spanEls, text };
+    spanEls.forEach((span, i) => attachGlossary(span, map, i));
+    return map;
   }
 
   function renderWordSpans(container, text){
@@ -4134,6 +4328,11 @@
       "- Keep answers conversational and clear since they may be read aloud — say math or symbols in words too " +
       "(for example \"x squared plus one\", not just the symbols).\n" +
       "- Be thorough like a good tutor, but not padded — no restating the question, no filler.\n" +
+      "- Shape every answer the same way: first answer the question in detail, in clear full paragraphs — describe " +
+      "and explain whatever the student is asking about (what it is, how and why, with examples from the text). " +
+      "Then finish with a short list headed \"Key points:\" of 3 to 5 bullet points (lines starting with \"- \") " +
+      "that sum up the answer.\n" +
+      "- Formatting: you may put important words in **bold**. Don't use tables, code blocks, or lines starting with #.\n" +
       "- When a BOOK GUIDE is given, use it to see the whole book: how its parts, people and events connect. " +
       "Collections, series and trilogies are often linked loosely — the same characters, places, objects, " +
       "promises or themes returning in a later part — so look for those links and name them, instead of treating " +
@@ -5445,7 +5644,9 @@
     const wrap = el("div", "msg " + m.role);
     const bubble = el("div", "bubble" + (m.pending ? " pending" : ""));
     if (m.role === "assistant" && !m.pending) {
-      m._wordMap = renderWordSpans(bubble, m.text);
+      m._wordMap = renderRichWordSpans(bubble, m.text);
+    } else if (m.role === "assistant") {
+      bubble.textContent = plainAnswer(m.text) || "…";
     } else {
       bubble.textContent = m.text || "…";
     }
@@ -5529,7 +5730,7 @@
         onText: ({ text }) => {
           pendingMsg.text = text;
           const els = bubbleEls();
-          if (els.length) els[els.length - 1].textContent = text;
+          if (els.length) els[els.length - 1].textContent = plainAnswer(text);
         }
       });
       let built = buildMessages(promptBudget(), 6);
@@ -6047,6 +6248,8 @@
       try { await db.doc("gameStats/" + bookId).delete(); } catch (e) {}
       try { await db.doc("qbank/" + bookId).delete(); } catch (e) {}
       try { await db.doc("guides/" + bookId).delete(); } catch (e) {}
+      try { await db.doc("vocab/" + bookId).delete(); } catch (e) {}
+      vocab.lists.delete(bookId);
       guides.delete(bookId);
       qbanks.delete(bookId);
     }
@@ -6065,6 +6268,7 @@
     $("panelAsk").hidden = tab !== "ask";
     $("panelCards").hidden = tab !== "cards";
     $("panelQuiz").hidden = tab !== "quiz";
+    $("panelVocab").hidden = tab !== "vocab";
     $("panelGame").hidden = tab !== "game";
     if (tab === "ask" && stripWordMap) renderStrip();   // page label + saved spot, now that it is visible
     renderStudy();
@@ -6077,10 +6281,165 @@
     if (!state.currentBookId) return;
     if (study.tab === "cards") renderCards();
     else if (study.tab === "quiz") renderQuiz();
+    else if (study.tab === "vocab") renderVocab();
     else if (study.tab === "game") renderGame();
   }
 
   function isShowing(tab, bookId){ return study.tab === tab && state.currentBookId === bookId; }
+
+  /* ---------------- My words (vocabulary) ----------------
+     Students collect words from the book. They can write the meaning
+     themselves, or press "Define it for me": the AI reads where the word is
+     used in the book and writes a simple definition into the box. Saved
+     per book. */
+  const vocab = { lists: new Map(), busy: new Set(), editing: null };
+  async function loadVocab(bookId){
+    if (vocab.lists.has(bookId)) return vocab.lists.get(bookId);
+    let words = [];
+    if (isSavedBook(bookId)) { try { const d = await db.doc("vocab/" + bookId).get(); if (d.exists) words = d.data().words || []; } catch (e) {} }
+    vocab.lists.set(bookId, words);
+    return words;
+  }
+  function saveVocab(bookId){
+    if (!isSavedBook(bookId)) return;
+    db.doc("vocab/" + bookId).set({ bookId, words: vocab.lists.get(bookId) || [], updatedAt: new Date().toISOString() }).catch(() => toast(t("saveError")));
+  }
+  // Up to 3 sentences from the book that use the word, to explain it in context.
+  function vocabContext(bookId, word){
+    const loaded = state.loaded.get(bookId);
+    if (!loaded) return [];
+    const re = new RegExp("(^|[^\\p{L}])" + word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![\\p{L}])", "iu");
+    const out = [];
+    for (const p of loaded.pages || []) {
+      const text = (p.text || "").replace(/\s+/g, " ");
+      const m = text.match(re);
+      if (!m) continue;
+      const at = m.index;
+      const from = Math.max(0, text.lastIndexOf(". ", at) + 1), to = text.indexOf(". ", at + word.length);
+      out.push({ page: p.pageNum, text: text.slice(from, to < 0 ? Math.min(text.length, at + 200) : to + 1).trim().slice(0, 300) });
+      if (out.length >= 3) break;
+    }
+    return out;
+  }
+  async function defineWord(bookId, word){
+    const book = state.books.find(b => b.id === bookId) || { title: "" };
+    const ctx = vocabContext(bookId, word);
+    const lang = currentLangMeta().name;
+    const prompt = "A student reading " + bookLabel(book) + " wants to learn the word or phrase \"" + word + "\".\n" +
+      (ctx.length ? "This is how the book uses it:\n" + ctx.map(c => "- (p. " + c.page + ") " + c.text).join("\n") + "\n" : "") +
+      "Write a short, clear definition in " + lang + " for a student:\n" +
+      "Line 1: the kind of word in brackets (noun, verb, adjective…) and then its meaning in one or two simple sentences" + (ctx.length ? ", the way it is used in this book" : "") + ".\n" +
+      "Line 2: \"Example:\" and one short example sentence" + (ctx.length ? " (from the book if it helps)" : "") + ".\n" +
+      "Plain text only — no *, #, bullet points or other formatting. Reply with just those two lines.";
+    const r = await sample(prompt, { modelTier: "quick", cache: false });
+    return plainAnswer(r.text || "").replace(/^["“]|["”]$/g, "").trim().slice(0, 600);
+  }
+  function renderVocab(){
+    const bookId = state.currentBookId;
+    if (!bookId) return;
+    const inner = panelShell("panelVocab");
+    if (!vocab.lists.has(bookId)) {
+      inner.appendChild(busyNote(t("pdfLoading")));
+      loadVocab(bookId).then(() => { if (isShowing("vocab", bookId)) renderVocab(); });
+      return;
+    }
+    const words = vocab.lists.get(bookId);
+    const head = el("div", "vocab-head");
+    const h = el("h3"); h.textContent = t("vocabTitle"); head.appendChild(h);
+    const p = el("p"); p.textContent = t("vocabDesc"); head.appendChild(p);
+    inner.appendChild(head);
+
+    // Add a word
+    const form = el("div", "vocab-form");
+    const wIn = el("input", "vocab-word-in"); wIn.type = "text"; wIn.placeholder = t("vocabWordPh"); wIn.setAttribute("aria-label", t("vocabWordPh")); wIn.maxLength = 60;
+    const dIn = el("textarea", "vocab-def-in"); dIn.rows = 3; dIn.placeholder = t("vocabDefPh"); dIn.setAttribute("aria-label", t("vocabDefPh"));
+    const draft = vocab.draft && vocab.draft.bookId === bookId ? vocab.draft : (vocab.draft = { bookId, word: "", def: "" });
+    wIn.value = draft.word; dIn.value = draft.def;
+    wIn.addEventListener("input", () => { draft.word = wIn.value; });
+    dIn.addEventListener("input", () => { draft.def = dIn.value; });
+    form.appendChild(wIn); form.appendChild(dIn);
+    const row = el("div", "study-row");
+    const defBtn = goButton("pill-btn vocab-magic", vocab.busy.has("draft") ? t("vocabDefining") : t("vocabDefineForMe"), async () => {
+      const word = wIn.value.trim();
+      if (!word) { wIn.focus(); return; }
+      vocab.busy.add("draft"); renderVocab();
+      try { draft.def = await defineWord(bookId, word); }
+      catch (e) { toast(sampleErrorText(e)); }
+      finally { vocab.busy.delete("draft"); if (isShowing("vocab", bookId)) renderVocab(); }
+    });
+    defBtn.disabled = !sample || vocab.busy.has("draft");
+    row.appendChild(defBtn);
+    const add = () => {
+      const word = wIn.value.trim().replace(/\s+/g, " ");
+      if (!word) { wIn.focus(); return; }
+      if (words.some(x => x.w.toLowerCase() === word.toLowerCase())) { toast(t("vocabHave", { w: word })); return; }
+      words.unshift({ w: word, def: dIn.value.trim(), added: new Date().toISOString() });
+      draft.word = ""; draft.def = "";
+      saveVocab(bookId);
+      renderVocab();
+      const again = document.querySelector("#panelVocab .vocab-word-in"); if (again) again.focus();
+    };
+    row.appendChild(goButton("cta", t("vocabAdd"), add));
+    wIn.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); add(); } });
+    form.appendChild(row);
+    inner.appendChild(form);
+
+    // The list
+    if (!words.length) { const n = el("div", "setup-note"); n.textContent = t("vocabEmpty"); inner.appendChild(n); return; }
+    const count = el("div", "vocab-count"); count.textContent = t("vocabCount", { n: words.length }); inner.appendChild(count);
+    const list = el("div", "vocab-list");
+    words.forEach((item, i) => {
+      const card = el("div", "vocab-card");
+      const top = el("div", "vocab-top");
+      const w = el("div", "vocab-w"); w.textContent = item.w; top.appendChild(w);
+      const spoken = item.w + (item.def ? ". " + item.def : "");
+      const map = { text: spoken, words: [...spoken.matchAll(/\S+/g)].map(m => ({ start: m.index, end: m.index + m[0].length })), spanEls: [] };
+      top.appendChild(listenButton("say:vocab:" + bookId + ":" + i + ":" + spoken, () => map));
+      const del = el("button", "ictrl vocab-del"); del.type = "button"; del.setAttribute("aria-label", t("vocabDelete", { w: item.w }));
+      del.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+      del.addEventListener("click", () => { words.splice(i, 1); saveVocab(bookId); renderVocab(); });
+      top.appendChild(del);
+      card.appendChild(top);
+      const key = "w:" + item.w;
+      if (vocab.editing === key) {
+        const ta = el("textarea", "vocab-def-in"); ta.rows = 3; ta.value = item.def || ""; ta.placeholder = t("vocabDefPh");
+        card.appendChild(ta);
+        const r2 = el("div", "study-row");
+        r2.appendChild(goButton("cta", t("vocabSave"), () => { item.def = ta.value.trim(); vocab.editing = null; saveVocab(bookId); renderVocab(); }));
+        r2.appendChild(goButton("pill-btn", t("vocabCancel"), () => { vocab.editing = null; renderVocab(); }));
+        card.appendChild(r2);
+        setTimeout(() => ta.focus(), 0);
+      } else {
+        const d = el("div", "vocab-def" + (item.def ? "" : " empty"));
+        d.textContent = vocab.busy.has(key) ? t("vocabDefining") : (item.def || t("vocabNoDef"));
+        card.appendChild(d);
+        const r2 = el("div", "vocab-actions");
+        const magic = goButton("link-btn", item.def ? t("vocabRedefine") : t("vocabDefineForMe"), async () => {
+          vocab.busy.add(key); renderVocab();
+          try { item.def = await defineWord(bookId, item.w); saveVocab(bookId); }
+          catch (e) { toast(sampleErrorText(e)); }
+          finally { vocab.busy.delete(key); if (isShowing("vocab", bookId)) renderVocab(); }
+        });
+        magic.disabled = !sample || vocab.busy.has(key);
+        r2.appendChild(magic);
+        r2.appendChild(goButton("link-btn", t("vocabEdit"), () => { vocab.editing = key; renderVocab(); }));
+        card.appendChild(r2);
+      }
+      list.appendChild(card);
+    });
+    inner.appendChild(list);
+  }
+  // From the word look-up box: add it (with the meaning shown there) to My words.
+  async function addWordFromLookup(word, def){
+    const bookId = state.currentBookId;
+    if (!bookId) return;
+    const words = await loadVocab(bookId);
+    if (words.some(x => x.w.toLowerCase() === word.toLowerCase())) { toast(t("vocabHave", { w: word })); return; }
+    words.unshift({ w: word, def: def || "", added: new Date().toISOString() });
+    saveVocab(bookId);
+    toast(t("vocabAdded", { w: word }));
+    if (isShowing("vocab", bookId)) renderVocab();
+  }
 
   function panelShell(panelId){
     const panel = $(panelId);
@@ -7882,7 +8241,7 @@
 
   // How many questions each game gets ready before it starts. Monkey Climb
   // can need at most 25 right answers plus one wrong one per heart.
-  function questionsNeeded(mode){ return mode === "monkey" ? MONKEY_GOAL + MONKEY_LIVES + 2 : 30; }
+  function questionsNeeded(mode){ return mode === "monkey" ? MONKEY_GOAL + MONKEY_LIVES + 3 : 30; }
 
   const PUZZLE_MODES = ["crossword", "fib"];
   const ARENA_MODES = ["hall", "zombies", "slimes"];
@@ -9049,7 +9408,7 @@
         '<g id="mkMonkey"><g id="mkMonkeyBody">' +
           '<path d="M0 0 C 6 18 14 38 13 60" stroke="#6b3f1d" stroke-width="9" fill="none" stroke-linecap="round"/>' +
           '<path d="M-4 96 C -42 106 -46 70 -26 66 C -14 64 -16 78 -24 78" stroke="#6b3f1d" stroke-width="6" fill="none" stroke-linecap="round"/>' +
-          '<path d="M-14 66 C -28 80 -28 92 -22 104" stroke="#6b3f1d" stroke-width="8" fill="none" stroke-linecap="round"/>' +
+          '<path id="mkFreeArm" d="M-14 66 C -28 80 -28 92 -22 104" stroke="#6b3f1d" stroke-width="8" fill="none" stroke-linecap="round"/>' +
           '<path d="M-8 98 C -12 112 -10 122 -16 132M8 98 C 12 112 10 122 16 132" stroke="#6b3f1d" stroke-width="8" fill="none" stroke-linecap="round"/>' +
           '<ellipse cx="2" cy="80" rx="18" ry="24" fill="#8a5a2b"/><ellipse cx="2" cy="84" rx="11" ry="15" fill="#e8c79a"/>' +
           '<circle cx="-22" cy="40" r="8" fill="#8a5a2b"/><circle cx="-22" cy="40" r="4.5" fill="#e8c79a"/><circle cx="16" cy="40" r="8" fill="#8a5a2b"/><circle cx="16" cy="40" r="4.5" fill="#e8c79a"/>' +
@@ -9199,14 +9558,20 @@
         const e = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
         monkey.mx = from.x + (to.x - from.x) * e;
         monkey.my = from.y + (to.y - from.y) * e + Math.sin(Math.PI * e) * 70;   // swoop down and up
-        monkey.rot = -360 * e;                                                 // happy flip
-        monkey.hand = e < 0.5 ? h0 : -h0;                                      // grabs the next branch with the other hand
+        monkey.rot = -22 * Math.sin(Math.PI * e);                              // leans into the swing
+        // Hand over hand: the free arm reaches up and forward, grabs the next
+        // branch half-way, and from then on the monkey hangs by that hand.
+        monkey.hand = e < 0.5 ? h0 : -h0;
+        const reach = e < 0.5 ? Math.min(1, e / 0.4) : Math.max(0, 1 - (e - 0.5) / 0.3);
+        const fa = $("mkFreeArm");
+        if (fa) fa.setAttribute("transform", "rotate(" + (-165 * reach).toFixed(1) + " -14 66)");
         monkey.worldX = w0 + (w1 - w0) * e;
         monkey.bend = b0 * (1 - e);
         const br = $("mkBranch" + monkey.climbed); if (br) { const pv = PIVOT(monkey.climbed); br.setAttribute("transform", "rotate(" + monkey.bend.toFixed(1) + " " + pv.x + " " + pv.y + ")"); }
       }, () => {
         monkey.climbed++;
         monkey.bend = 0; monkey.rot = 0;
+        const fa = $("mkFreeArm"); if (fa) fa.removeAttribute("transform");
         updateMonkeyHud();
         if (monkey.climbed >= MONKEY_GOAL) { endMonkey(true); return; }
         nextMonkeyQuestion();
@@ -9223,7 +9588,6 @@
     monkey.reason = reason;
     monkey.phase = "falling";
     if (q) monkey.missed.push(q);
-    monkey.lives--;
     beep("wrong");
     updateMonkeyHud();
     renderMonkeyPanel();
@@ -9239,6 +9603,7 @@
       beep("thud");
       splash(monkey.mx, 300);
       updateMonkeyHud();
+      // 3 chances to climb back up (the hearts); a fall with none left ends the climb.
       if (monkey.lives <= 0) { endMonkey(false); return; }
       monkey.phase = "fallen";
       renderMonkeyPanel();
@@ -9260,7 +9625,10 @@
   }
 
   function climbBackUp(){
+    if (monkey.phase !== "fallen" || monkey.lives <= 0) return;
     pauseSpeech();
+    monkey.lives--;              // one of the 3 chances used
+    updateMonkeyHud();
     const br = $("mkBranch" + monkey.climbed);
     if (br) { br.removeAttribute("transform"); br.style.opacity = ""; }
     monkey.phase = "swinging";
@@ -9376,7 +9744,7 @@
       const row = el("div", "study-row");
       row.appendChild(listenButton("say:mkfb:" + fbMap.text, () => fbMap));
       row.appendChild(el("span", "spacer"));
-      const up = goButton("cta go-continue", t("monkeyClimbBack"), climbBackUp);
+      const up = goButton("cta go-continue", t("monkeyClimbBack") + " · " + t("monkeyClimbsLeft", { n: monkey.lives }), climbBackUp);
       up.disabled = ph === "falling";
       row.appendChild(up);
       fb.appendChild(row);
@@ -9974,7 +10342,7 @@
   /* ---------------- boot ---------------- */
   {
     const savedTab = safeStorage("get", "earmark_tab");
-    if (savedTab === "cards" || savedTab === "quiz" || savedTab === "game") study.tab = savedTab;
+    if (savedTab === "cards" || savedTab === "quiz" || savedTab === "game" || savedTab === "vocab") study.tab = savedTab;
   }
   (async () => {
     populateLangSelect();
