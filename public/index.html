@@ -107,6 +107,16 @@
     color:var(--ink);cursor:pointer;flex-shrink:0;
   }
   @media (max-width:760px){ .menu-btn{ display:flex; } }
+  /* Hide / show the library panel (bigger screens; phones use the ☰ menu). */
+  .menu-btn.side-toggle{ display:flex; }
+  .menu-btn.side-toggle:hover{ border-color:var(--accent); color:var(--accent); }
+  @media (max-width:760px){ .menu-btn.side-toggle{ display:none; } }
+  body.side-hidden .side-toggle .st-arrow{ transform:scaleX(-1); transform-origin:14px 12px; }
+  @media (min-width:761px){
+    body.side-hidden .shell{ grid-template-columns:1fr; }
+    body.side-hidden .sidebar{ display:none; }
+    body.side-hidden .main{ grid-column:1; }
+  }
   .appbar-home{
     display:flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer;
     font-family:var(--font-display); font-weight:700; font-size:17px; color:var(--ink); padding:4px 2px;
@@ -967,6 +977,9 @@
 
 <div class="appbar">
   <div class="appbar-left">
+    <button class="menu-btn side-toggle" id="sideToggle" type="button" aria-controls="sidebar" aria-expanded="true">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16" /><path class="st-arrow" d="M15.5 9.5 13 12l2.5 2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
     <button class="menu-btn" id="menuBtn" aria-label="Open library">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
     </button>
@@ -3265,6 +3278,34 @@
     fa: {"tabVocab": "واژه‌های من", "vocabTitle": "واژه‌نامه من", "vocabDesc": "واژه‌هایی را که از این کتاب یاد می‌گیری نگه دار. معنی را خودت بنویس یا بگذار Earmark بنویسد.", "vocabWordPh": "یک واژه تازه", "vocabDefPh": "معنی (اختیاری: خودت بنویس یا «برایم تعریف کن» را بزن)", "vocabDefineForMe": "✨ برایم تعریف کن", "vocabDefining": "در حال جستجو…", "vocabAdd": "افزودن واژه", "vocabHave": "«{w}» از قبل در فهرستت هست.", "vocabEmpty": "هنوز واژه‌ای نیست. بالا اضافه کن، یا نشانگر را روی واژه‌ای در کتاب نگه دار و «افزودن به واژه‌های من» را بزن.", "vocabCount": "{n} واژه", "vocabDelete": "حذف {w}", "vocabSave": "ذخیره", "vocabCancel": "لغو", "vocabNoDef": "هنوز معنی ندارد.", "vocabRedefine": "دوباره تعریف کن", "vocabEdit": "ویرایش", "vocabAddLookup": "افزودن به واژه‌های من", "vocabAdded": "«{w}» به واژه‌های من اضافه شد."},
     ur: {"tabVocab": "میرے الفاظ", "vocabTitle": "میری لغت", "vocabDesc": "اس کتاب سے سیکھے جا رہے الفاظ محفوظ کریں۔ مطلب خود لکھیں یا Earmark سے لکھوائیں۔", "vocabWordPh": "نیا لفظ", "vocabDefPh": "مطلب (اختیاری: خود لکھیں یا “میرے لیے بتاؤ” دبائیں)", "vocabDefineForMe": "✨ میرے لیے بتاؤ", "vocabDefining": "تلاش ہو رہی ہے…", "vocabAdd": "لفظ شامل کریں", "vocabHave": "“{w}” پہلے سے فہرست میں ہے۔", "vocabEmpty": "ابھی کوئی لفظ نہیں۔ اوپر شامل کریں، یا کتاب کے کسی لفظ پر ماؤس روک کر “میرے الفاظ میں شامل کریں” دبائیں۔", "vocabCount": "{n} الفاظ", "vocabDelete": "{w} مٹائیں", "vocabSave": "محفوظ کریں", "vocabCancel": "منسوخ", "vocabNoDef": "ابھی کوئی مطلب نہیں۔", "vocabRedefine": "دوبارہ بتاؤ", "vocabEdit": "ترمیم", "vocabAddLookup": "میرے الفاظ میں شامل کریں", "vocabAdded": "“{w}” میرے الفاظ میں شامل ہو گیا۔"}
   });
+  addStrings({
+    en: {"hideLibrary": "Hide library", "showLibrary": "Show library"},
+    vi: {"hideLibrary": "Ẩn thư viện", "showLibrary": "Hiện thư viện"},
+    es: {"hideLibrary": "Ocultar biblioteca", "showLibrary": "Mostrar biblioteca"},
+    fr: {"hideLibrary": "Masquer la bibliothèque", "showLibrary": "Afficher la bibliothèque"},
+    de: {"hideLibrary": "Bibliothek ausblenden", "showLibrary": "Bibliothek einblenden"},
+    pt: {"hideLibrary": "Ocultar biblioteca", "showLibrary": "Mostrar biblioteca"},
+    it: {"hideLibrary": "Nascondi libreria", "showLibrary": "Mostra libreria"},
+    nl: {"hideLibrary": "Bibliotheek verbergen", "showLibrary": "Bibliotheek tonen"},
+    ru: {"hideLibrary": "Скрыть библиотеку", "showLibrary": "Показать библиотеку"},
+    pl: {"hideLibrary": "Ukryj bibliotekę", "showLibrary": "Pokaż bibliotekę"},
+    tr: {"hideLibrary": "Kitaplığı gizle", "showLibrary": "Kitaplığı göster"},
+    ar: {"hideLibrary": "إخفاء المكتبة", "showLibrary": "إظهار المكتبة"},
+    hi: {"hideLibrary": "लाइब्रेरी छिपाएँ", "showLibrary": "लाइब्रेरी दिखाएँ"},
+    id: {"hideLibrary": "Sembunyikan perpustakaan", "showLibrary": "Tampilkan perpustakaan"},
+    th: {"hideLibrary": "ซ่อนคลังหนังสือ", "showLibrary": "แสดงคลังหนังสือ"},
+    ja: {"hideLibrary": "ライブラリを隠す", "showLibrary": "ライブラリを表示"},
+    ko: {"hideLibrary": "서재 숨기기", "showLibrary": "서재 보이기"},
+    zh: {"hideLibrary": "隐藏书库", "showLibrary": "显示书库"},
+    tl: {"hideLibrary": "Itago ang aklatan", "showLibrary": "Ipakita ang aklatan"},
+    he: {"hideLibrary": "הסתרת הספרייה", "showLibrary": "הצגת הספרייה"},
+    el: {"hideLibrary": "Απόκρυψη βιβλιοθήκης", "showLibrary": "Εμφάνιση βιβλιοθήκης"},
+    sv: {"hideLibrary": "Dölj biblioteket", "showLibrary": "Visa biblioteket"},
+    uk: {"hideLibrary": "Сховати бібліотеку", "showLibrary": "Показати бібліотеку"},
+    ro: {"hideLibrary": "Ascunde biblioteca", "showLibrary": "Arată biblioteca"},
+    fa: {"hideLibrary": "پنهان کردن کتابخانه", "showLibrary": "نمایش کتابخانه"},
+    ur: {"hideLibrary": "لائبریری چھپائیں", "showLibrary": "لائبریری دکھائیں"}
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -3288,6 +3329,7 @@
     document.querySelectorAll("[data-i18n-aria]").forEach(node => { node.setAttribute("aria-label", t(node.getAttribute("data-i18n-aria"))); });
     document.querySelectorAll("[data-i18n-title]").forEach(node => { node.title = t(node.getAttribute("data-i18n-title")); node.setAttribute("aria-label", node.title); });
     updateSessionNote();
+    if ($("sideToggle") && typeof setSideHidden === "function") { const h = document.body.classList.contains("side-hidden"); $("sideToggle").title = t(h ? "showLibrary" : "hideLibrary"); $("sideToggle").setAttribute("aria-label", $("sideToggle").title); }
     if (recognizer) recognizer.lang = meta.speech;
     populateVoiceList();
     if (state.currentBookId) {
@@ -9756,6 +9798,19 @@
   function openSidebar(){ $("sidebar").classList.add("open"); $("scrim").classList.add("open"); }
   function closeSidebar(){ $("sidebar").classList.remove("open"); $("scrim").classList.remove("open"); }
   $("menuBtn").addEventListener("click", openSidebar);
+  // Hide the library panel so the book gets the whole width (remembered).
+  function setSideHidden(hidden){
+    document.body.classList.toggle("side-hidden", hidden);
+    const b = $("sideToggle");
+    b.setAttribute("aria-expanded", hidden ? "false" : "true");
+    b.setAttribute("aria-label", t(hidden ? "showLibrary" : "hideLibrary"));
+    b.title = t(hidden ? "showLibrary" : "hideLibrary");
+    safeStorage("set", "earmark_side", hidden ? "hidden" : "shown");
+    // The 3D game and other sized things fit the new width.
+    setTimeout(() => window.dispatchEvent(new Event("resize")), 0);
+  }
+  $("sideToggle").addEventListener("click", () => setSideHidden(!document.body.classList.contains("side-hidden")));
+  setSideHidden(safeStorage("get", "earmark_side") === "hidden");
   $("scrim").addEventListener("click", closeSidebar);
 
   /* ---------------- app bar: home + settings ---------------- */
