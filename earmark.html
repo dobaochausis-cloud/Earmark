@@ -793,10 +793,20 @@
   /* ---------- Game mode: target range ---------- */
   .game-stage{ position:relative; flex:1; min-height:0; overflow:hidden; background:var(--paper); touch-action:none; user-select:none; -webkit-user-select:none; }
   .game-canvas{ position:absolute; inset:0; display:block; width:100%; height:100%; cursor:crosshair; }
-  .crosshair{ position:absolute; left:50%; top:50%; width:26px; height:26px; margin:-13px 0 0 -13px; pointer-events:none; display:none; }
-  .crosshair::before, .crosshair::after{ content:""; position:absolute; background:var(--ink); box-shadow:0 0 0 1px var(--paper-raised); }
-  .crosshair::before{ left:12px; top:0; width:2px; height:26px; }
-  .crosshair::after{ top:12px; left:0; height:2px; width:26px; }
+  /* Aim box: four corner brackets and a centre dot. */
+  .crosshair{ position:absolute; left:50%; top:50%; width:34px; height:34px; margin:-17px 0 0 -17px; pointer-events:none; display:none; z-index:2;
+    --ch:#7ff5df; --cl:9px; --cw:2px;
+    background:
+      linear-gradient(var(--ch),var(--ch)) top left / var(--cl) var(--cw) no-repeat,
+      linear-gradient(var(--ch),var(--ch)) top left / var(--cw) var(--cl) no-repeat,
+      linear-gradient(var(--ch),var(--ch)) top right / var(--cl) var(--cw) no-repeat,
+      linear-gradient(var(--ch),var(--ch)) top right / var(--cw) var(--cl) no-repeat,
+      linear-gradient(var(--ch),var(--ch)) bottom left / var(--cl) var(--cw) no-repeat,
+      linear-gradient(var(--ch),var(--ch)) bottom left / var(--cw) var(--cl) no-repeat,
+      linear-gradient(var(--ch),var(--ch)) bottom right / var(--cl) var(--cw) no-repeat,
+      linear-gradient(var(--ch),var(--ch)) bottom right / var(--cw) var(--cl) no-repeat;
+    filter:drop-shadow(0 0 1px #0b0f16) drop-shadow(0 0 1px #0b0f16); }
+  .crosshair::after{ content:""; position:absolute; left:50%; top:50%; width:4px; height:4px; margin:-2px 0 0 -2px; border-radius:50%; background:var(--ch); }
   .game-stage.locked .crosshair{ display:block; }
   .game-stage.locked .game-canvas{ cursor:none; }
   .game-hud{ position:absolute; left:0; right:0; top:0; display:flex; align-items:flex-start; justify-content:space-between; gap:8px; padding:12px; pointer-events:none; z-index:5; }   /* above the 3D view and the question card, so Pause/Quit always work */
@@ -844,7 +854,11 @@
   @media (prefers-reduced-motion: reduce){ .float-pts{ animation:none; } }
   /* Monster Hall: the hallway is always a night scene, whatever the app theme */
   .game-stage{ background:#141a26; }
-  .game-stage .crosshair::before, .game-stage .crosshair::after{ background:#7ff5df; box-shadow:0 0 0 1px #0b0f16; }
+  .range-pick{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .range-pick-label{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); min-width:40px; }
+  .range-seg .diff-btn{ font-size:12.5px; padding:5px 10px; }
+  .range-seg .diff-btn[aria-pressed="true"], .voice-seg .diff-btn[aria-pressed="true"], .web-modes .diff-btn[aria-pressed="true"]{ background:var(--accent); color:#fff; }
+  .q-opt.crossed .q-opt-text{ text-decoration:line-through; opacity:.7; }
   .game-hurt{ position:absolute; inset:0; pointer-events:none; opacity:0; box-shadow:inset 0 0 90px 30px rgba(214,40,40,.75); }
   .game-hurt.on{ animation:hurt .45s ease-out; }
   @keyframes hurt{ from{ opacity:1; } to{ opacity:0; } }
@@ -3295,6 +3309,34 @@
     ro: {"hideLibrary": "Ascunde biblioteca", "showLibrary": "Arată biblioteca"},
     fa: {"hideLibrary": "پنهان کردن کتابخانه", "showLibrary": "نمایش کتابخانه"},
     ur: {"hideLibrary": "لائبریری چھپائیں", "showLibrary": "لائبریری دکھائیں"}
+  });
+  addStrings({
+    en: {"modeRange": "Aim Range", "modeRangeDesc": "First-person shooting range. Hit the training bots as they move side to side or pop up. Every miss means a question from the book; 3 misses and you're out.", "gunLabel": "Gun", "gunPistol": "Pistol", "gunRifle": "Rifle", "botsLabel": "Bots", "botsStrafe": "Side to side", "botsPopup": "Pop-up", "rangeHits": "Hits: {n}", "rangeResult": "{h} hits · {a}% accuracy · {q} questions answered", "rangeOver": "Out of chances!", "rangeTryAgain": "Not quite. Try again!", "rangeMissed": "You missed!", "rangeEscaped": "A bot got away!", "rangeAnswerToGo": "Answer to keep shooting ({n} chances left).", "rangeRight": "Correct! Back to the range.", "rangeRightLast": "Correct! That was your last chance.", "rangeBackIn": "Back to the range", "rangeGo": "Go!"},
+    vi: {"modeRange": "Trường bắn", "modeRangeDesc": "Trường bắn góc nhìn thứ nhất. Bắn trúng các robot tập bắn khi chúng chạy qua lại hoặc bật lên. Mỗi lần trượt là một câu hỏi từ sách; trượt 3 lần là thua.", "gunLabel": "Súng", "gunPistol": "Súng lục", "gunRifle": "Súng trường", "botsLabel": "Robot", "botsStrafe": "Chạy qua lại", "botsPopup": "Bật lên", "rangeHits": "Trúng: {n}", "rangeResult": "Trúng {h} · chính xác {a}% · trả lời {q} câu", "rangeOver": "Hết lượt rồi!", "rangeTryAgain": "Chưa đúng. Thử lại nhé!", "rangeMissed": "Bạn bắn trượt!", "rangeEscaped": "Một robot đã chạy mất!", "rangeAnswerToGo": "Trả lời để bắn tiếp (còn {n} lượt).", "rangeRight": "Đúng rồi! Quay lại trường bắn.", "rangeRightLast": "Đúng rồi! Đó là lượt cuối của bạn.", "rangeBackIn": "Quay lại trường bắn", "rangeGo": "Bắt đầu!"},
+    es: {"modeRange": "Campo de tiro", "modeRangeDesc": "Campo de tiro en primera persona. Acierta a los robots de práctica mientras se mueven de lado a lado o aparecen. Cada fallo es una pregunta del libro; con 3 fallos, fuera.", "gunLabel": "Arma", "gunPistol": "Pistola", "gunRifle": "Rifle", "botsLabel": "Robots", "botsStrafe": "De lado a lado", "botsPopup": "Aparecen", "rangeHits": "Aciertos: {n}", "rangeResult": "{h} aciertos · {a}% de precisión · {q} preguntas respondidas", "rangeOver": "¡Sin oportunidades!", "rangeTryAgain": "Casi. ¡Inténtalo otra vez!", "rangeMissed": "¡Fallaste!", "rangeEscaped": "¡Un robot escapó!", "rangeAnswerToGo": "Responde para seguir disparando (quedan {n}).", "rangeRight": "¡Correcto! De vuelta al campo.", "rangeRightLast": "¡Correcto! Era tu última oportunidad.", "rangeBackIn": "Volver al campo", "rangeGo": "¡Ya!"},
+    fr: {"modeRange": "Stand de tir", "modeRangeDesc": "Stand de tir à la première personne. Touche les robots d'entraînement qui bougent de côté ou surgissent. Chaque tir raté donne une question du livre ; 3 ratés et c'est fini.", "gunLabel": "Arme", "gunPistol": "Pistolet", "gunRifle": "Fusil", "botsLabel": "Robots", "botsStrafe": "De gauche à droite", "botsPopup": "Surgissent", "rangeHits": "Touchés : {n}", "rangeResult": "{h} touchés · {a} % de précision · {q} questions répondues", "rangeOver": "Plus de chances !", "rangeTryAgain": "Pas tout à fait. Réessaie !", "rangeMissed": "Raté !", "rangeEscaped": "Un robot s'est échappé !", "rangeAnswerToGo": "Réponds pour continuer à tirer (encore {n}).", "rangeRight": "Bravo ! Retour au stand.", "rangeRightLast": "Bravo ! C'était ta dernière chance.", "rangeBackIn": "Retour au stand", "rangeGo": "C'est parti !"},
+    de: {"modeRange": "Schießstand", "modeRangeDesc": "Schießstand aus der Ich-Perspektive. Triff die Trainingsroboter, die hin und her laufen oder auftauchen. Jeder Fehlschuss bringt eine Frage zum Buch; nach 3 Fehlschüssen ist Schluss.", "gunLabel": "Waffe", "gunPistol": "Pistole", "gunRifle": "Gewehr", "botsLabel": "Roboter", "botsStrafe": "Hin und her", "botsPopup": "Auftauchen", "rangeHits": "Treffer: {n}", "rangeResult": "{h} Treffer · {a} % Genauigkeit · {q} Fragen beantwortet", "rangeOver": "Keine Chancen mehr!", "rangeTryAgain": "Nicht ganz. Versuch's nochmal!", "rangeMissed": "Daneben!", "rangeEscaped": "Ein Roboter ist entkommen!", "rangeAnswerToGo": "Antworte, um weiterzuschießen (noch {n}).", "rangeRight": "Richtig! Zurück zum Stand.", "rangeRightLast": "Richtig! Das war deine letzte Chance.", "rangeBackIn": "Zurück zum Stand", "rangeGo": "Los!"},
+    pt: {"modeRange": "Estande de tiro", "modeRangeDesc": "Estande de tiro em primeira pessoa. Acerte os robôs de treino enquanto andam de um lado para o outro ou aparecem. Cada erro é uma pergunta do livro; 3 erros e acabou.", "gunLabel": "Arma", "gunPistol": "Pistola", "gunRifle": "Rifle", "botsLabel": "Robôs", "botsStrafe": "De um lado ao outro", "botsPopup": "Aparecem", "rangeHits": "Acertos: {n}", "rangeResult": "{h} acertos · {a}% de precisão · {q} perguntas respondidas", "rangeOver": "Sem chances!", "rangeTryAgain": "Quase. Tente de novo!", "rangeMissed": "Errou!", "rangeEscaped": "Um robô escapou!", "rangeAnswerToGo": "Responda para continuar atirando (restam {n}).", "rangeRight": "Certo! De volta ao estande.", "rangeRightLast": "Certo! Essa era sua última chance.", "rangeBackIn": "Voltar ao estande", "rangeGo": "Vai!"},
+    it: {"modeRange": "Poligono", "modeRangeDesc": "Poligono di tiro in prima persona. Colpisci i robot da allenamento che si spostano di lato o spuntano fuori. Ogni colpo mancato è una domanda sul libro; 3 errori e sei fuori.", "gunLabel": "Arma", "gunPistol": "Pistola", "gunRifle": "Fucile", "botsLabel": "Robot", "botsStrafe": "Da un lato all'altro", "botsPopup": "Spuntano", "rangeHits": "Colpi: {n}", "rangeResult": "{h} colpi · {a}% di precisione · {q} domande risposte", "rangeOver": "Niente più possibilità!", "rangeTryAgain": "Quasi. Riprova!", "rangeMissed": "Mancato!", "rangeEscaped": "Un robot è scappato!", "rangeAnswerToGo": "Rispondi per continuare a sparare (ne restano {n}).", "rangeRight": "Giusto! Torna al poligono.", "rangeRightLast": "Giusto! Era la tua ultima possibilità.", "rangeBackIn": "Torna al poligono", "rangeGo": "Via!"},
+    nl: {"modeRange": "Schietbaan", "modeRangeDesc": "Schietbaan in de eerste persoon. Raak de trainingsrobots terwijl ze heen en weer lopen of opduiken. Elke misser is een vraag uit het boek; na 3 missers ben je af.", "gunLabel": "Wapen", "gunPistol": "Pistool", "gunRifle": "Geweer", "botsLabel": "Robots", "botsStrafe": "Heen en weer", "botsPopup": "Duiken op", "rangeHits": "Raak: {n}", "rangeResult": "{h} raak · {a}% nauwkeurig · {q} vragen beantwoord", "rangeOver": "Geen kansen meer!", "rangeTryAgain": "Net niet. Probeer het opnieuw!", "rangeMissed": "Mis!", "rangeEscaped": "Een robot is ontsnapt!", "rangeAnswerToGo": "Antwoord om door te schieten (nog {n}).", "rangeRight": "Goed! Terug naar de baan.", "rangeRightLast": "Goed! Dat was je laatste kans.", "rangeBackIn": "Terug naar de baan", "rangeGo": "Start!"},
+    ru: {"modeRange": "Тир", "modeRangeDesc": "Тир от первого лица. Попадайте в тренировочных роботов, которые ходят из стороны в сторону или выскакивают. Каждый промах — вопрос по книге; 3 промаха — и игра окончена.", "gunLabel": "Оружие", "gunPistol": "Пистолет", "gunRifle": "Винтовка", "botsLabel": "Роботы", "botsStrafe": "Из стороны в сторону", "botsPopup": "Выскакивают", "rangeHits": "Попадания: {n}", "rangeResult": "Попаданий: {h} · точность {a}% · ответов: {q}", "rangeOver": "Попытки закончились!", "rangeTryAgain": "Не совсем. Попробуйте ещё!", "rangeMissed": "Промах!", "rangeEscaped": "Робот ускользнул!", "rangeAnswerToGo": "Ответьте, чтобы стрелять дальше (осталось {n}).", "rangeRight": "Верно! Назад в тир.", "rangeRightLast": "Верно! Это была последняя попытка.", "rangeBackIn": "Назад в тир", "rangeGo": "Вперёд!"},
+    pl: {"modeRange": "Strzelnica", "modeRangeDesc": "Strzelnica z perspektywy pierwszej osoby. Trafiaj roboty treningowe, gdy chodzą na boki albo wyskakują. Każde pudło to pytanie z książki; 3 pudła i koniec.", "gunLabel": "Broń", "gunPistol": "Pistolet", "gunRifle": "Karabin", "botsLabel": "Roboty", "botsStrafe": "Na boki", "botsPopup": "Wyskakują", "rangeHits": "Trafienia: {n}", "rangeResult": "Trafienia: {h} · celność {a}% · odpowiedzi: {q}", "rangeOver": "Koniec szans!", "rangeTryAgain": "Nie całkiem. Spróbuj jeszcze raz!", "rangeMissed": "Pudło!", "rangeEscaped": "Robot uciekł!", "rangeAnswerToGo": "Odpowiedz, by strzelać dalej (zostało {n}).", "rangeRight": "Dobrze! Wracaj na strzelnicę.", "rangeRightLast": "Dobrze! To była ostatnia szansa.", "rangeBackIn": "Wróć na strzelnicę", "rangeGo": "Start!"},
+    tr: {"modeRange": "Atış poligonu", "modeRangeDesc": "Birinci şahıs atış poligonu. Sağa sola giden ya da aniden çıkan eğitim robotlarını vur. Her ıska kitaptan bir soru demek; 3 ıskada oyun biter.", "gunLabel": "Silah", "gunPistol": "Tabanca", "gunRifle": "Tüfek", "botsLabel": "Robotlar", "botsStrafe": "Sağa sola", "botsPopup": "Ani çıkış", "rangeHits": "İsabet: {n}", "rangeResult": "{h} isabet · %{a} doğruluk · {q} soru cevaplandı", "rangeOver": "Hakkın kalmadı!", "rangeTryAgain": "Tam değil. Tekrar dene!", "rangeMissed": "Iskaladın!", "rangeEscaped": "Bir robot kaçtı!", "rangeAnswerToGo": "Atışa devam etmek için cevapla ({n} hak kaldı).", "rangeRight": "Doğru! Poligona dön.", "rangeRightLast": "Doğru! Bu son hakkındı.", "rangeBackIn": "Poligona dön", "rangeGo": "Başla!"},
+    ar: {"modeRange": "ميدان الرماية", "modeRangeDesc": "ميدان رماية بمنظور الشخص الأول. أصب روبوتات التدريب وهي تتحرك يمينًا ويسارًا أو تظهر فجأة. كل إخفاق يعني سؤالًا من الكتاب؛ 3 إخفاقات وتنتهي اللعبة.", "gunLabel": "السلاح", "gunPistol": "مسدس", "gunRifle": "بندقية", "botsLabel": "الروبوتات", "botsStrafe": "يمينًا ويسارًا", "botsPopup": "تظهر فجأة", "rangeHits": "الإصابات: {n}", "rangeResult": "{h} إصابات · دقة {a}% · {q} أسئلة مُجابة", "rangeOver": "نفدت الفرص!", "rangeTryAgain": "ليس تمامًا. حاول مرة أخرى!", "rangeMissed": "أخطأت!", "rangeEscaped": "هرب روبوت!", "rangeAnswerToGo": "أجب لتواصل الرماية (تبقّى {n}).", "rangeRight": "صحيح! عُد إلى الميدان.", "rangeRightLast": "صحيح! كانت هذه فرصتك الأخيرة.", "rangeBackIn": "عُد إلى الميدان", "rangeGo": "انطلق!"},
+    hi: {"modeRange": "शूटिंग रेंज", "modeRangeDesc": "फ़र्स्ट-पर्सन शूटिंग रेंज। दाएँ-बाएँ चलते या अचानक उभरते ट्रेनिंग रोबोट को निशाना बनाओ। हर चूक पर किताब से एक सवाल; 3 चूक और खेल खत्म।", "gunLabel": "बंदूक", "gunPistol": "पिस्तौल", "gunRifle": "राइफ़ल", "botsLabel": "रोबोट", "botsStrafe": "दाएँ-बाएँ", "botsPopup": "अचानक उभरें", "rangeHits": "निशाने: {n}", "rangeResult": "{h} निशाने · {a}% सटीकता · {q} सवालों के जवाब", "rangeOver": "मौके खत्म!", "rangeTryAgain": "पूरी तरह नहीं। फिर कोशिश करो!", "rangeMissed": "चूक गए!", "rangeEscaped": "एक रोबोट बच निकला!", "rangeAnswerToGo": "शूटिंग जारी रखने के लिए जवाब दो ({n} मौके बाकी)।", "rangeRight": "सही! रेंज पर वापस।", "rangeRightLast": "सही! यह तुम्हारा आखिरी मौका था।", "rangeBackIn": "रेंज पर वापस", "rangeGo": "शुरू!"},
+    id: {"modeRange": "Lapangan tembak", "modeRangeDesc": "Lapangan tembak sudut pandang orang pertama. Tembak robot latihan saat bergerak ke kiri-kanan atau muncul tiba-tiba. Setiap meleset berarti satu pertanyaan dari buku; 3 kali meleset, selesai.", "gunLabel": "Senjata", "gunPistol": "Pistol", "gunRifle": "Senapan", "botsLabel": "Robot", "botsStrafe": "Kiri-kanan", "botsPopup": "Muncul tiba-tiba", "rangeHits": "Kena: {n}", "rangeResult": "{h} kena · akurasi {a}% · {q} pertanyaan dijawab", "rangeOver": "Kesempatan habis!", "rangeTryAgain": "Belum tepat. Coba lagi!", "rangeMissed": "Meleset!", "rangeEscaped": "Satu robot lolos!", "rangeAnswerToGo": "Jawab untuk lanjut menembak (sisa {n}).", "rangeRight": "Benar! Kembali ke lapangan.", "rangeRightLast": "Benar! Itu kesempatan terakhirmu.", "rangeBackIn": "Kembali ke lapangan", "rangeGo": "Mulai!"},
+    th: {"modeRange": "สนามยิงปืน", "modeRangeDesc": "สนามยิงปืนมุมมองบุคคลที่หนึ่ง ยิงหุ่นยนต์ฝึกที่เดินไปมาหรือโผล่ขึ้นมา พลาดแต่ละครั้งต้องตอบคำถามจากหนังสือ พลาด 3 ครั้งจบเกม", "gunLabel": "ปืน", "gunPistol": "ปืนพก", "gunRifle": "ปืนไรเฟิล", "botsLabel": "หุ่นยนต์", "botsStrafe": "เดินไปมา", "botsPopup": "โผล่ขึ้นมา", "rangeHits": "ยิงโดน: {n}", "rangeResult": "โดน {h} · แม่นยำ {a}% · ตอบ {q} ข้อ", "rangeOver": "หมดโอกาสแล้ว!", "rangeTryAgain": "ยังไม่ใช่ ลองอีกครั้ง!", "rangeMissed": "ยิงพลาด!", "rangeEscaped": "หุ่นยนต์หนีไปได้!", "rangeAnswerToGo": "ตอบเพื่อยิงต่อ (เหลือ {n} ครั้ง)", "rangeRight": "ถูกต้อง! กลับไปที่สนาม", "rangeRightLast": "ถูกต้อง! นั่นคือโอกาสสุดท้าย", "rangeBackIn": "กลับไปที่สนาม", "rangeGo": "เริ่ม!"},
+    ja: {"modeRange": "射撃場", "modeRangeDesc": "一人称視点の射撃場。左右に動いたり飛び出したりする訓練ロボットを撃とう。外すたびに本から1問。3回外すと終了。", "gunLabel": "銃", "gunPistol": "ピストル", "gunRifle": "ライフル", "botsLabel": "ロボット", "botsStrafe": "左右に動く", "botsPopup": "飛び出す", "rangeHits": "命中：{n}", "rangeResult": "命中{h} · 命中率{a}% · 回答{q}問", "rangeOver": "チャンス切れ！", "rangeTryAgain": "おしい。もう一度！", "rangeMissed": "外れ！", "rangeEscaped": "ロボットに逃げられた！", "rangeAnswerToGo": "答えて射撃を続けよう（残り{n}回）。", "rangeRight": "正解！射撃場へ戻ろう。", "rangeRightLast": "正解！これが最後のチャンスでした。", "rangeBackIn": "射撃場へ戻る", "rangeGo": "スタート！"},
+    ko: {"modeRange": "사격장", "modeRangeDesc": "1인칭 사격장. 좌우로 움직이거나 튀어나오는 훈련 로봇을 맞히세요. 빗나갈 때마다 책 문제가 나오고, 3번 빗나가면 끝이에요.", "gunLabel": "총", "gunPistol": "권총", "gunRifle": "소총", "botsLabel": "로봇", "botsStrafe": "좌우 이동", "botsPopup": "튀어나오기", "rangeHits": "명중: {n}", "rangeResult": "명중 {h} · 정확도 {a}% · 답한 문제 {q}", "rangeOver": "기회를 다 썼어요!", "rangeTryAgain": "아쉬워요. 다시 해 보세요!", "rangeMissed": "빗나갔어요!", "rangeEscaped": "로봇이 도망갔어요!", "rangeAnswerToGo": "계속 쏘려면 답하세요 (남은 기회 {n}).", "rangeRight": "정답! 사격장으로 돌아가요.", "rangeRightLast": "정답! 마지막 기회였어요.", "rangeBackIn": "사격장으로", "rangeGo": "시작!"},
+    zh: {"modeRange": "射击场", "modeRangeDesc": "第一人称射击场。击中左右移动或突然弹出的训练机器人。每次打偏都要回答一道书里的题；打偏 3 次就结束。", "gunLabel": "枪", "gunPistol": "手枪", "gunRifle": "步枪", "botsLabel": "机器人", "botsStrafe": "左右移动", "botsPopup": "弹出", "rangeHits": "命中：{n}", "rangeResult": "命中 {h} · 命中率 {a}% · 答题 {q} 道", "rangeOver": "机会用完了！", "rangeTryAgain": "不太对，再试一次！", "rangeMissed": "打偏了！", "rangeEscaped": "一个机器人跑掉了！", "rangeAnswerToGo": "答对题继续射击（还剩 {n} 次）。", "rangeRight": "答对了！回到射击场。", "rangeRightLast": "答对了！这是最后一次机会。", "rangeBackIn": "回到射击场", "rangeGo": "开始！"},
+    tl: {"modeRange": "Barilan", "modeRangeDesc": "Barilan na first-person. Tamaan ang mga training bot habang gumagalaw pakaliwa-pakanan o biglang lumilitaw. Bawat mintis ay tanong mula sa aklat; 3 mintis at tapos ka na.", "gunLabel": "Baril", "gunPistol": "Pistola", "gunRifle": "Riple", "botsLabel": "Mga bot", "botsStrafe": "Pakaliwa-pakanan", "botsPopup": "Biglang lumilitaw", "rangeHits": "Tama: {n}", "rangeResult": "{h} tama · {a}% katumpakan · {q} tanong nasagot", "rangeOver": "Ubos na ang pagkakataon!", "rangeTryAgain": "Hindi pa. Subukan ulit!", "rangeMissed": "Mintis!", "rangeEscaped": "May bot na nakatakas!", "rangeAnswerToGo": "Sumagot para makapagpatuloy ({n} pagkakataon pa).", "rangeRight": "Tama! Balik sa barilan.", "rangeRightLast": "Tama! Iyon na ang huling pagkakataon mo.", "rangeBackIn": "Balik sa barilan", "rangeGo": "Simula!"},
+    he: {"modeRange": "מטווח", "modeRangeDesc": "מטווח בגוף ראשון. פגעו ברובוטי האימון כשהם זזים מצד לצד או קופצים. כל החטאה היא שאלה מהספר; 3 החטאות והמשחק נגמר.", "gunLabel": "נשק", "gunPistol": "אקדח", "gunRifle": "רובה", "botsLabel": "רובוטים", "botsStrafe": "מצד לצד", "botsPopup": "קופצים", "rangeHits": "פגיעות: {n}", "rangeResult": "{h} פגיעות · דיוק {a}% · {q} שאלות נענו", "rangeOver": "נגמרו ההזדמנויות!", "rangeTryAgain": "לא בדיוק. נסו שוב!", "rangeMissed": "החטאתם!", "rangeEscaped": "רובוט ברח!", "rangeAnswerToGo": "ענו כדי להמשיך לירות (נותרו {n}).", "rangeRight": "נכון! חזרה למטווח.", "rangeRightLast": "נכון! זו הייתה ההזדמנות האחרונה.", "rangeBackIn": "חזרה למטווח", "rangeGo": "צאו!"},
+    el: {"modeRange": "Σκοπευτήριο", "modeRangeDesc": "Σκοπευτήριο πρώτου προσώπου. Χτύπα τα ρομπότ εκπαίδευσης καθώς κινούνται πέρα-δώθε ή πετάγονται. Κάθε αστοχία φέρνει ερώτηση από το βιβλίο· με 3 αστοχίες τελειώνει.", "gunLabel": "Όπλο", "gunPistol": "Πιστόλι", "gunRifle": "Τουφέκι", "botsLabel": "Ρομπότ", "botsStrafe": "Πέρα-δώθε", "botsPopup": "Πετάγονται", "rangeHits": "Εύστοχες: {n}", "rangeResult": "{h} εύστοχες · ακρίβεια {a}% · {q} απαντήσεις", "rangeOver": "Τέλος ευκαιριών!", "rangeTryAgain": "Όχι ακριβώς. Ξαναδοκίμασε!", "rangeMissed": "Αστόχησες!", "rangeEscaped": "Ένα ρομπότ ξέφυγε!", "rangeAnswerToGo": "Απάντησε για να συνεχίσεις (απομένουν {n}).", "rangeRight": "Σωστά! Πίσω στο σκοπευτήριο.", "rangeRightLast": "Σωστά! Ήταν η τελευταία σου ευκαιρία.", "rangeBackIn": "Πίσω στο σκοπευτήριο", "rangeGo": "Πάμε!"},
+    sv: {"modeRange": "Skjutbana", "modeRangeDesc": "Skjutbana i förstapersonsvy. Träffa träningsrobotarna när de rör sig fram och tillbaka eller dyker upp. Varje miss ger en fråga ur boken; 3 missar och du är ute.", "gunLabel": "Vapen", "gunPistol": "Pistol", "gunRifle": "Gevär", "botsLabel": "Robotar", "botsStrafe": "Fram och tillbaka", "botsPopup": "Dyker upp", "rangeHits": "Träffar: {n}", "rangeResult": "{h} träffar · {a} % precision · {q} frågor besvarade", "rangeOver": "Slut på chanser!", "rangeTryAgain": "Inte riktigt. Försök igen!", "rangeMissed": "Miss!", "rangeEscaped": "En robot kom undan!", "rangeAnswerToGo": "Svara för att fortsätta skjuta ({n} kvar).", "rangeRight": "Rätt! Tillbaka till banan.", "rangeRightLast": "Rätt! Det var din sista chans.", "rangeBackIn": "Tillbaka till banan", "rangeGo": "Kör!"},
+    uk: {"modeRange": "Тир", "modeRangeDesc": "Тир від першої особи. Влучайте в тренувальних роботів, які ходять туди-сюди або вискакують. Кожен промах — питання з книжки; 3 промахи — і гра скінчена.", "gunLabel": "Зброя", "gunPistol": "Пістолет", "gunRifle": "Гвинтівка", "botsLabel": "Роботи", "botsStrafe": "Туди-сюди", "botsPopup": "Вискакують", "rangeHits": "Влучання: {n}", "rangeResult": "Влучань: {h} · точність {a}% · відповідей: {q}", "rangeOver": "Спроби скінчилися!", "rangeTryAgain": "Не зовсім. Спробуйте ще!", "rangeMissed": "Промах!", "rangeEscaped": "Робот утік!", "rangeAnswerToGo": "Дайте відповідь, щоб стріляти далі (залишилось {n}).", "rangeRight": "Правильно! Назад у тир.", "rangeRightLast": "Правильно! Це була остання спроба.", "rangeBackIn": "Назад у тир", "rangeGo": "Вперед!"},
+    ro: {"modeRange": "Poligon", "modeRangeDesc": "Poligon de tragere la persoana întâi. Lovește roboții de antrenament în timp ce se mișcă stânga-dreapta sau apar brusc. Fiecare ratare aduce o întrebare din carte; 3 ratări și ai terminat.", "gunLabel": "Armă", "gunPistol": "Pistol", "gunRifle": "Pușcă", "botsLabel": "Roboți", "botsStrafe": "Stânga-dreapta", "botsPopup": "Apar brusc", "rangeHits": "Lovituri: {n}", "rangeResult": "{h} lovituri · precizie {a}% · {q} întrebări răspunse", "rangeOver": "Nu mai ai șanse!", "rangeTryAgain": "Nu chiar. Încearcă din nou!", "rangeMissed": "Ai ratat!", "rangeEscaped": "Un robot a scăpat!", "rangeAnswerToGo": "Răspunde ca să tragi mai departe (mai ai {n}).", "rangeRight": "Corect! Înapoi în poligon.", "rangeRightLast": "Corect! A fost ultima ta șansă.", "rangeBackIn": "Înapoi în poligon", "rangeGo": "Start!"},
+    fa: {"modeRange": "میدان تیر", "modeRangeDesc": "میدان تیر اول‌شخص. ربات‌های تمرینی را وقتی به چپ و راست می‌روند یا ناگهان بیرون می‌آیند بزن. هر خطا یعنی یک سؤال از کتاب؛ با ۳ خطا بازی تمام است.", "gunLabel": "سلاح", "gunPistol": "تپانچه", "gunRifle": "تفنگ", "botsLabel": "ربات‌ها", "botsStrafe": "چپ و راست", "botsPopup": "ناگهان بیرون می‌آیند", "rangeHits": "اصابت: {n}", "rangeResult": "{h} اصابت · دقت {a}٪ · {q} سؤال پاسخ داده شد", "rangeOver": "فرصت‌ها تمام شد!", "rangeTryAgain": "نه دقیقاً. دوباره امتحان کن!", "rangeMissed": "خطا رفت!", "rangeEscaped": "یک ربات فرار کرد!", "rangeAnswerToGo": "برای ادامه تیراندازی جواب بده ({n} فرصت مانده).", "rangeRight": "درست است! برگرد به میدان.", "rangeRightLast": "درست است! این آخرین فرصتت بود.", "rangeBackIn": "برگشت به میدان", "rangeGo": "شروع!"},
+    ur: {"modeRange": "شوٹنگ رینج", "modeRangeDesc": "فرسٹ پرسن شوٹنگ رینج۔ دائیں بائیں چلتے یا اچانک ابھرتے ٹریننگ روبوٹس کو نشانہ بناؤ۔ ہر چوک پر کتاب سے ایک سوال؛ 3 چوک اور کھیل ختم۔", "gunLabel": "بندوق", "gunPistol": "پستول", "gunRifle": "رائفل", "botsLabel": "روبوٹ", "botsStrafe": "دائیں بائیں", "botsPopup": "اچانک ابھریں", "rangeHits": "نشانے: {n}", "rangeResult": "{h} نشانے · {a}% درستی · {q} سوالوں کے جواب", "rangeOver": "مواقع ختم!", "rangeTryAgain": "پوری طرح نہیں۔ پھر کوشش کرو!", "rangeMissed": "چوک گئے!", "rangeEscaped": "ایک روبوٹ بچ نکلا!", "rangeAnswerToGo": "شوٹنگ جاری رکھنے کے لیے جواب دو ({n} مواقع باقی)۔", "rangeRight": "صحیح! رینج پر واپس۔", "rangeRightLast": "صحیح! یہ تمہارا آخری موقع تھا۔", "rangeBackIn": "رینج پر واپس", "rangeGo": "شروع!"}
   });
   // LANG_PACKS_END
 
@@ -7044,27 +7086,25 @@
     }
   });
 
-  /* ---------------- game mode: Monster Hall ----------------
-     A first-person walk down a school hallway at night. Cartoon zombies
-     and monsters shuffle out toward you; zap them before they reach you.
-     The walk is "on rails": you move forward on your own, stop at each
-     hallway section while a wave comes at you, and continue once it's
-     clear — so the only controls are aiming and zapping (mouse or touch).
-     Missing a shot pauses the game for a question from the book. A wrong
-     answer shows the right one and then asks a DIFFERENT question; play
-     only continues after a correct answer. Hearts are lost only when a
-     monster reaches you. Built with three.js, loaded the first time the
-     Game tab opens. */
-  const GAME_LIVES = 3, HALL_W = 7, WAVES = 6, WAVE_GAP = 19, WALK_SPEED = 2.6;
-  const HALL_LEN = 12 + WAVES * WAVE_GAP + 16;
+  /* ---------------- game mode: Aim Range ----------------
+     A first-person shooting range. Humanoid training bots move side to side
+     (faster when harder) or pop up and drop out of sight; aim and shoot with
+     a pistol or a rifle. Every miss — a stray shot, or a pop-up bot that
+     gets away — pauses for a question from the book, answered until it's
+     right (wrong choices are crossed out). Three misses and the round ends.
+     Built with three.js, loaded the first time the Game tab opens. */
+  const GAME_LIVES = 3;
   const game = {
-    bookId: null, mode: "hall",
+    bookId: null, mode: "range",
+    gun: safeStorage("get", "earmark_range_gun") === "rifle" ? "rifle" : "pistol",
+    botMode: safeStorage("get", "earmark_range_bots") === "popup" ? "popup" : "strafe",
+    misses: 0, hits: 0, shots: 0, wrongPicks: [], missReason: "",
     phase: "menu",              // menu | loading | playing | question | paused | over | error
     score: 0, lives: GAME_LIVES, streak: 0, bestStreak: 0,
     zapped: 0, asked: 0, correct: 0, firstTry: 0, attempt: 0, missed: [], won: false, newBest: false,
     queue: [], seen: new Set(), fetching: false, fetchError: "",
     current: null, picked: null, pending: null, lastAward: 0,
-    wave: 0, walking: true, camZ: 0, spawnLeft: 0, spawnIn: 0, bannerUntil: 0, t: 0,
+    spawnIn: 0, t: 0,
     best: new Map(),
     sound: safeStorage("get", "earmark_game_sound") !== "off",
     // Questions are read out only when you press Listen, unless you turn on
@@ -7074,7 +7114,6 @@
     three: null, raf: 0, lastT: 0, errorMsg: ""
   };
   const coarsePointer = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
-  const waveZ = (i) => -(1.5 + i * WAVE_GAP);   // first stop is just a step in, so monsters come right away
 
   let threePromise = null;
   function loadThree(){
@@ -7091,10 +7130,27 @@
 
   /* ---- little synthesized sound effects (no audio files needed) ---- */
   let audioCtx = null;
+  // A gunshot: a short, sharp burst of filtered noise with a low thump.
+  function gunshot(big){
+    const ctx = audioCtx, now = ctx.currentTime, len = big ? 0.35 : 0.22;
+    const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * len), ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, big ? 3 : 4);
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = big ? 2400 : 3200;
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.001, now + len);
+    src.connect(lp); lp.connect(g); g.connect(ctx.destination);
+    src.start(now);
+    const o = ctx.createOscillator(), og = ctx.createGain();
+    o.type = "sine"; o.frequency.setValueAtTime(big ? 110 : 150, now); o.frequency.exponentialRampToValueAtTime(40, now + 0.12);
+    og.gain.setValueAtTime(0.45, now); og.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+    o.connect(og); og.connect(ctx.destination); o.start(now); o.stop(now + 0.15);
+  }
   function beep(kind){
     if (!game.sound) return;
     try {
       audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if (kind === "pistol" || kind === "rifle") { gunshot(kind === "rifle"); return; }
       const tones = {
         shot: [[520, .06, "square"], [260, .05, "square"]],
         hit: [[880, .06, "triangle"], [1320, .12, "triangle"]],
@@ -7216,6 +7272,14 @@
   }
 
   /* ---- the school ---- */
+  // Difficulty for Monkey Climb's branch clock (the range has its own table).
+  const DIFFICULTY = {
+    easy:   { speed: 0.6,  spawnGap: 1.35, clock: 0.6 },
+    medium: { speed: 1,    spawnGap: 1,    clock: 1 },
+    hard:   { speed: 1.45, spawnGap: 0.8,  clock: 1.35 }
+  };
+  const diff = () => DIFFICULTY[game.difficulty] || DIFFICULTY.medium;
+
   function canvasTex(T, w, h, draw, repX, repY){
     const c = document.createElement("canvas");
     c.width = w; c.height = h;
@@ -7225,311 +7289,82 @@
     return tex;
   }
 
-  /* ---- the three worlds the hallway games walk through ----
-     Each is a straight path along -z (the camera walks it), HALL_W wide
-     and HALL_LEN long, with spawn points ("doors") along the sides and a
-     goal at the far end. Built once, on first use. */
-  function buildHallEnv(T){
-    const scene = new T.Group();   // (named "scene" so the builder reads like the others)
-    const mid = -HALL_LEN / 2 + 4;
-    // Checkered floor, painted walls, ceiling.
-    const floorTex = canvasTex(T, 128, 128, (g) => {
-      g.fillStyle = "#d9d2c2"; g.fillRect(0, 0, 128, 128);
-      g.fillStyle = "#8f887a"; g.fillRect(0, 0, 64, 64); g.fillRect(64, 64, 64, 64);
-    }, HALL_W / 1.4, HALL_LEN / 1.4);
-    const floor = new T.Mesh(new T.PlaneGeometry(HALL_W, HALL_LEN), new T.MeshLambertMaterial({ map: floorTex }));
-    floor.rotation.x = -Math.PI / 2; floor.position.set(0, 0, mid);
-    scene.add(floor);
-    const ceil = new T.Mesh(new T.PlaneGeometry(HALL_W, HALL_LEN), new T.MeshLambertMaterial({ color: 0x8a8577 }));
-    ceil.rotation.x = Math.PI / 2; ceil.position.set(0, 3.2, mid);
-    scene.add(ceil);
-    const wallTex = canvasTex(T, 64, 256, (g) => {
-      g.fillStyle = "#b9c4b0"; g.fillRect(0, 0, 64, 256);
-      g.fillStyle = "#7c8a74"; g.fillRect(0, 206, 64, 50);     // lower wall stripe
-      g.fillStyle = "#4c4638"; g.fillRect(0, 246, 64, 10);     // baseboard
-    }, HALL_LEN / 2, 1);
+  /* ---- the training range ----
+     An indoor shooting range: a counter in front of you, lane dividers,
+     concrete floor with distance marks, sound-foam walls, strip lights,
+     and a sand berm at the back. Bots appear between 8 and 19 m away. */
+  const RANGE_W = 14, RANGE_LEN = 30;
+  function buildRangeEnv(T){
+    const g = new T.Group();
+    const std = (color, rough, metal, map) => new T.MeshStandardMaterial({ color, roughness: rough == null ? 0.85 : rough, metalness: metal || 0, map: map || null });
+    // Concrete floor with lane lines and distance numbers.
+    const floorTex = canvasTex(T, 512, 512, (c, w, h) => {
+      c.fillStyle = "#8d8f93"; c.fillRect(0, 0, w, h);
+      for (let i = 0; i < 2600; i++) { const v = 120 + Math.random() * 40 | 0; c.fillStyle = "rgba(" + v + "," + v + "," + (v + 4) + ",.35)"; c.fillRect(Math.random() * w, Math.random() * h, 2, 2); }
+      c.strokeStyle = "rgba(60,60,64,.35)"; c.lineWidth = 3; c.strokeRect(0, 0, w, h);
+    }, RANGE_W / 3, RANGE_LEN / 3);
+    const floor = new T.Mesh(new T.PlaneGeometry(RANGE_W, RANGE_LEN), std(0x9fa2a8, 0.95, 0, floorTex));
+    floor.rotation.x = -Math.PI / 2; floor.position.z = -RANGE_LEN / 2 + 2;
+    g.add(floor);
+    const lineMat = new T.MeshBasicMaterial({ color: 0xf2c14e });
+    for (const x of [-4.5, -1.5, 1.5, 4.5]) {
+      const l = new T.Mesh(new T.PlaneGeometry(0.06, RANGE_LEN - 4), lineMat);
+      l.rotation.x = -Math.PI / 2; l.position.set(x, 0.005, -RANGE_LEN / 2); g.add(l);
+    }
+    for (const [z, label] of [[-8, "10"], [-13, "15"], [-18, "20"]]) {
+      const bar = new T.Mesh(new T.PlaneGeometry(RANGE_W - 1, 0.08), new T.MeshBasicMaterial({ color: 0xe6e6e6 }));
+      bar.rotation.x = -Math.PI / 2; bar.position.set(0, 0.006, z); g.add(bar);
+      const tex = canvasTex(T, 128, 64, (c, w, h) => { c.fillStyle = "#e6e6e6"; c.font = "bold 44px sans-serif"; c.textAlign = "center"; c.fillText(label + "m", w / 2, 48); });
+      const sign = new T.Mesh(new T.PlaneGeometry(1, 0.5), new T.MeshBasicMaterial({ map: tex, transparent: true }));
+      sign.rotation.x = -Math.PI / 2; sign.position.set(-RANGE_W / 2 + 1, 0.007, z + 0.4); g.add(sign);
+    }
+    // Sound-foam walls.
+    const foamTex = canvasTex(T, 256, 256, (c, w, h) => {
+      c.fillStyle = "#3b4048"; c.fillRect(0, 0, w, h);
+      for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) {
+        const gr = c.createLinearGradient(x * 64, y * 64, x * 64 + 64, y * 64 + 64);
+        const flip = (x + y) % 2;
+        gr.addColorStop(0, flip ? "#474d56" : "#2f343b"); gr.addColorStop(1, flip ? "#2f343b" : "#474d56");
+        c.fillStyle = gr; c.fillRect(x * 64 + 2, y * 64 + 2, 60, 60);
+      }
+    }, RANGE_LEN / 2, 2);
     for (const side of [-1, 1]) {
-      const wall = new T.Mesh(new T.PlaneGeometry(HALL_LEN, 3.2), new T.MeshLambertMaterial({ map: wallTex }));
-      wall.position.set(side * HALL_W / 2, 1.6, mid);
+      const wall = new T.Mesh(new T.PlaneGeometry(RANGE_LEN, 4), std(0xffffff, 1, 0, foamTex));
+      wall.position.set(side * RANGE_W / 2, 2, -RANGE_LEN / 2 + 2);
       wall.rotation.y = -side * Math.PI / 2;
-      scene.add(wall);
+      g.add(wall);
     }
-    // Lockers, classroom doors, posters and ceiling lights down both sides.
-    const lockerTex = canvasTex(T, 64, 128, (g) => {
-      g.fillStyle = "#ffffff"; g.fillRect(0, 0, 64, 128);
-      g.fillStyle = "rgba(0,0,0,.35)";
-      for (let y = 10; y < 34; y += 6) g.fillRect(14, y, 36, 2);   // vents
-      g.fillRect(48, 60, 4, 14);                                     // handle
-      g.fillRect(0, 0, 2, 128);
-    });
-    const lockerColors = [0x3f6fa8, 0xa6431e, 0x2f7d6b, 0xc9962e];
-    const lockerMats = lockerColors.map(c => new T.MeshLambertMaterial({ color: c, map: lockerTex }));
-    const lockerGeo = new T.BoxGeometry(0.5, 1.9, 0.45);
-    const doorTex = canvasTex(T, 64, 128, (g) => {
-      g.fillStyle = "#6b4a2e"; g.fillRect(0, 0, 64, 128);
-      g.fillStyle = "#1c2433"; g.fillRect(18, 18, 28, 34);           // little window
-      g.fillStyle = "#c9b27a"; g.fillRect(48, 66, 6, 6);             // knob
-    });
-    const doorMat = new T.MeshLambertMaterial({ map: doorTex });
-    const doorGeo = new T.BoxGeometry(1.1, 2.3, 0.08);
-    const posterColors = ["#e3a83e", "#4fc2ae", "#e37b5c", "#9a8cd8"];
-    const posterMats = posterColors.map(col => new T.MeshLambertMaterial({ map: canvasTex(T, 64, 80, (g) => {
-      g.fillStyle = "#f5f1e8"; g.fillRect(0, 0, 64, 80);
-      g.fillStyle = col; g.fillRect(6, 6, 52, 40);
-      g.fillStyle = "#1e2430"; for (let y = 52; y < 76; y += 7) g.fillRect(8, y, 30 + (y % 3) * 8, 3);
-    }) }));
-    const posterGeo = new T.PlaneGeometry(0.7, 0.9);
-    const lampMat = new T.MeshBasicMaterial({ color: 0xfff6dc });
-    lampMat.userData.base = new T.Color(0xfff6dc);
-    const lampGeo = new T.BoxGeometry(1.4, 0.05, 0.5);
-    const doors = [];
-    for (let z = -3; z > -HALL_LEN + 6; z -= 0.52) {
-      for (const side of [-1, 1]) {
-        const seg = Math.floor(-z / 9.5) + (side > 0 ? 3 : 0);
-        const slot = (-z % 9.5);
-        if (slot > 6.7 && slot < 8.3) continue;               // leave room for the classroom door
-        const l = new T.Mesh(lockerGeo, lockerMats[seg % lockerMats.length]);
-        l.position.set(side * (HALL_W / 2 - 0.25), 0.95, z);
-        l.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2;
-        scene.add(l);
-      }
+    const ceil = new T.Mesh(new T.PlaneGeometry(RANGE_W, RANGE_LEN), std(0x2a2d33, 1));
+    ceil.rotation.x = Math.PI / 2; ceil.position.set(0, 4, -RANGE_LEN / 2 + 2); g.add(ceil);
+    // Strip lights and baffles.
+    const lampMat = new T.MeshBasicMaterial({ color: 0xf4f7ff });
+    for (let z = -1; z > -RANGE_LEN + 3; z -= 3.2) {
+      for (const x of [-3.5, 0, 3.5]) { const lamp = new T.Mesh(new T.BoxGeometry(1.6, 0.04, 0.16), lampMat); lamp.position.set(x, 3.95, z); g.add(lamp); }
+      const baffle = new T.Mesh(new T.BoxGeometry(RANGE_W, 0.5, 0.08), std(0x1d2025, 0.9)); baffle.position.set(0, 3.7, z - 1.6); g.add(baffle);
     }
-    for (let z = -7.4; z > -HALL_LEN + 6; z -= 9.5) {
-      for (const side of [-1, 1]) {
-        const d = new T.Mesh(doorGeo, doorMat);
-        d.position.set(side * (HALL_W / 2 - 0.05), 1.15, z - (side > 0 ? 0.3 : 0));
-        d.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2;
-        scene.add(d);
-        doors.push({ x: side * (HALL_W / 2 - 0.6), z: d.position.z });
-        const p = new T.Mesh(posterGeo, posterMats[Math.abs(Math.round(z)) % posterMats.length]);
-        p.position.set(side * (HALL_W / 2 - 0.47), 2.55, z + 2.4);
-        p.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2;
-        scene.add(p);
-      }
+    // The back: a sand berm and a steel wall with the range's name.
+    const back = new T.Mesh(new T.PlaneGeometry(RANGE_W, 4), std(0x30343a, 0.6, 0.4));
+    back.position.set(0, 2, -RANGE_LEN + 2); g.add(back);
+    const berm = new T.Mesh(new T.BoxGeometry(RANGE_W, 1.2, 3), std(0xa88b62, 1));
+    berm.position.set(0, 0.35, -RANGE_LEN + 3.2); berm.rotation.x = 0.35; g.add(berm);
+    const signTex = canvasTex(T, 512, 96, (c, w, h) => { c.fillStyle = "#0077B6"; c.fillRect(0, 0, w, h); c.fillStyle = "#fff"; c.font = "bold 54px sans-serif"; c.textAlign = "center"; c.fillText("EARMARK RANGE", w / 2, 68); });
+    const sign = new T.Mesh(new T.PlaneGeometry(4, 0.75), new T.MeshBasicMaterial({ map: signTex }));
+    sign.position.set(0, 3.1, -RANGE_LEN + 2.05); g.add(sign);
+    // Cover barriers the bots move between.
+    for (const [x, z] of [[-4, -11], [3.6, -14.5], [-1, -17]]) {
+      const b = new T.Mesh(new T.BoxGeometry(1.4, 0.9, 0.35), std(0x6d7580, 0.8));
+      b.position.set(x, 0.45, z); g.add(b);
     }
-    for (let z = -2; z > -HALL_LEN + 4; z -= 6) {
-      const lamp = new T.Mesh(lampGeo, lampMat);
-      lamp.position.set(0, 3.17, z);
-      scene.add(lamp);
-    }
-    // The way out: double doors with a glowing EXIT sign.
-    const endZ = -HALL_LEN + 4;
-    const endWall = new T.Mesh(new T.PlaneGeometry(HALL_W, 3.2), new T.MeshLambertMaterial({ color: 0xb9c4b0 }));
-    endWall.position.set(0, 1.6, endZ);
-    scene.add(endWall);
-    for (const sx of [-0.62, 0.62]) {
-      const d = new T.Mesh(new T.BoxGeometry(1.2, 2.4, 0.1), doorMat);
-      d.position.set(sx, 1.2, endZ + 0.06);
-      scene.add(d);
-    }
-    const exitSign = new T.Mesh(new T.PlaneGeometry(1.1, 0.4), new T.MeshBasicMaterial({ map: canvasTex(T, 128, 48, (g) => {
-      g.fillStyle = "#1d7a3a"; g.fillRect(0, 0, 128, 48);
-      g.fillStyle = "#eaffea"; g.font = "bold 34px sans-serif"; g.textAlign = "center"; g.textBaseline = "middle";
-      g.fillText("EXIT", 64, 26);
-    }) }));
-    exitSign.position.set(0, 2.75, endZ + 0.08);
-    scene.add(exitSign);
-
-    return { group: scene, doors, lampMat, sky: "#141a26", fog: [14, 42], hemi: [0xc9d6ff, 0x2a241c, 0.8], torch: 0xfff1d6 };
-  }
-
-  // Zombie Horde: a jungle path at dusk, ending at an old stone gate.
-  function buildJungleEnv(T){
-    const scene = new T.Group();
-    const mid = -HALL_LEN / 2 + 4, doors = [];
-    const rnd = (a, b) => a + Math.random() * (b - a);
-    const groundTex = canvasTex(T, 128, 128, (g) => {
-      g.fillStyle = "#3d5a2c"; g.fillRect(0, 0, 128, 128);
-      g.fillStyle = "#7a5a3a"; g.fillRect(34, 0, 60, 128);                 // dirt path down the middle
-      for (let i = 0; i < 90; i++) { g.fillStyle = i % 2 ? "rgba(0,0,0,.12)" : "rgba(255,255,255,.06)"; g.fillRect(Math.random() * 128, Math.random() * 128, 3, 3); }
-    }, 1, HALL_LEN / 6);
-    const ground = new T.Mesh(new T.PlaneGeometry(HALL_W * 3, HALL_LEN), new T.MeshLambertMaterial({ map: groundTex }));
-    ground.rotation.x = -Math.PI / 2; ground.position.set(0, 0, mid);
-    scene.add(ground);
-    const trunkMat = new T.MeshLambertMaterial({ color: 0x5a3f28 });
-    const leafMats = [0x2f6b34, 0x3f8a3f, 0x24552a, 0x4d9a44].map(c => new T.MeshLambertMaterial({ color: c }));
-    const trunkGeo = new T.CylinderGeometry(0.22, 0.32, 1, 8);
-    const leafGeo = new T.SphereGeometry(1, 10, 8);
-    const bushGeo = new T.SphereGeometry(0.7, 10, 8);
-    const vineMat = new T.MeshLambertMaterial({ color: 0x3f7a2e });
-    const vineGeo = new T.CylinderGeometry(0.025, 0.025, 1, 5);
-    for (let z = 2; z > -HALL_LEN + 4; z -= 2.6) {
-      for (const side of [-1, 1]) {
-        const h = rnd(4, 7), x = side * rnd(3.6, 6.5), zz = z + rnd(-1, 1);
-        const tr = new T.Mesh(trunkGeo, trunkMat);
-        tr.scale.set(1, h, 1); tr.position.set(x, h / 2, zz);
-        scene.add(tr);
-        for (let k = 0; k < 3; k++) {
-          const lf = new T.Mesh(leafGeo, leafMats[(k + Math.floor(-z)) % leafMats.length]);
-          lf.scale.set(rnd(1.2, 2), rnd(0.8, 1.2), rnd(1.2, 2));
-          lf.position.set(x + rnd(-0.8, 0.8), h + rnd(-0.4, 0.6), zz + rnd(-0.8, 0.8));
-          scene.add(lf);
-        }
-        const bush = new T.Mesh(bushGeo, leafMats[Math.floor(Math.random() * 4)]);
-        bush.scale.set(rnd(1, 1.6), rnd(0.7, 1), rnd(1, 1.5));
-        bush.position.set(side * rnd(2.9, 3.4), 0.35, z + rnd(-1, 1));
-        scene.add(bush);
-        if (Math.random() < 0.6) {                                          // hanging vines
-          const len = rnd(1.5, 3.2);
-          const v = new T.Mesh(vineGeo, vineMat);
-          v.scale.y = len; v.position.set(side * rnd(1.8, 3), 4.6 - len / 2, z + rnd(-1, 1));
-          scene.add(v);
-        }
-      }
-      if (Math.abs(z % 6.5) < 2.6) for (const side of [-1, 1]) doors.push({ x: side * 2.7, z: z - 1 });
-    }
-    // Fireflies (they blink — the same "flicker" as the school lights).
-    const flyMat = new T.MeshBasicMaterial({ color: 0xf6ff8a });
-    flyMat.userData.base = new T.Color(0xf6ff8a);
-    const flyGeo = new T.SphereGeometry(0.04, 6, 5);
-    for (let i = 0; i < 70; i++) {
-      const f = new T.Mesh(flyGeo, flyMat);
-      f.position.set(rnd(-4, 4), rnd(0.6, 3.5), rnd(-HALL_LEN + 6, 0));
-      scene.add(f);
-    }
-    // The way out: an old stone gate with a wooden sign.
-    const endZ = -HALL_LEN + 4;
-    const stone = new T.MeshLambertMaterial({ color: 0x8b8f7a });
-    for (const sx of [-1.8, 1.8]) { const p = new T.Mesh(new T.BoxGeometry(0.8, 4, 0.8), stone); p.position.set(sx, 2, endZ); scene.add(p); }
-    const lintel = new T.Mesh(new T.BoxGeometry(4.6, 0.7, 0.9), stone); lintel.position.set(0, 4.2, endZ); scene.add(lintel);
-    const sign = new T.Mesh(new T.PlaneGeometry(1.4, 0.5), new T.MeshBasicMaterial({ map: canvasTex(T, 140, 50, (g) => {
-      g.fillStyle = "#7a5230"; g.fillRect(0, 0, 140, 50);
-      g.fillStyle = "#ffe9b0"; g.font = "bold 30px sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("EXIT", 70, 27);
-    }) }));
-    sign.position.set(0, 3.35, endZ + 0.46);
-    scene.add(sign);
-    const glow = new T.Mesh(new T.PlaneGeometry(2.8, 3.8), new T.MeshBasicMaterial({ color: 0xffe9a8 }));
-    glow.position.set(0, 1.9, endZ - 0.2);
-    scene.add(glow);
-    return { group: scene, doors, lampMat: flyMat, sky: "#1c2a20", fog: [12, 38], hemi: [0xd6ffd0, 0x1e2a14, 0.85], torch: 0xfff6d6 };
-  }
-
-  // Slime Party: a party room with balloons, bunting and a giant birthday cake.
-  function buildPartyEnv(T){
-    const scene = new T.Group();
-    const mid = -HALL_LEN / 2 + 4, doors = [];
-    const rnd = (a, b) => a + Math.random() * (b - a);
-    const party = [0xff5c8a, 0xffd23f, 0x3fa7ff, 0x7ee06a, 0xb68cff, 0xff9a3e];
-    const floorTex = canvasTex(T, 128, 128, (g) => {
-      const cols = ["#ff8fb1", "#ffe28a", "#8fd0ff", "#b9f0a6"];
-      for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) { g.fillStyle = cols[(x + y) % 4]; g.fillRect(x * 32, y * 32, 32, 32); }
-    }, HALL_W / 2, HALL_LEN / 2);
-    const floor = new T.Mesh(new T.PlaneGeometry(HALL_W, HALL_LEN), new T.MeshLambertMaterial({ map: floorTex }));
-    floor.rotation.x = -Math.PI / 2; floor.position.set(0, 0, mid);
-    scene.add(floor);
-    const wallTex = canvasTex(T, 128, 128, (g) => {
-      g.fillStyle = "#7d5bc4"; g.fillRect(0, 0, 128, 128);
-      g.fillStyle = "rgba(255,255,255,.28)";
-      for (let y = 16; y < 128; y += 32) for (let x = (y / 32 % 2) * 16 + 8; x < 128; x += 32) { g.beginPath(); g.arc(x, y, 6, 0, 7); g.fill(); }   // polka dots
-    }, HALL_LEN / 3, 1);
+    // Your booth: a counter and two lane dividers.
+    const counter = new T.Mesh(new T.BoxGeometry(2.2, 0.08, 0.6), std(0x5a4a3a, 0.6));
+    counter.position.set(0, 1.05, -0.75); g.add(counter);
+    const front = new T.Mesh(new T.BoxGeometry(2.2, 1.05, 0.05), std(0x3e444c, 0.8));
+    front.position.set(0, 0.52, -1.03); g.add(front);
     for (const side of [-1, 1]) {
-      const wall = new T.Mesh(new T.PlaneGeometry(HALL_LEN, 3.4), new T.MeshLambertMaterial({ map: wallTex }));
-      wall.position.set(side * HALL_W / 2, 1.7, mid);
-      wall.rotation.y = -side * Math.PI / 2;
-      scene.add(wall);
+      const div = new T.Mesh(new T.BoxGeometry(0.05, 1.9, 1.3), std(0x4a525c, 0.7));
+      div.position.set(side * 1.12, 1.15, -0.55); g.add(div);
     }
-    const ceil = new T.Mesh(new T.PlaneGeometry(HALL_W, HALL_LEN), new T.MeshLambertMaterial({ color: 0x3a2a5c }));
-    ceil.rotation.x = Math.PI / 2; ceil.position.set(0, 3.4, mid);
-    scene.add(ceil);
-    const colMats = party.map(c => new T.MeshLambertMaterial({ color: c, emissive: new T.Color(c).multiplyScalar(0.25) }));
-    // String lights (the bulbs blink like disco lights).
-    const bulbMat = new T.MeshBasicMaterial({ color: 0xfff1a8 });
-    bulbMat.userData.base = new T.Color(0xfff1a8);
-    const bulbGeo = new T.SphereGeometry(0.06, 6, 5);
-    const flagGeo = new T.CircleGeometry(0.28, 3);
-    for (let z = -2; z > -HALL_LEN + 5; z -= 4) {
-      for (let i = 0; i <= 12; i++) {                                     // bunting + lights across the room
-        const x = -HALL_W / 2 + (i / 12) * HALL_W, sag = Math.sin((i / 12) * Math.PI) * 0.45;
-        const flag = new T.Mesh(flagGeo, colMats[i % colMats.length]);
-        flag.position.set(x, 3.05 - sag, z); flag.rotation.z = -Math.PI / 2;
-        scene.add(flag);
-        const bulb = new T.Mesh(bulbGeo, bulbMat);
-        bulb.position.set(x, 3.3 - sag * 0.6, z - 2);
-        scene.add(bulb);
-      }
-    }
-    // Balloons along the walls, presents on the floor, curtains to come out of.
-    const balloonGeo = new T.SphereGeometry(0.3, 12, 10);
-    const stringMat = new T.MeshBasicMaterial({ color: 0xffffff });
-    const stringGeo = new T.CylinderGeometry(0.008, 0.008, 1, 4);
-    const boxGeo = new T.BoxGeometry(0.6, 0.5, 0.6), ribbonGeo = new T.BoxGeometry(0.62, 0.52, 0.12);
-    const ribbonMat = new T.MeshLambertMaterial({ color: 0xffffff, emissive: 0x333333 });
-    for (let z = -1; z > -HALL_LEN + 6; z -= 1.8) {
-      for (const side of [-1, 1]) {
-        const x = side * rnd(2.6, 3.2), bz = z + rnd(-0.6, 0.6), y = rnd(1.8, 2.8);
-        const b = new T.Mesh(balloonGeo, colMats[Math.floor(Math.random() * colMats.length)]);
-        b.scale.set(1, 1.2, 1); b.position.set(x, y, bz);
-        scene.add(b);
-        const st = new T.Mesh(stringGeo, stringMat); st.scale.y = y - 0.35; st.position.set(x, (y - 0.35) / 2, bz);
-        scene.add(st);
-        if (Math.random() < 0.35) {
-          const box = new T.Mesh(boxGeo, colMats[Math.floor(Math.random() * colMats.length)]);
-          box.position.set(side * rnd(2.5, 3), 0.25, z + rnd(-0.5, 0.5)); box.rotation.y = rnd(0, 1);
-          const rb = new T.Mesh(ribbonGeo, ribbonMat); rb.position.copy(box.position); rb.rotation.y = box.rotation.y;
-          scene.add(box, rb);
-        }
-      }
-    }
-    const curtainMat = new T.MeshLambertMaterial({ color: 0xffd23f, emissive: 0x3a2a00, side: T.DoubleSide });
-    for (let z = -7.4; z > -HALL_LEN + 6; z -= 9.5) {
-      for (const side of [-1, 1]) {
-        const c = new T.Mesh(new T.PlaneGeometry(1.3, 2.4), curtainMat);
-        c.position.set(side * (HALL_W / 2 - 0.02), 1.2, z);
-        c.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2;
-        scene.add(c);
-        doors.push({ x: side * (HALL_W / 2 - 0.6), z });
-      }
-    }
-    // The goal: a giant birthday cake with candles and a banner.
-    const endZ = -HALL_LEN + 5;
-    const cake = new T.Group();
-    const tiers = [[1.6, 0.9, 0xf7d8e4], [1.2, 0.8, 0xfff6e8], [0.8, 0.7, 0xff8fb1]];
-    let y = 0;
-    for (const [r, h, c] of tiers) {
-      const tier = new T.Mesh(new T.CylinderGeometry(r, r, h, 28), new T.MeshLambertMaterial({ color: c, emissive: new T.Color(c).multiplyScalar(0.2) }));
-      tier.position.y = y + h / 2; cake.add(tier);
-      const icing = new T.Mesh(new T.TorusGeometry(r, 0.08, 8, 28), new T.MeshLambertMaterial({ color: 0xffffff, emissive: 0x444444 }));
-      icing.rotation.x = Math.PI / 2; icing.position.y = y + h; cake.add(icing);
-      y += h;
-    }
-    const flameMat = new T.MeshBasicMaterial({ color: 0xffc23f });
-    for (let i = 0; i < 6; i++) {
-      const a = (i / 6) * Math.PI * 2;
-      const cd = new T.Mesh(new T.CylinderGeometry(0.04, 0.04, 0.35, 6), colMats[i % colMats.length]);
-      cd.position.set(Math.cos(a) * 0.5, y + 0.17, Math.sin(a) * 0.5); cake.add(cd);
-      const fl = new T.Mesh(new T.ConeGeometry(0.06, 0.16, 8), flameMat);
-      fl.position.set(Math.cos(a) * 0.5, y + 0.43, Math.sin(a) * 0.5); cake.add(fl);
-    }
-    cake.position.set(0, 0, endZ);
-    scene.add(cake);
-    const banner = new T.Mesh(new T.PlaneGeometry(4, 0.7), new T.MeshBasicMaterial({ map: canvasTex(T, 400, 70, (g) => {
-      g.fillStyle = "#ff5c8a"; g.fillRect(0, 0, 400, 70);
-      g.fillStyle = "#fff6dc"; g.font = "bold 40px sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("HAPPY BIRTHDAY!", 200, 37);
-    }) }));
-    banner.position.set(0, 3.0, endZ + 1.2);   // hangs above and just in front of the cake
-    scene.add(banner);
-    return { group: scene, doors, lampMat: bulbMat, sky: "#2a1f3a", fog: [16, 46], hemi: [0xffe6f0, 0x3a2a5c, 1.0], torch: 0xfff0f6 };
-  }
-
-  const ENV_BUILDERS = { hall: buildHallEnv, zombies: buildJungleEnv, slimes: buildPartyEnv };
-  // Switches the 3D world to the one for this game mode (building it the first time).
-  function useEnv(mode){
-    const s = game.three;
-    if (!s) return;
-    const key = ENV_BUILDERS[mode] ? mode : "hall";
-    if (s.envKey === key) return;
-    if (!s.envs[key]) s.envs[key] = ENV_BUILDERS[key](s.T);
-    for (const k in s.envs) s.scene.remove(s.envs[k].group);
-    const env = s.envs[key];
-    s.scene.add(env.group);
-    const sky = new s.T.Color(env.sky);
-    s.scene.background = sky;
-    s.scene.fog = new s.T.Fog(sky, env.fog[0], env.fog[1]);
-    s.hemi.color.setHex(env.hemi[0]); s.hemi.groundColor.setHex(env.hemi[1]); s.hemi.intensity = env.hemi[2];
-    s.hemiBase = env.hemi[2];
-    s.torch.color.setHex(env.torch);
-    s.doors = env.doors; s.lampMat = env.lampMat;
-    s.envKey = key;
+    return { group: g, sky: 0x1a1d22 };
   }
 
   function buildScene(stage){
@@ -7543,313 +7378,211 @@
     stage.insertBefore(renderer.domElement, stage.firstChild);
 
     const scene = new T.Scene();
-    const night = new T.Color("#141a26");
-    scene.background = night;
-    scene.fog = new T.Fog(night, 14, 42);
-    const camera = new T.PerspectiveCamera(72, 1, 0.05, 80);
+    const env = buildRangeEnv(T);
+    scene.add(env.group);
+    scene.background = new T.Color(env.sky);
+    scene.fog = new T.Fog(env.sky, 22, 40);
+    const camera = new T.PerspectiveCamera(70, 1, 0.02, 80);
     camera.position.set(0, 1.6, 0);
     camera.rotation.order = "YXZ";
     scene.add(camera);
-    const hemi = new T.HemisphereLight(0xc9d6ff, 0x2a241c, 0.8);
+    const hemi = new T.HemisphereLight(0xe8eefc, 0x3a3a40, 0.55);
     scene.add(hemi);
-    const torch = new T.PointLight(0xfff1d6, 1.1, 22, 1.6); // your flashlight
-    torch.position.set(0.2, 0.1, 0);
-    camera.add(torch);
+    const sun = new T.DirectionalLight(0xffffff, 0.6);
+    sun.position.set(2, 6, 4);
+    scene.add(sun);
+    scene.add(new T.AmbientLight(0xffffff, 0.12));
+    const flashLight = new T.PointLight(0xffc36b, 0, 6, 2);
+    camera.add(flashLight);
+    const gunLight = new T.PointLight(0xfff4e6, 0.9, 1.2, 2);
+    gunLight.position.set(0.05, 0.12, -0.05);
+    camera.add(gunLight);
 
-    // Your zapper: a chunky toy blaster in the app's colours, held in view.
-    const zapper = new T.Group();
-    const body = new T.Mesh(new T.BoxGeometry(0.11, 0.12, 0.34), new T.MeshLambertMaterial({ color: 0x0077b6 }));
-    const grip = new T.Mesh(new T.BoxGeometry(0.08, 0.16, 0.08), new T.MeshLambertMaterial({ color: 0x5c3a10 }));
-    grip.position.set(0, -0.11, 0.08); grip.rotation.x = 0.3;
-    const barrel = new T.Mesh(new T.CylinderGeometry(0.035, 0.045, 0.2, 12), new T.MeshLambertMaterial({ color: 0x21756a }));
-    barrel.rotation.x = Math.PI / 2; barrel.position.z = -0.25;
-    const tip = new T.Mesh(new T.SphereGeometry(0.04, 12, 10), new T.MeshBasicMaterial({ color: 0x4fc2ae }));
-    tip.position.z = -0.36;
-    zapper.add(body, grip, barrel, tip);
-    zapper.scale.setScalar(0.75);
-    zapper.position.set(0.3, -0.27, -0.55);
-    camera.add(zapper);
-
-    return {
-      T, renderer, scene, camera, zapper, tip, torch, hemi, doors: [], lampMat: null, envs: {}, envKey: null, hemiBase: 0.8, flicker: 0,
+    const s = {
+      T, renderer, scene, camera, hemi, flashLight,
       raycaster: new T.Raycaster(),
-      monsters: [], bits: [], beams: [],
-      bitGeo: new T.BoxGeometry(0.09, 0.09, 0.09),
-      eyeWhite: new T.MeshBasicMaterial({ color: 0xffffff }),
-      eyeDark: new T.MeshBasicMaterial({ color: 0x111111 }),
-      toothMat: new T.MeshBasicMaterial({ color: 0xfff6dc }),
-      toothGeo: new T.BoxGeometry(0.05, 0.07, 0.02),
-      cheekMat: new T.MeshBasicMaterial({ color: 0xff8fb1 }),
-      tongueMat: new T.MeshBasicMaterial({ color: 0xff5c8a }),
-      coneMat: new T.MeshLambertMaterial({ color: 0xff7a1a, emissive: 0x552200 }),
-      socketMat: new T.MeshBasicMaterial({ color: 0x1a1f14 }),
-      zombieEye: new T.MeshBasicMaterial({ color: 0xf4ffb0 }),
-      hatMats: [0xffd23f, 0x3fa7ff, 0xff4f9a, 0x7ee06a].map(c => new T.MeshLambertMaterial({ color: c, emissive: new T.Color(c).multiplyScalar(0.3) })),
-      beamMat: new T.LineBasicMaterial({ color: 0x7ff5df }),
-      yaw: 0, pitch: 0, recoil: 0
+      bots: [], bits: [], beams: [],
+      bitGeo: new T.BoxGeometry(0.05, 0.05, 0.05),
+      sparkMat: new T.MeshBasicMaterial({ color: 0xffd27a }),
+      beamMat: new T.LineBasicMaterial({ color: 0xffe2a0, transparent: true, opacity: 0.8 }),
+      botMats: {
+        suit: new T.MeshStandardMaterial({ color: 0x6b7686, roughness: 0.5, metalness: 0.25 }),
+        plate: new T.MeshStandardMaterial({ color: 0xff7a1a, roughness: 0.45, metalness: 0.2 }),
+        joint: new T.MeshStandardMaterial({ color: 0x1c2027, roughness: 0.5, metalness: 0.6 }),
+        visor: new T.MeshStandardMaterial({ color: 0x0b0d10, roughness: 0.15, metalness: 0.9 }),
+        eye: new T.MeshBasicMaterial({ color: 0x5ff6ff })
+      },
+      yaw: 0, pitch: 0, recoil: 0, gunKind: null
     };
+    return s;
   }
 
-  /* ---- monsters (all built from simple shapes) ---- */
-  const MONSTER_KINDS = {
-    // hp: head shot = 150 damage, body = 100, legs = 50.
-    zombie: { color: 0x8fd16a, speed: 1.15, hp: 150, scale: 1.44, pts: 100 },
-    blob:   { color: 0xb68cff, speed: 1.4, hp: 150, scale: 1.25, pts: 120, floats: true },
-    imp:    { color: 0xff9a3e, speed: 2.2, hp: 100, scale: 0.94, pts: 150 },
-    brute:  { color: 0x5fd0c8, speed: 0.85, hp: 400, scale: 1.88, pts: 350 },
-    // Slime Party: big smiling slimes that split into two little ones.
-    slime:    { color: 0x5fe07a, speed: 1.2, hp: 150, scale: 1.56, pts: 120, slime: true },
-    slimelet: { color: 0x5fe07a, speed: 1.9, hp: 60, scale: 0.81, pts: 60, slime: true, small: true },
-    // Zombie Horde: proper (cartoon) zombies — grey-green skin, torn clothes.
-    walker:    { color: 0x9bb07f, speed: 1.0, hp: 150, scale: 1.38, pts: 110, walker: true },
-    bigwalker: { color: 0x8a9f70, speed: 0.75, hp: 400, scale: 1.88, pts: 350, walker: true }
-  };
-
-  const DAMAGE = { head: 150, body: 100, leg: 50 };
-  const CHARGE_DIST = 5.5, CHARGE_BOOST = 1.8;
-  // Difficulty: how fast monsters move and how often they come out, and how
-  // fast Monkey Climb's branch clock runs. Medium is the original pace.
-  const DIFFICULTY = {
-    easy:   { speed: 0.6,  spawnGap: 1.35, clock: 0.6 },
-    medium: { speed: 1,    spawnGap: 1,    clock: 1 },
-    hard:   { speed: 1.45, spawnGap: 0.8,  clock: 1.35 }
-  };
-  const diff = () => DIFFICULTY[game.difficulty] || DIFFICULTY.medium;
-
-  const SLIME_COLORS = [0x5fe07a, 0xff7ab8, 0x6fc8ff, 0xffd23f, 0xb68cff];
-
-  function makeMonster(kind, colorOverride){
-    const s = game.three, T = s.T, k = MONSTER_KINDS[kind];
-    const color = colorOverride != null ? colorOverride : (k.slime ? SLIME_COLORS[Math.floor(Math.random() * SLIME_COLORS.length)] : k.color);
-    // A soft glow in its own colour keeps it easy to see in the dark hallway.
-    const glow = new T.Color(color).multiplyScalar(0.55);
-    const mat = new T.MeshLambertMaterial({ color, emissive: glow, transparent: !!k.slime, opacity: k.slime ? 0.88 : 1 });
-    const g = new T.Group();
-    const parts = [];
-    const add = (mesh, part) => { mesh.userData.part = part; g.add(mesh); parts.push(mesh); return mesh; };
-    if (k.walker) {
-      const shirt = new T.MeshLambertMaterial({ color: [0x5f7fa3, 0x9c4a3c, 0x7c6f4a, 0x6b5a8c][Math.floor(Math.random() * 4)] });
-      const pants = new T.MeshLambertMaterial({ color: 0x353a52 });
-      for (const sx of [-0.14, 0.14]) {
-        const leg = add(new T.Mesh(new T.CylinderGeometry(0.11, 0.1, 0.6, 8), pants), "leg");
-        leg.position.set(sx, 0.3, 0);
-        leg.userData.leg = sx;
-        const shoe = add(new T.Mesh(new T.BoxGeometry(0.16, 0.08, 0.26), s.eyeDark), "leg");
-        shoe.position.set(sx, 0.04, 0.05);
-      }
-      const torso = add(new T.Mesh(new T.CylinderGeometry(0.3, 0.33, 0.8, 10), shirt), "body");
-      torso.position.y = 1.0;
-      for (let i = 0; i < 5; i++) {                                    // ragged, torn shirt hem
-        const rag = add(new T.Mesh(new T.ConeGeometry(0.07, 0.18, 4), shirt), "body");
-        const a = (i / 5) * Math.PI * 1.6 - 0.8;
-        rag.position.set(Math.sin(a) * 0.3, 0.55, Math.cos(a) * 0.3);
-        rag.rotation.x = Math.PI;
-      }
-      const hole = add(new T.Mesh(new T.CircleGeometry(0.07, 7), mat), "body");   // a rip showing skin
-      hole.position.set(0.12, 1.1, 0.32);
-      for (const sx of [-0.38, 0.38]) {                                // stiff arms straight out
-        const arm = add(new T.Mesh(new T.BoxGeometry(0.12, 0.12, 0.62), mat), "body");
-        arm.position.set(sx, 1.28, 0.3);
-        arm.userData.arm = sx;
-        const sleeve = add(new T.Mesh(new T.BoxGeometry(0.15, 0.15, 0.2), shirt), "body");
-        sleeve.position.set(sx, 1.28, 0.05);
-        const hand = add(new T.Mesh(new T.SphereGeometry(0.08, 8, 6), mat), "body");
-        hand.position.set(sx, 1.28, 0.64);
-      }
-      const head = add(new T.Mesh(new T.SphereGeometry(0.28, 14, 10), mat), "head");
-      head.position.set(0.04, 1.68, 0.02); head.scale.set(1, 1.08, 0.95);
-      g.userData.headTilt = true;
-    } else if (k.slime) {
-      const b = add(new T.Mesh(new T.SphereGeometry(0.6, 20, 14), mat), "body");
-      b.position.y = 0.5; b.scale.set(1.15, 0.8, 1.15);
-    } else if (k.floats) {
-      const b = add(new T.Mesh(new T.SphereGeometry(0.55, 18, 14), mat), "body");
-      b.position.y = 1.2; b.scale.set(1, 1.15, 1);
-      const tail = add(new T.Mesh(new T.ConeGeometry(0.45, 0.6, 14), mat), "leg");
-      tail.position.y = 0.6; tail.rotation.x = Math.PI;
+  /* ---- the guns (built from many small parts so they read as real) ---- */
+  function buildGun(s, kind){
+    const T = s.T;
+    if (s.gun) { s.camera.remove(s.gun); s.gun = null; }
+    const metal = new T.MeshStandardMaterial({ color: 0x4a4f57, roughness: 0.38, metalness: 0.35 });
+    const dark = new T.MeshStandardMaterial({ color: 0x2b2d31, roughness: 0.7, metalness: 0.1 });
+    const worn = new T.MeshStandardMaterial({ color: 0x6a6f78, roughness: 0.35, metalness: 0.4 });
+    const glove = new T.MeshStandardMaterial({ color: 0x3a3226, roughness: 0.95 });
+    const box = (w, h, d, mat, x, y, z, rx) => { const m = new T.Mesh(new T.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); if (rx) m.rotation.x = rx; return m; };
+    const cyl = (r1, r2, len, mat, x, y, z) => { const m = new T.Mesh(new T.CylinderGeometry(r1, r2, len, 18), mat); m.rotation.x = Math.PI / 2; m.position.set(x, y, z); return m; };
+    const gun = new T.Group();
+    const moving = new T.Group();   // the slide / bolt that snaps back when firing
+    let muzzleZ;
+    if (kind === "rifle") {
+      // Receiver, rail and handguard
+      gun.add(box(0.05, 0.06, 0.28, metal, 0, 0, 0));
+      gun.add(box(0.052, 0.045, 0.13, worn, 0, -0.045, 0.03));              // magazine well
+      gun.add(box(0.06, 0.06, 0.3, dark, 0, 0.004, -0.29));                 // handguard
+      for (let i = 0; i < 9; i++) gun.add(box(0.062, 0.012, 0.018, metal, 0, -0.022, -0.17 - i * 0.03));   // vent slots
+      gun.add(box(0.03, 0.012, 0.56, worn, 0, 0.037, -0.12));               // top rail
+      for (let i = 0; i < 16; i++) gun.add(box(0.034, 0.006, 0.012, metal, 0, 0.046, 0.12 - i * 0.034));
+      gun.add(cyl(0.011, 0.011, 0.34, metal, 0, 0.004, -0.6));              // barrel
+      gun.add(cyl(0.018, 0.016, 0.06, dark, 0, 0.004, -0.79));              // muzzle brake
+      gun.add(box(0.012, 0.035, 0.012, metal, 0, 0.055, -0.4));            // front sight post
+      // Red-dot sight
+      gun.add(cyl(0.024, 0.024, 0.07, dark, 0, 0.078, -0.02));
+      gun.add(box(0.03, 0.03, 0.05, dark, 0, 0.055, -0.02));
+      const lens = new T.Mesh(new T.CircleGeometry(0.02, 20), new T.MeshStandardMaterial({ color: 0x2a6f6a, roughness: 0.05, metalness: 0.9, transparent: true, opacity: 0.55 }));
+      lens.position.set(0, 0.078, -0.056); gun.add(lens);
+      // Curved magazine, grip, trigger, stock
+      const mag = box(0.042, 0.16, 0.07, dark, 0, -0.13, 0.04, -0.22); gun.add(mag);
+      gun.add(box(0.04, 0.11, 0.05, dark, 0, -0.08, 0.15, 0.35));           // pistol grip
+      gun.add(box(0.006, 0.03, 0.006, metal, 0, -0.045, 0.105));           // trigger
+      const rGuard = new T.Mesh(new T.TorusGeometry(0.03, 0.004, 6, 16, Math.PI), metal);
+      rGuard.position.set(0, -0.035, 0.1); rGuard.rotation.set(Math.PI, Math.PI / 2, 0); gun.add(rGuard);
+      gun.add(box(0.035, 0.035, 0.18, worn, 0, 0.0, 0.24));                // buffer tube
+      gun.add(box(0.045, 0.09, 0.13, dark, 0, -0.025, 0.33));              // stock
+      moving.add(box(0.012, 0.02, 0.04, worn, 0.028, 0.012, 0.02));        // charging handle
+      gun.add(moving);
+      // Hands: one on the grip, one on the handguard
+      gun.add(box(0.058, 0.065, 0.085, glove, 0.004, -0.1, 0.16, 0.35));    // gloved hand on the grip
+      gun.add(box(0.068, 0.05, 0.1, glove, 0.0, -0.04, -0.32));             // support hand
+      muzzleZ = -0.83;
+      gun.scale.setScalar(0.5);
+      gun.position.set(0.13, -0.135, -0.3);
+      gun.rotation.y = 0.03;
     } else {
-      const torso = add(new T.Mesh(new T.CylinderGeometry(0.3, 0.34, 0.9, 12), mat), "body");
-      torso.position.y = 1.0;
-      for (const sx of [-0.14, 0.14]) {
-        const leg = add(new T.Mesh(new T.CylinderGeometry(0.1, 0.1, 0.55, 8), mat), "leg");
-        leg.position.set(sx, 0.28, 0);
-        leg.userData.leg = sx;
-      }
-      for (const sx of [-0.38, 0.38]) {
-        const arm = add(new T.Mesh(new T.BoxGeometry(0.13, 0.13, 0.6), mat), "body");
-        arm.position.set(sx, 1.3, 0.28);                  // zombie arms reaching forward
-        arm.userData.arm = sx;
-      }
-      const head = add(new T.Mesh(new T.SphereGeometry(0.3, 16, 12), mat), "head");
-      head.position.y = 1.72;
+      // Pistol: slide with serrations and sights, frame, barrel, trigger guard, grip
+      const slide = box(0.036, 0.042, 0.2, metal, 0, 0.022, 0);
+      moving.add(slide);
+      for (let i = 0; i < 7; i++) moving.add(box(0.038, 0.03, 0.005, worn, 0, 0.022, 0.07 + i * 0.008));
+      moving.add(box(0.008, 0.01, 0.01, dark, 0, 0.048, -0.09));            // front sight
+      moving.add(box(0.03, 0.01, 0.012, dark, 0, 0.048, 0.088));            // rear sight
+      moving.add(box(0.03, 0.012, 0.03, worn, 0.0, 0.035, -0.02));         // ejection port
+      gun.add(moving);
+      gun.add(box(0.032, 0.022, 0.18, dark, 0, -0.008, -0.005));           // frame
+      gun.add(box(0.034, 0.008, 0.07, dark, 0, -0.021, -0.06));            // accessory rail
+      gun.add(cyl(0.008, 0.008, 0.012, metal, 0, 0.022, -0.103));          // barrel end
+      const guard = new T.Mesh(new T.TorusGeometry(0.022, 0.004, 6, 16, Math.PI), dark);
+      guard.rotation.set(Math.PI, Math.PI / 2, 0); guard.position.set(0, -0.022, 0.0); gun.add(guard);
+      gun.add(box(0.005, 0.022, 0.006, metal, 0, -0.03, 0.004));           // trigger
+      const grip = box(0.034, 0.11, 0.055, dark, 0, -0.07, 0.07, 0.28); gun.add(grip);
+      for (let i = 0; i < 6; i++) gun.add(box(0.036, 0.004, 0.05, worn, 0, -0.035 - i * 0.015, 0.06 + i * 0.004, 0.28));   // grip texture
+      gun.add(box(0.036, 0.012, 0.06, worn, 0, -0.125, 0.088, 0.28));     // magazine base
+      // Two-handed grip
+      gun.add(box(0.05, 0.07, 0.075, glove, 0.006, -0.075, 0.078, 0.28));  // gloved hands
+      gun.add(box(0.045, 0.055, 0.065, glove, -0.028, -0.085, 0.055, 0.28));
+      muzzleZ = -0.11;
+      gun.scale.setScalar(0.8);
+      gun.position.set(0.12, -0.12, -0.3);
+      gun.rotation.y = 0.04;
     }
-    // Goofy face on the front (+z faces the player after lookAt):
-    // mismatched googly eyes, rosy cheeks, buck teeth and a floppy tongue.
-    const eyeY = k.slime ? 0.68 : k.floats ? 1.35 : 1.78;
-    const fz = k.slime ? 0.6 : k.floats ? 0.5 : 0.25;
-    let pupils = [], tongue = null, propeller = null;
-    if (k.walker) {
-      const socketMat = s.socketMat, glowEye = s.zombieEye;
-      [[-0.1, 0.075], [0.12, 0.09]].forEach(([sx, r]) => {
-        const so = add(new T.Mesh(new T.SphereGeometry(r, 10, 8), socketMat), "head");
-        so.position.set(sx + 0.04, 1.72, 0.24); so.scale.set(1, 0.85, 0.4);
-        const e = add(new T.Mesh(new T.SphereGeometry(r * 0.35, 8, 6), glowEye), "head");
-        e.position.set(sx + 0.04, 1.71, 0.28);
-      });
-      const mouth = add(new T.Mesh(new T.BoxGeometry(0.16, 0.1, 0.04), socketMat), "head");
-      mouth.position.set(0.06, 1.52, 0.24); mouth.rotation.z = 0.15;
-      for (const sx of [0.02, 0.1]) { const tt = add(new T.Mesh(s.toothGeo, s.toothMat), "head"); tt.scale.set(0.7, 0.6, 1); tt.position.set(sx, 1.56, 0.26); }
-      for (let i = 0; i < 3; i++) {                                    // forehead stitches
-        const st = add(new T.Mesh(new T.BoxGeometry(0.015, 0.07, 0.015), socketMat), "head");
-        st.position.set(-0.06 + i * 0.06, 1.86, 0.22);
-      }
-      const seam = add(new T.Mesh(new T.BoxGeometry(0.16, 0.012, 0.015), socketMat), "head");
-      seam.position.set(0, 1.86, 0.225);
-      for (let i = 0; i < 4; i++) {                                    // a few scraggly hair tufts
-        const tuft = add(new T.Mesh(new T.ConeGeometry(0.05, 0.14, 5), s.eyeDark), "head");
-        tuft.position.set(-0.12 + i * 0.08, 1.95, -0.02 + (i % 2) * 0.06); tuft.rotation.z = (i - 1.5) * 0.3;
-      }
-    } else {
-    [[-0.12, 0.085], [0.13, 0.12]].forEach(([sx, r], i) => {
-      const w = add(new T.Mesh(new T.SphereGeometry(r, 14, 10), s.eyeWhite), "head");
-      w.position.set(sx, eyeY + (i ? 0.02 : 0), fz);
-      const pu = add(new T.Mesh(new T.SphereGeometry(r * 0.45, 10, 8), s.eyeDark), "head");
-      pu.userData.base = new T.Vector3(sx, eyeY + (i ? 0.02 : 0), fz + r * 0.8);
-      pu.userData.r = r * 0.35;
-      pu.userData.ph = Math.random() * 6;
-      pu.position.copy(pu.userData.base);
-      pupils.push(pu);
+    // Muzzle flash (hidden until you fire)
+    const flashTex = canvasTex(T, 64, 64, (c, w, h) => {
+      const gr = c.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+      gr.addColorStop(0, "rgba(255,255,230,1)"); gr.addColorStop(0.3, "rgba(255,200,90,.9)"); gr.addColorStop(1, "rgba(255,120,0,0)");
+      c.fillStyle = gr; c.fillRect(0, 0, w, h);
     });
-    for (const sx of [-0.2, 0.2]) {
-      const cheek = add(new T.Mesh(new T.SphereGeometry(0.05, 10, 8), s.cheekMat), "head");
-      cheek.position.set(sx, eyeY - 0.12, fz - 0.02);
-      cheek.scale.set(1, 0.6, 0.4);
-    }
-    if (k.slime) {
-      const smile = add(new T.Mesh(new T.TorusGeometry(0.2, 0.05, 8, 20, Math.PI), s.eyeDark), "head");
-      smile.position.set(0, eyeY - 0.16, fz - 0.02);
-      smile.rotation.z = Math.PI;                         // arc opens upward: a big grin
-    } else {
-    const mouth = add(new T.Mesh(new T.BoxGeometry(0.2, 0.07, 0.04), s.eyeDark), "head");
-    mouth.position.set(0, eyeY - 0.19, fz + 0.02);
-    for (const sx of [-0.03, 0.03]) {                    // two big buck teeth
-      const tooth = add(new T.Mesh(s.toothGeo, s.toothMat), "head");
-      tooth.position.set(sx, eyeY - 0.18, fz + 0.045);
-    }
-    tongue = add(new T.Mesh(new T.BoxGeometry(0.09, 0.02, 0.16), s.tongueMat), "head");
-    tongue.geometry.translate(0, 0, 0.08);               // hinge at the mouth
-    tongue.position.set(0.04, eyeY - 0.22, fz + 0.03);
-    // A silly hat.
-    const hatY = k.floats ? 1.9 : 2.0;
-    const hatKind = ["party", "propeller", "grad", "cone"][Math.floor(Math.random() * 4)];
-    if (hatKind === "party") {
-      const hat = add(new T.Mesh(new T.ConeGeometry(0.16, 0.38, 14), s.hatMats[Math.floor(Math.random() * s.hatMats.length)]), "head");
-      hat.position.set(0.05, hatY + 0.16, 0); hat.rotation.z = -0.25;
-      const pom = add(new T.Mesh(new T.SphereGeometry(0.05, 8, 6), s.toothMat), "head");
-      pom.position.set(0.1, hatY + 0.36, 0);
-    } else if (hatKind === "propeller") {
-      const cap = add(new T.Mesh(new T.SphereGeometry(0.2, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), s.hatMats[1]), "head");
-      cap.position.set(0, hatY - 0.06, 0);
-      propeller = new T.Group();
-      for (const r of [0, Math.PI]) {
-        const blade = new T.Mesh(new T.BoxGeometry(0.22, 0.015, 0.05), s.hatMats[2]);
-        blade.position.x = Math.cos(r) * 0.11;
-        propeller.add(blade);
-      }
-      propeller.position.set(0, hatY + 0.16, 0);
-      g.add(propeller);
-    } else if (hatKind === "grad") {
-      const top = add(new T.Mesh(new T.BoxGeometry(0.42, 0.04, 0.42), s.eyeDark), "head");
-      top.position.set(0, hatY + 0.06, 0); top.rotation.y = 0.4;
-      const base = add(new T.Mesh(new T.CylinderGeometry(0.16, 0.18, 0.1, 12), s.eyeDark), "head");
-      base.position.set(0, hatY, 0);
-      const tassel = add(new T.Mesh(new T.BoxGeometry(0.02, 0.16, 0.02), s.hatMats[0]), "head");
-      tassel.position.set(0.18, hatY - 0.02, 0.12);
-    } else {
-      const cone = add(new T.Mesh(new T.ConeGeometry(0.17, 0.42, 14), s.coneMat), "head");
-      cone.position.set(0, hatY + 0.14, 0);
-      const stripe = add(new T.Mesh(new T.CylinderGeometry(0.105, 0.125, 0.07, 14), s.toothMat), "head");
-      stripe.position.set(0, hatY + 0.15, 0);
-    }
-    }
-    }
-    g.scale.setScalar(k.scale);
-    // Health bar that floats above the monster (a small page element).
-    const bar = el("div", "hp-bar");
-    bar.innerHTML = "<span></span>";
-    bar.hidden = true;
-    $("hpBars").appendChild(bar);
-    g.userData = { kind, k, color, mat, glow, parts, pupils, tongue, propeller, dizzy: 0, hp: k.hp, maxHp: k.hp, bar, stun: 0, charging: false, wobble: Math.random() * 6, t: Math.random() * 6, alive: true, flash: 0, spawnT: 0 };
-    parts.forEach(m => { m.userData.monster = g; });
-    return g;
+    const flash = new T.Sprite(new T.SpriteMaterial({ map: flashTex, blending: T.AdditiveBlending, transparent: true, depthWrite: false }));
+    flash.scale.setScalar(kind === "rifle" ? 0.16 : 0.1);
+    flash.position.set(0, kind === "rifle" ? 0.004 : 0.022, muzzleZ - 0.02);
+    flash.visible = false;
+    gun.add(flash);
+    const muzzle = new T.Object3D();
+    muzzle.position.set(0, kind === "rifle" ? 0.004 : 0.022, muzzleZ);
+    gun.add(muzzle);
+    s.camera.add(gun);
+    Object.assign(s, { gun, gunMoving: moving, flash, muzzle, gunKind: kind, gunBase: gun.position.clone(), gunRot: gun.rotation.x });
   }
 
-  // The three hallway game modes: which monsters come, and how many.
-  const HALL_MODES = {
-    hall: {
-      count: (w) => Math.min(14, 4 + w * 2),
-      kinds: (w) => ["zombie", "zombie", "blob"].concat(w >= 1 ? ["imp", "imp"] : [], w >= 2 ? ["brute"] : [], w >= 4 ? ["brute", "imp"] : [])
-    },
-    zombies: {                                   // Zombie Horde: lots and lots of zombies
-      count: (w) => Math.min(22, 7 + w * 3),
-      kinds: (w) => ["walker"].concat(w >= 3 ? ["walker", "walker", "bigwalker"] : [])
-    },
-    slimes: {                                    // Slime Party: every big one splits in two
-      count: (w) => Math.min(10, 3 + w),
-      kinds: () => ["slime"]
+  /* ---- training bots (humanoid, built from shapes) ---- */
+  function makeBot(){
+    const s = game.three, T = s.T, M = s.botMats;
+    const bot = new T.Group();
+    const pivot = new T.Group();       // pop-up bots swing up and down on their feet
+    bot.add(pivot);
+    const parts = [];
+    const add = (geo, mat, x, y, z, part) => { const m = new T.Mesh(geo, mat); m.position.set(x, y, z); m.userData = { bot, part }; pivot.add(m); parts.push(m); return m; };
+    // legs
+    const legs = [];
+    for (const side of [-1, 1]) {
+      const hip = new T.Group(); hip.position.set(side * 0.12, 0.95, 0); pivot.add(hip);
+      const thigh = new T.Mesh(new T.BoxGeometry(0.15, 0.48, 0.17), M.suit); thigh.position.y = -0.24; thigh.userData = { bot, part: "leg" }; hip.add(thigh); parts.push(thigh);
+      const knee = new T.Mesh(new T.SphereGeometry(0.075, 10, 8), M.joint); knee.position.y = -0.5; hip.add(knee);
+      const shin = new T.Mesh(new T.BoxGeometry(0.13, 0.42, 0.15), M.suit); shin.position.y = -0.72; shin.userData = { bot, part: "leg" }; hip.add(shin); parts.push(shin);
+      const boot = new T.Mesh(new T.BoxGeometry(0.15, 0.08, 0.26), M.joint); boot.position.set(0, -0.93, 0.04); hip.add(boot);
+      legs.push(hip);
     }
+    add(new T.BoxGeometry(0.38, 0.14, 0.22), M.joint, 0, 1.0, 0, "body");            // hips
+    add(new T.BoxGeometry(0.46, 0.55, 0.26), M.suit, 0, 1.36, 0, "body");            // torso
+    add(new T.BoxGeometry(0.34, 0.34, 0.04), M.plate, 0, 1.4, 0.14, "body");         // chest target plate
+    add(new T.CylinderGeometry(0.06, 0.07, 0.1, 10), M.joint, 0, 1.68, 0, "body");   // neck
+    const head = add(new T.SphereGeometry(0.15, 18, 14), M.suit, 0, 1.84, 0, "head");
+    head.scale.set(1, 1.1, 1.05);
+    add(new T.BoxGeometry(0.24, 0.07, 0.06), M.visor, 0, 1.86, 0.13, "head");      // visor
+    for (const x of [-0.05, 0.05]) { const e = new T.Mesh(new T.SphereGeometry(0.018, 8, 6), M.eye); e.position.set(x, 1.86, 0.165); pivot.add(e); }
+    const arms = [];
+    for (const side of [-1, 1]) {
+      const sh = new T.Group(); sh.position.set(side * 0.3, 1.58, 0); pivot.add(sh);
+      const ball = new T.Mesh(new T.SphereGeometry(0.08, 10, 8), M.joint); sh.add(ball);
+      const upper = new T.Mesh(new T.BoxGeometry(0.11, 0.34, 0.12), M.suit); upper.position.y = -0.2; upper.userData = { bot, part: "arm" }; sh.add(upper); parts.push(upper);
+      const fore = new T.Mesh(new T.BoxGeometry(0.1, 0.3, 0.11), M.suit); fore.position.y = -0.5; fore.userData = { bot, part: "arm" }; sh.add(fore); parts.push(fore);
+      arms.push(sh);
+    }
+    bot.userData = { parts, legs, arms, pivot, t: Math.random() * 6, alive: true };
+    return bot;
+  }
+
+  // How the bots move at each difficulty.
+  const RANGE_DIFF = {
+    easy:   { speed: 1.4, turnEvery: [1.4, 2.6], count: 1, upFor: 2.8, gap: 0.9, far: [-8, -12] },
+    medium: { speed: 2.6, turnEvery: [0.8, 1.8], count: 2, upFor: 1.9, gap: 0.6, far: [-9, -15] },
+    hard:   { speed: 4.2, turnEvery: [0.35, 1.0], count: 3, upFor: 1.2, gap: 0.4, far: [-10, -19] }
   };
-  function hallMode(){ return HALL_MODES[game.mode] || HALL_MODES.hall; }
-
-  // Zapping a big slime splits it into two little ones.
-  function splitSlime(m){
-    const u = m.userData;
-    if (!u.k.slime || u.k.small) return;
-    const s = game.three;
-    for (const dx of [-0.7, 0.7]) {
-      const c = makeMonster("slimelet", u.color);
-      c.position.set(Math.max(-HALL_W / 2 + 0.6, Math.min(HALL_W / 2 - 0.6, m.position.x + dx)), 0, m.position.z - 0.3);
-      c.userData.spawnT = 0.6;
-      c.scale.setScalar(c.userData.k.scale * 0.6);
-      s.scene.add(c);
-      s.monsters.push(c);
-    }
-  }
-
-  function spawnMonster(){
-    const s = game.three;
-    const kinds = hallMode().kinds(game.wave);
-    const kind = kinds[Math.floor(Math.random() * kinds.length)];
-    const m = makeMonster(kind);
-    // Out of a classroom door just ahead, or from further down the hall.
-    const near = s.doors.filter(d => d.z < game.camZ - 5 && d.z > game.camZ - 10);
-    if (near.length && Math.random() < 0.55) {
-      const d = near[Math.floor(Math.random() * near.length)];
-      m.position.set(d.x, 0, d.z);
+  const rangeDiff = () => RANGE_DIFF[game.difficulty] || RANGE_DIFF.medium;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  function spawnBot(){
+    const s = game.three, d = rangeDiff();
+    const bot = makeBot();
+    const u = bot.userData;
+    bot.position.set(rnd(-4.8, 4.8), 0, rnd(d.far[1], d.far[0]));
+    if (game.botMode === "popup") {
+      u.state = "rising"; u.stateT = 0; u.pivot.rotation.x = -Math.PI / 2;
+      u.upFor = d.upFor * rnd(0.85, 1.15);
     } else {
-      m.position.set((Math.random() - .5) * (HALL_W - 3), 0, game.camZ - (6.5 + Math.random() * 3.5));   // close enough to see clearly
+      u.state = "strafe"; u.dir = Math.random() < 0.5 ? -1 : 1; u.turnIn = rnd(d.turnEvery[0], d.turnEvery[1]);
+      u.speed = d.speed * rnd(0.85, 1.15);
     }
-    m.scale.multiplyScalar(0.01);
-    s.scene.add(m);
-    s.monsters.push(m);
+    s.scene.add(bot);
+    s.bots.push(bot);
   }
-
-  function poof(m, color){
+  function removeBot(bot){
+    const s = game.three;
+    s.scene.remove(bot);
+    bot.userData.alive = false;
+    const i = s.bots.indexOf(bot);
+    if (i >= 0) s.bots.splice(i, 1);
+  }
+  function sparks(point, n){
     const s = game.three, T = s.T;
-    const center = m.position.clone(); center.y = 1.1 * m.userData.k.scale;
-    // Rainbow confetti (in its own colour too).
-    const mats = [color, 0xffd23f, 0x3fa7ff, 0xff4f9a, 0x7ee06a, 0xffffff].map(c => new T.MeshBasicMaterial({ color: c }));
-    for (let i = 0; i < 22; i++) {
-      const b = new T.Mesh(s.bitGeo, mats[i % mats.length]);
-      b.position.copy(center);
-      b.userData = { v: new T.Vector3((Math.random() - .5) * 5, Math.random() * 4 + 1, (Math.random() - .5) * 5), life: 0.7 };
-      s.scene.add(b);
-      s.bits.push(b);
+    for (let i = 0; i < n; i++) {
+      const b = new T.Mesh(s.bitGeo, s.sparkMat);
+      b.position.copy(point);
+      b.userData = { v: new T.Vector3((Math.random() - .5) * 3, Math.random() * 3, (Math.random() - .5) * 3), life: 0.45 };
+      s.scene.add(b); s.bits.push(b);
     }
-    s.scene.remove(m);
-    m.userData.alive = false;
-    m.userData.bar.remove();
-    s.monsters.splice(s.monsters.indexOf(m), 1);
   }
 
   function sizeScene(){
@@ -7866,52 +7599,11 @@
   function clearWorld(){
     const s = game.three;
     if (!s) return;
-    for (const m of s.monsters) { s.scene.remove(m); m.userData.bar.remove(); }
+    for (const b of s.bots) s.scene.remove(b);
     for (const b of s.bits) s.scene.remove(b);
     for (const l of s.beams) s.scene.remove(l);
-    s.monsters = []; s.bits = []; s.beams = [];
+    s.bots = []; s.bits = []; s.beams = [];
     s.yaw = 0; s.pitch = 0;
-  }
-
-  // Arrows on the left/right edge point at monsters that are outside the view.
-  function updateMonsterPointers(){
-    const s = game.three, box = $("gameArrows");
-    if (!s || !box) return;
-    const show = game.phase === "playing";
-    let left = 0, right = 0;
-    if (show) {
-      const v = new s.T.Vector3();
-      for (const m of s.monsters) {
-        v.set(m.position.x, 1.2 * m.userData.k.scale, m.position.z).project(s.camera);
-        const behind = v.z > 1;
-        if (!behind && v.x >= -1 && v.x <= 1 && v.y >= -1 && v.y <= 1) continue;
-        const side = behind ? (v.x > 0 ? -1 : 1) : (v.x < 0 ? -1 : 1);
-        if (side < 0) left++; else right++;
-      }
-    }
-    const vv = new s.T.Vector3();
-    for (const m of s.monsters) {
-      const u = m.userData;
-      const top = u.k.slime ? 1.15 : u.k.floats ? 1.83 : 2.15;       // just above the head (slimes are short)
-      vv.set(m.position.x, m.position.y + top * u.k.scale, m.position.z).project(s.camera);
-      const visible = show && vv.z < 1 && Math.abs(vv.x) <= 1.05 && Math.abs(vv.y) <= 1.05;
-      if (u.bar.hidden !== !visible) u.bar.hidden = !visible;
-      if (!visible) continue;
-      u.bar.style.transform = "translate(" + Math.round((vv.x + 1) / 2 * (s.w || 1)) + "px," + Math.round((1 - vv.y) / 2 * (s.h || 1)) + "px) translate(-50%,-100%)";
-      const frac = Math.max(0, u.hp / u.maxHp);
-      if (u.shownFrac !== frac) {
-        u.shownFrac = frac;
-        const fill = u.bar.firstChild;
-        fill.style.width = (frac * 100) + "%";
-        fill.style.background = frac > 0.6 ? "#7ee06a" : frac > 0.3 ? "#f2c14e" : "#ff5a4f";
-      }
-    }
-    if ($("arrowLeft").hidden !== !left) $("arrowLeft").hidden = !left;
-    if ($("arrowRight").hidden !== !right) $("arrowRight").hidden = !right;
-    const left0 = $("monsterCount");
-    const n = show ? s.monsters.length + (game.walking ? 0 : game.spawnLeft) : 0;
-    if (left0.hidden !== (!show || !n)) left0.hidden = !show || !n;
-    setText(left0, t("gameLeft", { n }));
   }
 
   function showBanner(text){
@@ -7921,7 +7613,7 @@
     b.hidden = false;
     b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop");
     clearTimeout(showBanner.timer);
-    showBanner.timer = setTimeout(() => { b.hidden = true; }, 1600);
+    showBanner.timer = setTimeout(() => { b.hidden = true; }, 1400);
   }
 
   function hurtFlash(){
@@ -7937,134 +7629,76 @@
     const dt = Math.min(0.05, (now - (game.lastT || now)) / 1000);
     game.lastT = now;
     const live = game.phase === "playing";
+    const d = rangeDiff();
     if (live) {
       game.t += dt;
-      if (game.walking) {
-        const stopAt = game.wave < WAVES ? waveZ(game.wave) : -HALL_LEN + 7;
-        game.camZ = Math.max(stopAt, game.camZ - WALK_SPEED * dt);
-        if (game.camZ <= stopAt + 0.001) {
-          if (game.wave < WAVES) {
-            game.walking = false;
-            game.spawnLeft = hallMode().count(game.wave);
-            game.spawnIn = 0;                          // the first monster appears immediately
-            showBanner(t("gameWave", { i: game.wave + 1, n: WAVES }));
-          } else {
-            endRound("win");
-          }
-        }
-      } else {
-        game.spawnIn -= dt;
-        if (game.spawnLeft > 0 && game.spawnIn <= 0) {
-          spawnMonster();
-          game.spawnLeft--;
-          game.spawnIn = (Math.max(0.3, 0.75 - game.wave * 0.08) + Math.random() * 0.35) * diff().spawnGap;
-        }
-        if (game.spawnLeft === 0 && !s.monsters.length) {
-          game.wave++;
-          game.walking = true;
-          game.score += 150;
-          beep("clear");
-          showBanner(game.wave < WAVES ? t("gameWaveClear") : t("gameExitAhead"));
-        }
-      }
-      // Monsters shuffle toward you; one that reaches you costs a heart.
-      for (const m of s.monsters.slice()) {
-        const u = m.userData;
+      // Keep the lane full: a new bot shortly after one goes.
+      game.spawnIn -= dt;
+      if (s.bots.filter(b => b.userData.state !== "falling").length < d.count && game.spawnIn <= 0) { spawnBot(); game.spawnIn = d.gap; }
+      for (const bot of s.bots.slice()) {
+        const u = bot.userData;
         u.t += dt;
-        u.spawnT = Math.min(1, u.spawnT + dt * 3);
-        const target = u.k.scale;
-        m.scale.setScalar(target * (0.01 + 0.99 * u.spawnT));
-        const dx = s.camera.position.x - m.position.x, dz = game.camZ - m.position.z;
-        const dist = Math.hypot(dx, dz);
-        if (dist < 1.25) {
-          game.lives--;
-          game.streak = 0;
-          beep("hurt");
-          hurtFlash();
-          poof(m, 0x444444);
-          if (game.lives <= 0) { endRound("lose"); break; }
-          continue;
-        }
-        if (!u.charging && dist < CHARGE_DIST) { u.charging = true; beep(u.k.walker ? "groan" : "growl"); }
-        u.stun = Math.max(0, u.stun - dt);
-        const speed = u.stun > 0 ? 0 : u.k.speed * diff().speed * (u.charging ? CHARGE_BOOST : 1);
-        const step = speed * dt;
-        const weave = u.charging ? 0 : Math.sin(u.t * 1.7 + u.wobble) * 0.6 * dt;   // hard to line up a shot
-        m.position.x = Math.max(-HALL_W / 2 + 0.6, Math.min(HALL_W / 2 - 0.6, m.position.x + dx / dist * step + weave));
-        m.position.z += dz / dist * step;
-        m.lookAt(s.camera.position.x, 0, game.camZ);
-        m.position.y = u.k.slime ? Math.abs(Math.sin(u.t * 4)) * 0.6        // boing, boing
-          : u.k.floats ? 0.25 + Math.sin(u.t * 3) * 0.15 : Math.abs(Math.sin(u.t * 5)) * 0.05;
-        for (const part of u.parts) {
-          if (part.userData.leg) part.rotation.x = u.k.walker
-            ? (part.userData.leg > 0 ? Math.sin(u.t * 3.2) * 0.5 : Math.sin(u.t * 3.2) * 0.12)   // one leg drags
-            : Math.sin(u.t * 7 + (part.userData.leg > 0 ? Math.PI : 0)) * 0.6;
-          if (part.userData.arm) part.rotation.x = u.k.walker
-            ? Math.sin(u.t * 2 + (part.userData.arm > 0 ? 1.2 : 0)) * 0.12                 // arms held stiffly out
-            : Math.sin(u.t * 5 + (part.userData.arm > 0 ? 1.6 : 0)) * 0.5;               // flailing
-        }
-        if (u.k.walker) {
-          // Zombie shuffle: a limping lean from side to side.
-          m.rotateZ(Math.sin(u.t * 3.2) * 0.12 + 0.05);
-          m.rotateX(0.08);
-        } else {
-          // Squishy jelly bounce.
-          const sq = Math.sin(u.t * 9) * 0.07;
-          m.scale.y *= 1 + sq;
-          m.scale.x *= 1 - sq * 0.6;
-          m.scale.z *= 1 - sq * 0.6;
+        if (u.state === "strafe") {
+          // Side to side, changing direction at random moments (faster when harder).
+          u.turnIn -= dt;
+          if (u.turnIn <= 0) { u.dir *= -1; u.turnIn = rnd(d.turnEvery[0], d.turnEvery[1]); }
+          bot.position.x += u.dir * u.speed * dt;
+          if (bot.position.x > 5.2) { bot.position.x = 5.2; u.dir = -1; }
+          if (bot.position.x < -5.2) { bot.position.x = -5.2; u.dir = 1; }
+          const stride = Math.sin(u.t * u.speed * 3.2) * 0.45;
+          u.legs[0].rotation.z = stride * 0.5; u.legs[1].rotation.z = -stride * 0.5;
+          u.arms[0].rotation.z = -0.15 - stride * 0.2; u.arms[1].rotation.z = 0.15 - stride * 0.2;
+          u.pivot.rotation.z = -u.dir * 0.06;
+          bot.position.y = Math.abs(Math.sin(u.t * u.speed * 3.2)) * 0.03;
+        } else if (u.state === "rising") {
+          u.stateT += dt;
+          u.pivot.rotation.x = -Math.PI / 2 * Math.max(0, 1 - u.stateT / 0.22);
+          if (u.stateT >= 0.22) { u.state = "up"; u.stateT = 0; }
+        } else if (u.state === "up") {
+          u.stateT += dt;
+          u.arms[0].rotation.z = -0.1 + Math.sin(u.t * 4) * 0.05; u.arms[1].rotation.z = 0.1 - Math.sin(u.t * 4) * 0.05;
+          if (u.stateT >= u.upFor) { u.state = "hiding"; u.stateT = 0; }
+        } else if (u.state === "hiding") {
+          u.stateT += dt;
+          u.pivot.rotation.x = -Math.PI / 2 * Math.min(1, u.stateT / 0.22);
+          if (u.stateT >= 0.22) {
+            // It got away: that counts as a miss.
+            removeBot(bot);
+            registerMiss(t("rangeEscaped"));
+            break;
+          }
+        } else if (u.state === "falling") {
+          u.stateT += dt;
+          u.pivot.rotation.x = Math.min(Math.PI / 2, u.stateT * 7);    // knocked flat backwards
+          if (u.stateT > 0.6) removeBot(bot);
         }
       }
-    }
-    // Googly eyes wobble (and spin when dizzy), tongues flap, propellers spin.
-    for (const m of s.monsters) {
-      const u = m.userData;
-      u.dizzy = Math.max(0, u.dizzy - dt);
-      for (const pu of u.pupils) {
-        const d = pu.userData, sp = u.dizzy > 0 ? 22 : 7;
-        const r = u.dizzy > 0 ? d.r : d.r * 0.6;
-        pu.position.set(d.base.x + Math.cos(u.t * sp + d.ph) * r, d.base.y + Math.sin(u.t * sp * 1.3 + d.ph) * r, d.base.z);
-      }
-      if (u.tongue) u.tongue.rotation.x = 0.5 + Math.sin(u.t * 11) * 0.35;
-      if (u.propeller) u.propeller.rotation.y += dt * 18;
-    }
-    // Spooky: the hallway lights flicker every so often.
-    if (live && s.flicker <= 0 && Math.random() < dt * 0.35) s.flicker = 0.12 + Math.random() * 0.3;
-    if (s.flicker > 0 && s.lampMat) {
-      s.flicker -= dt;
-      const on = s.flicker <= 0 || Math.random() < 0.45;
-      if (s.envKey === "hall") s.hemi.intensity = on ? s.hemiBase : s.hemiBase * 0.45;   // only the school's power flickers
-      s.lampMat.color.copy(s.lampMat.userData.base).multiplyScalar(on ? 1 : 0.25);
-    }
-    // Hit flashes, sparkle bits and zap beams keep animating even when paused.
-    for (const m of s.monsters) {
-      const u = m.userData;
-      if (u.flash > 0) { u.flash -= dt; if (u.flash > 0) u.mat.emissive.setHex(0xffffff); else u.mat.emissive.copy(u.glow); }
     }
     for (const b of s.bits.slice()) {
       const u = b.userData;
-      u.life -= dt;
-      u.v.y -= 9 * dt;
+      u.life -= dt; u.v.y -= 9 * dt;
       b.position.addScaledVector(u.v, dt);
-      b.scale.setScalar(Math.max(0.01, u.life / 0.7));
       if (u.life <= 0) { s.scene.remove(b); s.bits.splice(s.bits.indexOf(b), 1); }
     }
     for (const l of s.beams.slice()) {
       l.userData.life -= dt;
+      l.material.opacity = Math.max(0, l.userData.life / 0.06) * 0.8;
       if (l.userData.life <= 0) { s.scene.remove(l); s.beams.splice(s.beams.indexOf(l), 1); }
     }
-    s.recoil = Math.max(0, s.recoil - dt * 5);
-    s.zapper.position.z = -0.55 + s.recoil * 0.08;
-    s.zapper.rotation.x = s.recoil * 0.25;
-    s.tip.scale.setScalar(1 + s.recoil * 1.5);
-    const bob = live && game.walking ? Math.sin(game.t * 8) * 0.04 : 0;
-    // While walking between hallways, the view drifts back to straight ahead
-    // so each wave starts with the hall (and the monsters) in front of you.
-    if (live && game.walking) { const k = Math.min(1, dt * 2.5); s.yaw -= s.yaw * k; s.pitch -= s.pitch * k; }
-    s.camera.position.set(0, 1.6 + bob, game.camZ);
-    s.camera.rotation.set(s.pitch, s.yaw, 0);
+    // Recoil: the gun kicks up and back, the slide snaps back, then settles.
+    s.recoil = Math.max(0, s.recoil - dt * (s.gunKind === "rifle" ? 9 : 6));
+    if (s.gun) {
+      const idle = live ? Math.sin(now / 900) * 0.002 : 0;
+      s.gun.position.set(s.gunBase.x, s.gunBase.y + idle + s.recoil * 0.012, s.gunBase.z + s.recoil * (s.gunKind === "rifle" ? 0.03 : 0.04));
+      s.gun.rotation.x = s.gunRot + s.recoil * (s.gunKind === "rifle" ? 0.06 : 0.22);
+      s.gunMoving.position.z = s.recoil * (s.gunKind === "rifle" ? 0.03 : 0.045);
+      s.flash.visible = s.recoil > 0.72;
+      if (s.flash.visible) s.flash.material.rotation = Math.random() * Math.PI;
+      s.flashLight.intensity = s.recoil > 0.72 ? 2.2 : 0;
+    }
+    s.camera.position.set(0, 1.6, 0);
+    s.camera.rotation.set(s.pitch + s.recoil * 0.012, s.yaw, 0);
     s.camera.updateMatrixWorld();
-    updateMonsterPointers();
     updateHud();
     s.renderer.render(s.scene, s.camera);
     adaptQuality(s, now);
@@ -8086,7 +7720,7 @@
     if (Math.abs(next - q.ratio) > 0.01) { q.ratio = next; s.renderer.setPixelRatio(next); sizeScene(); }
   }
 
-  /* ---- aiming + zapping ---- */
+  /* ---- aiming + shooting ---- */
   function isLocked(){ return document.pointerLockElement === (game.three && game.three.renderer.domElement); }
   function requestLock(){
     const cv = game.three && game.three.renderer.domElement;
@@ -8100,7 +7734,7 @@
 
   function look(dx, dy, k){
     const s = game.three;
-    s.yaw = Math.max(-0.8, Math.min(0.8, s.yaw - dx * k));
+    s.yaw = Math.max(-0.75, Math.min(0.75, s.yaw - dx * k));
     s.pitch = Math.max(-0.35, Math.min(0.3, s.pitch - dy * k));
   }
   function streakMult(){ return 1 + Math.floor(game.streak / 3); }
@@ -8108,53 +7742,48 @@
   function zapAt(nx, ny){
     if (game.phase !== "playing") return;
     const s = game.three, T = s.T;
-    beep("shot");
+    beep(s.gunKind === "rifle" ? "rifle" : "pistol");
     s.recoil = 1;
+    game.shots++;
     s.raycaster.setFromCamera({ x: nx, y: ny }, s.camera);
     const meshes = [];
-    s.monsters.forEach(m => m.userData.parts.forEach(p => meshes.push(p)));
+    s.bots.forEach(b => { if (b.userData.state !== "falling" && b.userData.state !== "hiding") b.userData.parts.forEach(p => meshes.push(p)); });
     const hit = s.raycaster.intersectObjects(meshes, false)[0];
-    // The zap beam: from the zapper's tip to whatever it hit (or far away).
-    const from = s.tip.getWorldPosition(new T.Vector3());
-    const to = hit ? hit.point.clone() : s.raycaster.ray.at(25, new T.Vector3());
-    const line = new T.Line(new T.BufferGeometry().setFromPoints([from, to]), s.beamMat);
-    line.userData.life = 0.09;
-    s.scene.add(line);
-    s.beams.push(line);
+    // A quick tracer from the muzzle.
+    const from = s.muzzle.getWorldPosition(new T.Vector3());
+    const to = hit ? hit.point.clone() : s.raycaster.ray.at(30, new T.Vector3());
+    const line = new T.Line(new T.BufferGeometry().setFromPoints([from, to]), s.beamMat.clone());
+    line.userData.life = 0.06;
+    s.scene.add(line); s.beams.push(line);
     if (hit) {
-      const m = hit.object.userData.monster, u = m.userData;
-      const part = hit.object.userData.part || "body";
-      const head = part === "head";
-      const dmg = DAMAGE[part] || DAMAGE.body;
-      u.hp -= dmg;
-      u.flash = 0.1;
-      u.stun = 0.28;                      // staggers back for a moment
-      u.dizzy = 0.7;                      // …with spinning googly eyes
-      m.position.z -= 0.35;
-      floatText(hit.point, (head ? t("gameHeadshot") + " " : "") + "-" + dmg, head ? "dmg head" : "dmg");
-      if (u.hp > 0) { beep("boing"); return; }
+      const bot = hit.object.userData.bot, u = bot.userData;
+      const head = hit.object.userData.part === "head";
+      game.hits++;
       game.streak++;
       game.bestStreak = Math.max(game.bestStreak, game.streak);
-      const pts = (u.k.pts + (head ? 50 : 0)) * streakMult();
+      const pts = (100 + (head ? 50 : 0)) * streakMult();
       game.score += pts;
-      game.zapped++;
-      beep("honk");
-      setTimeout(() => floatText(hit.point, "+" + pts, "pts"), 120);
-      splitSlime(m);
-      poof(m, u.color);
+      sparks(hit.point, 10);
+      beep("hit");
+      floatText(hit.point, (head ? t("gameHeadshot") + " " : "") + "+" + pts, head ? "dmg head" : "pts");
+      u.state = "falling"; u.stateT = 0;
     } else {
-      beep("miss");
-      // The monster you were aiming closest to is the one you can still get.
-      let best = null, bestD = Infinity;
-      for (const m of s.monsters) {
-        const p = m.getWorldPosition(new T.Vector3()); p.y = 1.2 * m.userData.k.scale;
-        p.project(s.camera);
-        const d = Math.hypot(p.x - nx, p.y - ny);
-        if (p.z < 1 && d < bestD) { bestD = d; best = m; }
-      }
-      game.pending = best;
-      openQuestion();
+      // Where the shot landed: a puff of dust. Then a question.
+      const walls = s.raycaster.intersectObjects(s.scene.children.filter(c => c.type === "Group" && !c.userData.parts), true)[0];
+      if (walls) sparks(walls.point, 5);
+      registerMiss(t("rangeMissed"));
     }
+  }
+  // A miss (a stray shot, or a pop-up bot that got away): answer a question.
+  function registerMiss(reason){
+    if (game.phase !== "playing") return;
+    game.misses++;
+    game.lives = Math.max(0, GAME_LIVES - game.misses);
+    game.streak = 0;
+    beep("miss");
+    hurtFlash();
+    game.missReason = reason;
+    openQuestion();
   }
 
   function floatText(point, text, kind){
@@ -8171,13 +7800,11 @@
   /* ---- round flow ---- */
   function beginGame(){
     if (!sample) return;
-    game.score = 0; game.lives = GAME_LIVES; game.streak = 0; game.bestStreak = 0;
-    game.zapped = 0; game.asked = 0; game.correct = 0; game.firstTry = 0;
-    game.missed = []; game.won = false; game.newBest = false; game.current = null; game.pending = null;
-    game.wave = 0; game.walking = true; game.camZ = 0; game.t = 0;
+    Object.assign(game, { score: 0, lives: GAME_LIVES, misses: 0, streak: 0, bestStreak: 0, hits: 0, shots: 0,
+      asked: 0, correct: 0, firstTry: 0, missed: [], won: false, newBest: false, current: null, t: 0, spawnIn: 0.4 });
     clearWorld();
-    useEnv(game.mode);
-    if (game.queue.length >= 3) { startRound(); return; }
+    if (game.three) buildGun(game.three, game.gun);
+    if (game.queue.length >= 3) { startRound(); showBanner(t("rangeGo")); return; }
     game.phase = "loading";
     renderGameOverlay();
     refillQuestions(game.bookId);
@@ -8195,14 +7822,13 @@
     releaseLock();
     game.phase = "question";
     game.attempt = 0;
-    game.current = null; game.picked = null;
+    game.current = null; game.picked = null; game.wrongPicks = [];
     nextQuestion();
   }
 
-  // A fresh question each time — after a wrong answer too.
   function nextQuestion(){
     pauseSpeech();
-    game.picked = null;
+    game.picked = null; game.wrongPicks = [];
     game.current = game.queue.length ? game.queue.shift() : null;
     if (game.current) game.asked++;
     if (game.queue.length < 4) refillQuestions(game.bookId);
@@ -8213,24 +7839,20 @@
     }
   }
 
+  // The same question until it's answered right (a wrong choice is crossed out).
   function answerQuestion(k){
     const q = game.current;
-    if (!q || game.picked !== null) return;
+    if (!q || game.picked !== null || game.wrongPicks.includes(k)) return;
     pauseSpeech();
-    game.picked = k;
     if (k === q.answer) {
+      game.picked = k;
       game.correct++;
       if (game.attempt === 0) game.firstTry++;
-      const m = game.pending;
-      const pts = 60 * streakMult();
-      game.score += pts;
-      game.lastAward = pts;
-      if (m && m.userData.alive) { game.zapped++; splitSlime(m); poof(m, m.userData.color); }
       beep("right");
     } else {
       game.attempt++;
-      game.streak = 0;
-      game.missed.push(q);
+      game.wrongPicks.push(k);
+      if (!game.missed.includes(q)) game.missed.push(q);
       beep("wrong");
     }
     renderGameOverlay();
@@ -8238,9 +7860,8 @@
 
   function continueAfterQuestion(){
     pauseSpeech();
-    const q = game.current;
-    if (q && game.picked !== null && game.picked !== q.answer) { nextQuestion(); return; } // wrong: try another one
-    game.current = null; game.pending = null;
+    game.current = null;
+    if (game.misses >= GAME_LIVES) { endRound("out"); return; }
     startRound();
   }
 
@@ -8254,8 +7875,7 @@
   function endRound(reason){
     releaseLock();
     pauseSpeech();
-    game.won = reason === "win";
-    if (game.won) game.score += game.lives * 250;
+    game.won = false;
     game.phase = "over";
     const prev = getBest(game.mode);
     if (game.score > prev) { setBest(game.mode, game.score); game.newBest = true; }
@@ -8276,7 +7896,7 @@
   function questionsNeeded(mode){ return mode === "monkey" ? MONKEY_GOAL + MONKEY_LIVES + 3 : 30; }
 
   const PUZZLE_MODES = ["crossword", "fib"];
-  const ARENA_MODES = ["hall", "zombies", "slimes"];
+  const ARENA_MODES = ["range"];
   function startMode(mode){
     game.mode = mode;
     if (!sample) return;
@@ -8348,7 +7968,7 @@
     $("gameStage").classList.toggle("locked", game.phase === "playing" && isLocked());
     if (!inRound) return;
     setText($("hudScore"), String(game.score));
-    setText($("hudTime"), t("gameWave", { i: Math.min(WAVES, game.wave + 1), n: WAVES }));
+    setText($("hudTime"), t("rangeHits", { n: game.hits }));
     const m = streakMult();
     if ($("hudStreak").hidden !== (m < 2)) $("hudStreak").hidden = m < 2;
     setText($("hudStreak"), t("gameStreak", { n: m }));
@@ -8433,7 +8053,7 @@
       // Each game plays differently: aim-and-zap, a timed climb, a word
       // grid, and a quick true-or-false party game.
       const modes = [
-        ["arena", t("modeArena"), t("modeArenaDesc"), "#8fd16a"],
+        ["arena", t("modeRange"), t("modeRangeDesc"), "#8fd16a"],
         ["monkey", t("modeMonkey"), t("modeMonkeyDesc"), "#c9962e"],
         ["crossword", t("modeCrossword"), t("modeCrosswordDesc"), "#6fc8ff"],
         ["fib", t("modeFib"), t("modeFibDesc"), "#ff7ab8"]
@@ -8448,15 +8068,30 @@
         const best = arena ? Math.max(...ARENA_MODES.map(getBest)) : getBest(id);
         if (best) { const bs = el("span", "mode-best"); bs.textContent = id === "monkey" ? t("monkeyBestTrees", { n: best }) : t("gameBest", { s: best }); m.appendChild(bs); }
         if (arena) {
-          // Pick the world: the same aim-and-zap game in three places.
-          const worlds = el("div", "arena-worlds");
-          for (const [w, key] of [["hall", "worldHall"], ["zombies", "modeZombies"], ["slimes", "modeSlimes"]]) {
-            const b = el("button", "mode-play world"); b.type = "button"; b.textContent = t(key);
-            b.disabled = !sample || !!game.noThree;
-            b.addEventListener("click", () => startMode(w));
-            worlds.appendChild(b);
-          }
-          m.appendChild(worlds);
+          // Pick a gun and how the bots move, then start.
+          const pick = (label, key, options, storage) => {
+            const row = el("div", "range-pick");
+            const l = el("span", "range-pick-label"); l.textContent = label; row.appendChild(l);
+            const seg = el("div", "diff-seg range-seg");
+            for (const [val, text] of options) {
+              const b = el("button", "diff-btn"); b.type = "button"; b.textContent = text;
+              b.setAttribute("aria-pressed", game[key] === val ? "true" : "false");
+              b.addEventListener("click", () => {
+                game[key] = val; safeStorage("set", storage, val);
+                seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+                if (key === "gun" && game.three) buildGun(game.three, val);
+              });
+              seg.appendChild(b);
+            }
+            row.appendChild(seg);
+            return row;
+          };
+          m.appendChild(pick(t("gunLabel"), "gun", [["pistol", t("gunPistol")], ["rifle", t("gunRifle")]], "earmark_range_gun"));
+          m.appendChild(pick(t("botsLabel"), "botMode", [["strafe", t("botsStrafe")], ["popup", t("botsPopup")]], "earmark_range_bots"));
+          const go = el("button", "mode-play world"); go.type = "button"; go.textContent = t("gameStart");
+          go.disabled = !sample || !!game.noThree;
+          go.addEventListener("click", () => startMode("range"));
+          m.appendChild(go);
           if (game.noThree) { const n = el("span", "mode-desc"); n.textContent = game.noThree; m.appendChild(n); }
         } else {
           const go = el("span", "mode-play"); go.textContent = t("gameStart"); m.appendChild(go);
@@ -8503,7 +8138,7 @@
     }
     if (game.phase === "question") {
       const kick = el("div", "go-kicker");
-      kick.textContent = game.attempt > 0 ? t("gameTryAnother") : t("gameMissTitle");
+      kick.textContent = game.attempt > 0 && game.picked === null ? t("rangeTryAgain") : (game.missReason || t("rangeMissed")) + " " + t("rangeAnswerToGo", { n: Math.max(0, GAME_LIVES - game.misses) });
       card.appendChild(kick);
       const q = game.current;
       if (!q) {
@@ -8524,8 +8159,10 @@
         if (game.picked !== null) {
           b.disabled = true;
           if (k === q.answer) b.classList.add("right");
-          else if (k === game.picked) b.classList.add("wrong");
           else b.classList.add("dim");
+        } else if (game.wrongPicks.includes(k)) {
+          b.disabled = true;
+          b.classList.add("wrong", "crossed");       // tried already: crossed out
         } else {
           b.addEventListener("click", () => answerQuestion(k));
         }
@@ -8543,7 +8180,7 @@
       const fb = el("div", "feedback " + (right ? "right" : "wrong"));
       fb.setAttribute("role", "status");
       const head = el("div", "fb-head");
-      const fbMaps = [renderWordSpans(head, right ? t("gameGotIt", { p: game.lastAward }) : t("gameWrongRetry", { answer: LETTERS[q.answer] + ". " + q.options[q.answer] }))];
+      const fbMaps = [renderWordSpans(head, game.misses >= GAME_LIVES ? t("rangeRightLast") : t("rangeRight"))];
       fb.appendChild(head);
       if (q.explain) { const body = el("div", "fb-body"); fbMaps.push(renderWordSpans(body, q.explain)); fb.appendChild(body); }
       if (q.page) { const pg = el("div", "fb-page"); pg.textContent = t("sourcedFrom", { pages: q.page }); fb.appendChild(pg); }
@@ -8551,16 +8188,16 @@
       const row = el("div", "study-row");
       row.appendChild(listenButton("say:gamefb:" + fbMap.text, () => fbMap));
       row.appendChild(el("span", "spacer"));
-      row.appendChild(goButton("cta go-continue", right ? t("gameKeepGoing") : t("gameNextQuestion"), continueAfterQuestion));
+      row.appendChild(goButton("cta go-continue", game.misses >= GAME_LIVES ? t("fibSeeScore") : t("rangeBackIn"), continueAfterQuestion));
       fb.appendChild(row);
       card.appendChild(fb);
       return;
     }
     if (game.phase === "over") {
-      const h = el("h3", "go-title"); h.textContent = t(game.won ? "gameWin" : "gameLost"); card.appendChild(h);
+      const h = el("h3", "go-title"); h.textContent = t("rangeOver"); card.appendChild(h);
       const num = el("div", "score-num"); num.textContent = String(game.score); card.appendChild(num);
       if (game.newBest) { const nb = el("div", "go-best"); nb.textContent = t("gameNewBest"); card.appendChild(nb); }
-      const res = el("p"); res.textContent = t("gameResult", { m: game.zapped, c: game.firstTry, q: game.correct }); card.appendChild(res);
+      const res = el("p"); res.textContent = t("rangeResult", { h: game.hits, a: game.shots ? Math.round(100 * game.hits / game.shots) : 0, q: game.correct }); card.appendChild(res);
       const best = getBest(game.mode);
       if (best) { const b = el("div", "setup-note"); b.textContent = t("gameBest", { s: best }); card.appendChild(b); }
       const row = el("div", "study-row");
@@ -8589,8 +8226,6 @@
         '<div class="crosshair" aria-hidden="true"></div>' +
         '<div class="game-hurt" id="gameHurt" aria-hidden="true"></div>' +
         '<div class="game-banner" id="gameBanner" hidden></div>' +
-        '<div id="hpBars"></div>' +
-        '<div id="gameArrows"><div class="monster-arrow left" id="arrowLeft" hidden>◀</div><div class="monster-arrow right" id="arrowRight" hidden>▶</div><div class="monster-count" id="monsterCount" hidden></div></div>' +
         '<div class="game-hud" id="gameHud" hidden>' +
           '<div class="hud-left"><span class="hud-chip"><span class="hud-label" id="hudScoreLabel"></span> <strong id="hudScore">0</strong></span><span class="hud-chip streak" id="hudStreak" hidden></span></div>' +
           '<div class="hud-chip hud-time" id="hudTime"></div>' +
@@ -8654,7 +8289,6 @@
       showPuzzleStage(false);
       showMonkeyStage(false);
       game.queue = []; game.seen = new Set(); game.fetchError = ""; game.current = null;
-      game.camZ = 0; game.wave = 0;
       clearWorld();
       if (!game.best.has(bookId) && isSavedBook(bookId)) {
         db.doc("gameStats/" + bookId).get().then(d => {
@@ -8678,7 +8312,7 @@
         game.threeInit = loadThree().then(() => {
           if (game.three) return game.three;
           const s3 = buildScene($("gameStage"));
-          if (s3) { game.three = s3; useEnv(ARENA_MODES.includes(game.mode) ? game.mode : "hall"); }
+          if (s3) { game.three = s3; buildGun(s3, game.gun); }
           return s3;
         });
       }
