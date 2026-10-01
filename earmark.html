@@ -7351,7 +7351,7 @@
     const sign = new T.Mesh(new T.PlaneGeometry(4, 0.75), new T.MeshBasicMaterial({ map: signTex }));
     sign.position.set(0, 3.1, -RANGE_LEN + 2.05); g.add(sign);
     // Cover barriers the bots move between.
-    for (const [x, z] of [[-4, -11], [3.6, -14.5], [-1, -17]]) {
+    for (const [x, z] of [[-4, -12], [3.6, -14.5], [-1, -17]]) {
       const b = new T.Mesh(new T.BoxGeometry(1.4, 0.9, 0.35), std(0x6d7580, 0.8));
       b.position.set(x, 0.45, z); g.add(b);
     }
@@ -7406,11 +7406,13 @@
       sparkMat: new T.MeshBasicMaterial({ color: 0xffd27a }),
       beamMat: new T.LineBasicMaterial({ color: 0xffe2a0, transparent: true, opacity: 0.8 }),
       botMats: {
-        suit: new T.MeshStandardMaterial({ color: 0x6b7686, roughness: 0.5, metalness: 0.25 }),
-        plate: new T.MeshStandardMaterial({ color: 0xff7a1a, roughness: 0.45, metalness: 0.2 }),
-        joint: new T.MeshStandardMaterial({ color: 0x1c2027, roughness: 0.5, metalness: 0.6 }),
-        visor: new T.MeshStandardMaterial({ color: 0x0b0d10, roughness: 0.15, metalness: 0.9 }),
-        eye: new T.MeshBasicMaterial({ color: 0x5ff6ff })
+        light: new T.MeshStandardMaterial({ color: 0xd8dbe0, roughness: 0.55, metalness: 0.1, flatShading: true }),
+        armor: new T.MeshStandardMaterial({ color: 0x6c727c, roughness: 0.5, metalness: 0.25, flatShading: true }),
+        joint: new T.MeshStandardMaterial({ color: 0x2c3038, roughness: 0.6, metalness: 0.3, flatShading: true }),
+        eye: new T.MeshBasicMaterial({ color: 0xbff4ff }),
+        eyeGlow: new T.MeshBasicMaterial({ color: 0x2fb8ff, transparent: true, opacity: 0.7 }),
+        outline: new T.MeshBasicMaterial({ color: 0xe8ff3a, side: T.BackSide }),
+        hit: new T.MeshBasicMaterial({ visible: false })
       },
       yaw: 0, pitch: 0, recoil: 0, gunKind: null
     };
@@ -7507,49 +7509,88 @@
     Object.assign(s, { gun, gunMoving: moving, flash, muzzle, gunKind: kind, gunBase: gun.position.clone(), gunRot: gun.rotation.x });
   }
 
-  /* ---- training bots (humanoid, built from shapes) ---- */
+  /* ---- training bots ----
+     Low-poly robots like a game's practice bot: faceted light-grey body,
+     chunky dark shoulder armour, a tall helmet head with a glowing blue
+     triangle eye, and a yellow outline so they stand out. An invisible,
+     slightly larger hit shape makes them fair to hit. */
   function makeBot(){
     const s = game.three, T = s.T, M = s.botMats;
     const bot = new T.Group();
     const pivot = new T.Group();       // pop-up bots swing up and down on their feet
     bot.add(pivot);
     const parts = [];
-    const add = (geo, mat, x, y, z, part) => { const m = new T.Mesh(geo, mat); m.position.set(x, y, z); m.userData = { bot, part }; pivot.add(m); parts.push(m); return m; };
-    // legs
+    // A piece of the robot, optionally with a yellow outline shell behind it.
+    const piece = (parent, geo, mat, x, y, z, outline, rx, rz) => {
+      const m = new T.Mesh(geo, mat); m.position.set(x, y, z);
+      if (rx) m.rotation.x = rx; if (rz) m.rotation.z = rz;
+      parent.add(m);
+      if (outline) {
+        const o = new T.Mesh(geo, M.outline); o.scale.setScalar(1.12); m.add(o);
+      }
+      return m;
+    };
+    // Invisible hit shapes (what the shot actually checks).
+    const hitBox = (parent, w, h, d, x, y, z, part) => {
+      const m = new T.Mesh(new T.BoxGeometry(w, h, d), M.hit); m.position.set(x, y, z);
+      m.userData = { bot, part }; parent.add(m); parts.push(m); return m;
+    };
+    const hex = (r1, r2, h) => new T.CylinderGeometry(r1, r2, h, 6);
+    const box = (w, h, d) => new T.BoxGeometry(w, h, d);
+    // Legs
     const legs = [];
     for (const side of [-1, 1]) {
-      const hip = new T.Group(); hip.position.set(side * 0.12, 0.95, 0); pivot.add(hip);
-      const thigh = new T.Mesh(new T.BoxGeometry(0.15, 0.48, 0.17), M.suit); thigh.position.y = -0.24; thigh.userData = { bot, part: "leg" }; hip.add(thigh); parts.push(thigh);
-      const knee = new T.Mesh(new T.SphereGeometry(0.075, 10, 8), M.joint); knee.position.y = -0.5; hip.add(knee);
-      const shin = new T.Mesh(new T.BoxGeometry(0.13, 0.42, 0.15), M.suit); shin.position.y = -0.72; shin.userData = { bot, part: "leg" }; hip.add(shin); parts.push(shin);
-      const boot = new T.Mesh(new T.BoxGeometry(0.15, 0.08, 0.26), M.joint); boot.position.set(0, -0.93, 0.04); hip.add(boot);
+      const hip = new T.Group(); hip.position.set(side * 0.13, 0.98, 0); pivot.add(hip);
+      piece(hip, box(0.16, 0.42, 0.18), M.light, 0, -0.22, 0);                       // thigh
+      piece(hip, box(0.18, 0.2, 0.06), M.armor, 0, -0.18, 0.1);                      // thigh plate
+      piece(hip, new T.SphereGeometry(0.075, 6, 5), M.joint, 0, -0.47, 0);            // knee
+      piece(hip, box(0.14, 0.1, 0.07), M.armor, 0, -0.47, 0.08);                     // knee cap
+      piece(hip, hex(0.07, 0.06, 0.42), M.light, 0, -0.72, 0);                       // shin
+      piece(hip, box(0.16, 0.08, 0.3), M.armor, 0, -0.94, 0.05);                     // foot
+      hitBox(hip, 0.24, 0.98, 0.26, 0, -0.48, 0, "leg");
       legs.push(hip);
     }
-    add(new T.BoxGeometry(0.38, 0.14, 0.22), M.joint, 0, 1.0, 0, "body");            // hips
-    add(new T.BoxGeometry(0.46, 0.55, 0.26), M.suit, 0, 1.36, 0, "body");            // torso
-    add(new T.BoxGeometry(0.34, 0.34, 0.04), M.plate, 0, 1.4, 0.14, "body");         // chest target plate
-    add(new T.CylinderGeometry(0.06, 0.07, 0.1, 10), M.joint, 0, 1.68, 0, "body");   // neck
-    const head = add(new T.SphereGeometry(0.15, 18, 14), M.suit, 0, 1.84, 0, "head");
-    head.scale.set(1, 1.1, 1.05);
-    add(new T.BoxGeometry(0.24, 0.07, 0.06), M.visor, 0, 1.86, 0.13, "head");      // visor
-    for (const x of [-0.05, 0.05]) { const e = new T.Mesh(new T.SphereGeometry(0.018, 8, 6), M.eye); e.position.set(x, 1.86, 0.165); pivot.add(e); }
+    // Hips, belly, chest
+    piece(pivot, hex(0.18, 0.14, 0.16), M.armor, 0, 1.0, 0);
+    piece(pivot, hex(0.13, 0.16, 0.18), M.joint, 0, 1.15, 0);                       // belly joint
+    const chest = piece(pivot, hex(0.27, 0.18, 0.42), M.light, 0, 1.43, 0, true);
+    chest.scale.z = 0.75;
+    piece(pivot, box(0.3, 0.2, 0.05), M.light, 0, 1.5, 0.16, false, -0.15);         // chest plate
+    piece(pivot, box(0.12, 0.08, 0.02), M.joint, 0, 1.36, 0.17);                    // chest vent
+    hitBox(pivot, 0.66, 0.72, 0.4, 0, 1.33, 0, "body");
+    // Neck and helmet head with a glowing triangle eye
+    piece(pivot, new T.CylinderGeometry(0.05, 0.06, 0.1, 6), M.joint, 0, 1.69, 0);
+    const head = piece(pivot, box(0.22, 0.3, 0.24), M.light, 0, 1.88, 0, true);
+    piece(head, new T.CylinderGeometry(0.11, 0.11, 0.24, 8, 1, false, 0, Math.PI), M.light, 0, 0.15, 0, false, 0, Math.PI / 2).rotation.set(0, 0, Math.PI / 2);
+    piece(head, box(0.18, 0.15, 0.02), M.joint, 0, -0.01, 0.12);                    // face plate
+    const eye = new T.Mesh(new T.CircleGeometry(0.05, 3), M.eye);
+    eye.position.set(0, 0.0, 0.132); eye.rotation.z = -Math.PI / 2; head.add(eye);
+    const eyeGlow = new T.Mesh(new T.CircleGeometry(0.085, 3), M.eyeGlow);
+    eyeGlow.position.set(0, 0.0, 0.131); eyeGlow.rotation.z = -Math.PI / 2; head.add(eyeGlow);
+    hitBox(pivot, 0.34, 0.42, 0.34, 0, 1.89, 0, "head");
+    // Arms with big shoulder armour
     const arms = [];
     for (const side of [-1, 1]) {
-      const sh = new T.Group(); sh.position.set(side * 0.3, 1.58, 0); pivot.add(sh);
-      const ball = new T.Mesh(new T.SphereGeometry(0.08, 10, 8), M.joint); sh.add(ball);
-      const upper = new T.Mesh(new T.BoxGeometry(0.11, 0.34, 0.12), M.suit); upper.position.y = -0.2; upper.userData = { bot, part: "arm" }; sh.add(upper); parts.push(upper);
-      const fore = new T.Mesh(new T.BoxGeometry(0.1, 0.3, 0.11), M.suit); fore.position.y = -0.5; fore.userData = { bot, part: "arm" }; sh.add(fore); parts.push(fore);
+      const sh = new T.Group(); sh.position.set(side * 0.33, 1.58, 0); pivot.add(sh);
+      piece(sh, box(0.2, 0.18, 0.24), M.armor, side * 0.03, 0.03, 0, true);          // shoulder pad
+      piece(sh, box(0.11, 0.3, 0.12), M.light, 0, -0.2, 0);                          // upper arm
+      piece(sh, new T.SphereGeometry(0.06, 6, 5), M.joint, 0, -0.37, 0);              // elbow
+      piece(sh, box(0.12, 0.28, 0.13), M.armor, 0, -0.53, 0.01);                     // forearm guard
+      const hand = piece(sh, box(0.09, 0.08, 0.1), M.light, 0, -0.71, 0.02);
+      for (let f = 0; f < 3; f++) piece(hand, box(0.02, 0.07, 0.02), M.joint, -0.03 + f * 0.03, -0.07, 0.03);
+      hitBox(sh, 0.22, 0.85, 0.24, 0, -0.35, 0, "arm");
       arms.push(sh);
     }
+    bot.scale.setScalar(1.1);
     bot.userData = { parts, legs, arms, pivot, t: Math.random() * 6, alive: true };
     return bot;
   }
 
   // How the bots move at each difficulty.
   const RANGE_DIFF = {
-    easy:   { speed: 1.4, turnEvery: [1.4, 2.6], count: 1, upFor: 2.8, gap: 0.9, far: [-8, -12] },
-    medium: { speed: 2.6, turnEvery: [0.8, 1.8], count: 2, upFor: 1.9, gap: 0.6, far: [-9, -15] },
-    hard:   { speed: 4.2, turnEvery: [0.35, 1.0], count: 3, upFor: 1.2, gap: 0.4, far: [-10, -19] }
+    easy:   { speed: 0.9, turnEvery: [1.8, 3.0], count: 1, upFor: 3.6, gap: 1.0, far: [-5, -7] },
+    medium: { speed: 1.7, turnEvery: [1.1, 2.2], count: 2, upFor: 2.6, gap: 0.7, far: [-5.5, -8.5] },
+    hard:   { speed: 2.9, turnEvery: [0.5, 1.3], count: 3, upFor: 1.7, gap: 0.5, far: [-6, -10.5] }
   };
   const rangeDiff = () => RANGE_DIFF[game.difficulty] || RANGE_DIFF.medium;
   const rnd = (a, b) => a + Math.random() * (b - a);
@@ -7557,7 +7598,7 @@
     const s = game.three, d = rangeDiff();
     const bot = makeBot();
     const u = bot.userData;
-    bot.position.set(rnd(-4.8, 4.8), 0, rnd(d.far[1], d.far[0]));
+    bot.position.set(rnd(-3.6, 3.6), 0, rnd(d.far[1], d.far[0]));
     if (game.botMode === "popup") {
       u.state = "rising"; u.stateT = 0; u.pivot.rotation.x = -Math.PI / 2;
       u.upFor = d.upFor * rnd(0.85, 1.15);
@@ -7643,8 +7684,8 @@
           u.turnIn -= dt;
           if (u.turnIn <= 0) { u.dir *= -1; u.turnIn = rnd(d.turnEvery[0], d.turnEvery[1]); }
           bot.position.x += u.dir * u.speed * dt;
-          if (bot.position.x > 5.2) { bot.position.x = 5.2; u.dir = -1; }
-          if (bot.position.x < -5.2) { bot.position.x = -5.2; u.dir = 1; }
+          if (bot.position.x > 4) { bot.position.x = 4; u.dir = -1; }
+          if (bot.position.x < -4) { bot.position.x = -4; u.dir = 1; }
           const stride = Math.sin(u.t * u.speed * 3.2) * 0.45;
           u.legs[0].rotation.z = stride * 0.5; u.legs[1].rotation.z = -stride * 0.5;
           u.arms[0].rotation.z = -0.15 - stride * 0.2; u.arms[1].rotation.z = 0.15 - stride * 0.2;
