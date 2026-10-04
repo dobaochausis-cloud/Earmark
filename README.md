@@ -57,6 +57,21 @@ To get Claude's better answers later, add these in your Pages project under **Se
 
 In **Settings → Voice**, students pick **Female** or **Male**. "Preview voice" plays exactly the voice the book will be read in.
 
+### Human voices in all 26 languages (recommended): Microsoft Azure
+
+Azure's neural voices sound like real people, and Azure has a **female and a male voice for every language Earmark offers** (for example Vietnamese: HoaiMy and NamMinh; English: Ava and Andrew). This needs an Azure account, which **an adult (18+) has to create** because it asks for a card.
+
+1. Go to **portal.azure.com** → **Create a resource** → search **Speech** → Create. Pick the **Free (F0)** pricing tier and a region (for example *East US*).
+2. Open the new resource → **Keys and Endpoint**. Copy **Key 1** and the **Location/Region** (for example `eastus`).
+3. In Cloudflare → your Pages project → **Settings → Variables and Secrets**, add:
+   - `AZURE_SPEECH_KEY` = Key 1, as a **Secret** (never paste it anywhere else)
+   - `AZURE_SPEECH_REGION` = the region, for example `eastus`
+4. **Redeploy** (Deployments → ⋯ → Retry deployment). Open `/api/tts?test=1`: the tries should say `azure:…Neural`.
+
+The free tier covers a set number of characters each month (see Azure's Speech pricing page for the current amount). Every clip is cached, so a class reading the same book only pays once. If the month's allowance runs out, Earmark falls back to the voices below. To swap a voice, add `AZURE_VOICES`, for example `{"en":{"male":"en-US-BrianNeural"}}`.
+
+### Without Azure
+
 - **Female:** a natural voice from Cloudflare's AI (**MeloTTS**) for English, Spanish, French, Chinese, Japanese and Korean. It's free, and every clip is cached so a class reading the same book only uses the allowance once. It needs no setup: it uses the same `AI` binding as the free AI answers.
 - **Male:** MeloTTS has only one voice, so by default the male voice is the most human-sounding male voice on each student's device (novelty voices like "Bubbles" are never used). For a natural **male** voice in English, add a Text variable `TTS_MALE` = `aura-1` (or `aura-2`). That's Deepgram Aura on Cloudflare, which costs much more per word than MeloTTS. On Cloudflare's free plan it works until the day's allowance runs out (then the device voice takes over, at no charge), and it shares that allowance with the AI answers. For a class, it needs **Workers Paid** ($5 a month). `TTS_MALE_VOICE` picks the speaker (default `orion`).
 - **Other languages**, and any time the voice service is busy, use the device's own female or male voice.

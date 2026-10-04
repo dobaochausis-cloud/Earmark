@@ -3734,6 +3734,14 @@
     return map;
   }
 
+  // AI text with no markdown symbols (** __ # and "* " bullets) for one-line spots.
+  function noMd(text){
+    return String(text == null ? "" : text)
+      .replace(/\*\*|__/g, "")
+      .replace(/(^|\n)\s*#{1,6}\s+/g, "$1")
+      .replace(/(^|\n)\s*[*+]\s+/g, "$1• ")
+      .replace(/(^|[\s(])\*(\S[^*\n]*?\S|\S)\*(?=[\s.,;:!?)]|$)/g, "$1$2");
+  }
   function renderWordSpans(container, text){
     hideGlossaryTip();
     container.innerHTML = "";
@@ -5352,6 +5360,7 @@
       "- Translate EVERY sentence, from the first to the last, in the same order. Do not summarize, shorten, skip, or turn the text into bullet points or a list.\n" +
       "- Keep the meaning, names, numbers and paragraph breaks. Use clear, everyday " + meta.name + ". Do not add explanations or notes.\n" +
       "- If a part is already in " + meta.name + ", keep it as it is.\n" +
+      "- Write plain text only: no markdown, no ** or # or * symbols.\n" +
       "- Reply with only the translation.\n\nPage text:\n" + text;
   }
   // Translates one page (long pages in parts, so nothing gets cut off).
@@ -5394,7 +5403,7 @@
     if (RTL_CODES.includes(meta.code)) body.setAttribute("dir", "rtl");
     const key = state.currentBookId + "|" + page.pageNum + "|" + meta.code;
     const show = (text) => {
-      const map = renderWordSpans(body, text);
+      const map = renderRichWordSpans(body, text);
       map.lang = meta.speech;
       tr.map = map;
       listenSlot.appendChild(listenButton("tr:" + key, () => tr.map));
@@ -5403,7 +5412,7 @@
     body.innerHTML = "";
     body.appendChild(busyNote(t("translating", { n: page.pageNum })));
     try {
-      const out = await translatePage(page, meta, (text) => { if (my === tr.token) body.textContent = text; });
+      const out = await translatePage(page, meta, (text) => { if (my === tr.token) body.textContent = plainAnswer(text); });
       if (my === tr.token) show(out);
     } catch (e) {
       if (my !== tr.token) return;
@@ -5437,9 +5446,9 @@
       const txt = el("div"); sec.appendChild(txt);
       body.appendChild(sec);
       try {
-        const out = await translatePage(page, meta, (text) => { if (run === tr.bookRun) txt.textContent = text; });
+        const out = await translatePage(page, meta, (text) => { if (run === tr.bookRun) txt.textContent = plainAnswer(text); });
         if (run !== tr.bookRun) return;
-        const map = renderWordSpans(txt, out);
+        const map = renderRichWordSpans(txt, out);
         map.lang = meta.speech;
         h.appendChild(listenButton("tr:" + bookId + "|" + page.pageNum + "|" + meta.code, () => map));
       } catch (e) {
@@ -5473,7 +5482,7 @@
     const prompt = "Translate this " + (oneWord ? "word" : "text") + " into " + meta.name + " for a student who is learning English.\n" +
       (oneWord ? "Give the translation on the first line. On a second line, give a very short meaning in " + meta.name + " as it is usually used.\n"
                : "Translate all of it, in full, keeping the meaning. Do not summarize or explain.\n") +
-      "Reply with only that.\n\nText: " + text;
+      "Reply with only that, in plain text with no ** or # symbols.\n\nText: " + text;
     const r = await sample(prompt, { modelTier: "quick", cache: false });
     return String((r && r.text) || "").trim();
   }
@@ -5481,7 +5490,7 @@
     box.innerHTML = "";
     if (RTL_CODES.includes(meta.code)) box.setAttribute("dir", "rtl"); else box.removeAttribute("dir");
     const out = el("div"); box.appendChild(out);
-    const map = renderWordSpans(out, text); map.lang = meta.speech;
+    const map = renderRichWordSpans(out, text); map.lang = meta.speech;
     const row = el("div", "sel-tr-row"); row.appendChild(listenButton("tr:snip:" + key, () => map)); box.appendChild(row);
   }
   async function runSnippetBox(){
@@ -6751,7 +6760,7 @@
     textWrap.appendChild(textEl);
     cardEl.appendChild(textWrap);
     const cardText = pos.flipped ? card.back : card.front;
-    let cardMap = renderWordSpans(textEl, cardText);
+    let cardMap = renderWordSpans(textEl, noMd(cardText));
     if (!pos.flipped) { const hint = el("div", "fc-hint"); hint.textContent = t("tapToFlip"); cardEl.appendChild(hint); }
     const flip = () => { pauseSpeech(); pos.flipped = !pos.flipped; pos.justFlipped = true; renderCards(); };
     cardEl.addEventListener("click", flip);
@@ -6917,7 +6926,7 @@
 
     const cardEl = el("div", "q-card");
     const qText = el("div", "q-text");
-    const maps = [renderWordSpans(qText, q.q)];
+    const maps = [renderWordSpans(qText, noMd(q.q))];
     cardEl.appendChild(qText);
     const opts = el("div", "q-options");
     q.options.forEach((opt, k) => {
@@ -6926,7 +6935,7 @@
       const txt = el("span", "q-opt-text");
       b.appendChild(letter); b.appendChild(txt);
       // Speak the letter too ("B. Mitochondria") so choices can be answered by ear.
-      maps.push(joinMapsInline({ text: letter.textContent + ".", words: [{ start: 0, end: letter.textContent.length + 1 }], spanEls: [letter] }, renderWordSpans(txt, opt)));
+      maps.push(joinMapsInline({ text: letter.textContent + ".", words: [{ start: 0, end: letter.textContent.length + 1 }], spanEls: [letter] }, renderWordSpans(txt, noMd(opt))));
       if (answered) {
         b.disabled = true;
         if (k === q.answer) b.classList.add("right");
@@ -6959,7 +6968,7 @@
       const fbMaps = [headMap];
       if (q.explain) {
         const body = el("div", "fb-body");
-        fbMaps.push(renderWordSpans(body, q.explain));
+        fbMaps.push(renderWordSpans(body, noMd(q.explain)));
         fb.appendChild(body);
       }
       if (q.page) { const pg = el("div", "fb-page"); pg.textContent = t("sourcedFrom", { pages: q.page }); fb.appendChild(pg); }
@@ -8198,7 +8207,7 @@
         return;
       }
       const qText = el("div", "q-text");
-      const maps = [renderWordSpans(qText, q.q)];
+      const maps = [renderWordSpans(qText, noMd(q.q))];
       card.appendChild(qText);
       const opts = el("div", "q-options");
       q.options.forEach((opt, k) => {
@@ -8206,7 +8215,7 @@
         const letter = el("span", "q-letter"); letter.textContent = LETTERS[k] || String(k + 1);
         const txt = el("span", "q-opt-text");
         b.appendChild(letter); b.appendChild(txt);
-        maps.push(joinMapsInline({ text: letter.textContent + ".", words: [{ start: 0, end: letter.textContent.length + 1 }], spanEls: [letter] }, renderWordSpans(txt, opt)));
+        maps.push(joinMapsInline({ text: letter.textContent + ".", words: [{ start: 0, end: letter.textContent.length + 1 }], spanEls: [letter] }, renderWordSpans(txt, noMd(opt))));
         if (game.picked !== null) {
           b.disabled = true;
           if (k === q.answer) b.classList.add("right");
@@ -8233,7 +8242,7 @@
       const head = el("div", "fb-head");
       const fbMaps = [renderWordSpans(head, game.misses >= GAME_LIVES ? t("rangeRightLast") : t("rangeRight"))];
       fb.appendChild(head);
-      if (q.explain) { const body = el("div", "fb-body"); fbMaps.push(renderWordSpans(body, q.explain)); fb.appendChild(body); }
+      if (q.explain) { const body = el("div", "fb-body"); fbMaps.push(renderWordSpans(body, noMd(q.explain))); fb.appendChild(body); }
       if (q.page) { const pg = el("div", "fb-page"); pg.textContent = t("sourcedFrom", { pages: q.page }); fb.appendChild(pg); }
       const fbMap = joinMaps(fbMaps);
       const row = el("div", "study-row");
@@ -8778,7 +8787,7 @@
     if (!now || !w) return;
     now.innerHTML = "";
     const lab = el("div", "cw-now-label"); lab.textContent = w.num + " " + t(w.dir ? "cwDown" : "cwAcross") + " · " + w.key.length; now.appendChild(lab);
-    const txt = el("div", "cw-now-clue"); const map = renderWordSpans(txt, w.clue); now.appendChild(txt);
+    const txt = el("div", "cw-now-clue"); const map = renderWordSpans(txt, noMd(w.clue)); now.appendChild(txt);
     const tools = $("cwTools");
     tools.innerHTML = "";
     tools.appendChild(listenButton("say:cw:" + w.clue, () => map));
@@ -8949,7 +8958,7 @@
     const card = el("div", "go-card fib-card");
     if (f.players === 2) { const who = el("div", "fib-player p" + (f.turn + 1)); who.textContent = t("fibPlayerTurn", { n: f.turn + 1 }); card.appendChild(who); }
     const kick = el("div", "go-kicker"); kick.textContent = t("fibQuestion"); card.appendChild(kick);
-    const st = el("div", "q-text fib-statement"); const map = renderWordSpans(st, item.s); card.appendChild(st);
+    const st = el("div", "q-text fib-statement"); const map = renderWordSpans(st, noMd(item.s)); card.appendChild(st);
     const answered = f.picked !== null;
     const btns = el("div", "fib-buttons");
     const mk = (val, label, cls) => {
@@ -9414,7 +9423,7 @@
     kick.textContent = t("monkeyHurry");
     card.appendChild(kick);
     const qText = el("div", "q-text");
-    const maps = [renderWordSpans(qText, q.q)];
+    const maps = [renderWordSpans(qText, noMd(q.q))];
     card.appendChild(qText);
     const opts = el("div", "q-options");
     const answered = ph !== "question";
@@ -9423,7 +9432,7 @@
       const letter = el("span", "q-letter"); letter.textContent = LETTERS[k] || String(k + 1);
       const txt = el("span", "q-opt-text");
       b.appendChild(letter); b.appendChild(txt);
-      maps.push(joinMapsInline({ text: letter.textContent + ".", words: [{ start: 0, end: letter.textContent.length + 1 }], spanEls: [letter] }, renderWordSpans(txt, opt)));
+      maps.push(joinMapsInline({ text: letter.textContent + ".", words: [{ start: 0, end: letter.textContent.length + 1 }], spanEls: [letter] }, renderWordSpans(txt, noMd(opt))));
       if (answered) {
         b.disabled = true;
         if (k === q.answer) b.classList.add("right");
@@ -9455,7 +9464,7 @@
       const head = el("div", "fb-head");
       const fbMaps = [renderWordSpans(head, t(monkey.reason === "time" ? "monkeyTooSlow" : "monkeyWrongFall", { answer: LETTERS[q.answer] + ". " + q.options[q.answer] }))];
       fb.appendChild(head);
-      if (q.explain) { const body = el("div", "fb-body"); fbMaps.push(renderWordSpans(body, q.explain)); fb.appendChild(body); }
+      if (q.explain) { const body = el("div", "fb-body"); fbMaps.push(renderWordSpans(body, noMd(q.explain))); fb.appendChild(body); }
       if (q.page) { const pg = el("div", "fb-page"); pg.textContent = t("sourcedFrom", { pages: q.page }); fb.appendChild(pg); }
       const fbMap = joinMaps(fbMaps);
       const row = el("div", "study-row");

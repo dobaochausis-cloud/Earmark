@@ -20,6 +20,15 @@
  *               Aura costs far more per word than MeloTTS (see README).
  *   TTS_MALE_VOICE = the Aura speaker for it (default "orion" / "apollo").
  *
+ *
+ * HUMAN VOICES IN EVERY LANGUAGE (recommended): Microsoft Azure neural voices.
+ *   AZURE_SPEECH_KEY    = the key of an Azure "Speech" resource (a Secret)
+ *   AZURE_SPEECH_REGION = its region, for example "eastus"
+ *   With these set, every one of Earmark's 26 languages gets a natural
+ *   female AND male voice (Vietnamese: HoaiMy / NamMinh, and so on).
+ *   AZURE_VOICES = optional JSON to swap a voice, e.g.
+ *                  {"en":{"male":"en-US-BrianNeural"}}
+ *
  * Every clip is cached, so a class listening to the same book only pays once.
  */
 
@@ -30,6 +39,67 @@ const PREMIUM = {
   "aura-2": { langs: { en: "@cf/deepgram/aura-2-en", es: "@cf/deepgram/aura-2-es" }, female: "luna", male: "apollo" },
   "aura-1": { langs: { en: "@cf/deepgram/aura-1" }, female: "asteria", male: "orion" },
 };
+
+// Azure neural voices: [language tag, female, male].
+const AZURE = {
+  en: ["en-US", "en-US-AvaNeural", "en-US-AndrewNeural"],
+  vi: ["vi-VN", "vi-VN-HoaiMyNeural", "vi-VN-NamMinhNeural"],
+  es: ["es-ES", "es-ES-ElviraNeural", "es-ES-AlvaroNeural"],
+  fr: ["fr-FR", "fr-FR-DeniseNeural", "fr-FR-HenriNeural"],
+  de: ["de-DE", "de-DE-KatjaNeural", "de-DE-ConradNeural"],
+  pt: ["pt-BR", "pt-BR-FranciscaNeural", "pt-BR-AntonioNeural"],
+  it: ["it-IT", "it-IT-ElsaNeural", "it-IT-DiegoNeural"],
+  nl: ["nl-NL", "nl-NL-FennaNeural", "nl-NL-MaartenNeural"],
+  ru: ["ru-RU", "ru-RU-SvetlanaNeural", "ru-RU-DmitryNeural"],
+  pl: ["pl-PL", "pl-PL-ZofiaNeural", "pl-PL-MarekNeural"],
+  tr: ["tr-TR", "tr-TR-EmelNeural", "tr-TR-AhmetNeural"],
+  ar: ["ar-SA", "ar-SA-ZariyahNeural", "ar-SA-HamedNeural"],
+  hi: ["hi-IN", "hi-IN-SwaraNeural", "hi-IN-MadhurNeural"],
+  id: ["id-ID", "id-ID-GadisNeural", "id-ID-ArdiNeural"],
+  th: ["th-TH", "th-TH-PremwadeeNeural", "th-TH-NiwatNeural"],
+  ja: ["ja-JP", "ja-JP-NanamiNeural", "ja-JP-KeitaNeural"],
+  ko: ["ko-KR", "ko-KR-SunHiNeural", "ko-KR-InJoonNeural"],
+  zh: ["zh-CN", "zh-CN-XiaoxiaoNeural", "zh-CN-YunxiNeural"],
+  fil: ["fil-PH", "fil-PH-BlessicaNeural", "fil-PH-AngeloNeural"],
+  he: ["he-IL", "he-IL-HilaNeural", "he-IL-AvriNeural"],
+  el: ["el-GR", "el-GR-AthinaNeural", "el-GR-NestorasNeural"],
+  sv: ["sv-SE", "sv-SE-SofieNeural", "sv-SE-MattiasNeural"],
+  uk: ["uk-UA", "uk-UA-PolinaNeural", "uk-UA-OstapNeural"],
+  ro: ["ro-RO", "ro-RO-AlinaNeural", "ro-RO-EmilNeural"],
+  fa: ["fa-IR", "fa-IR-DilaraNeural", "fa-IR-FaridNeural"],
+  ur: ["ur-PK", "ur-PK-UzmaNeural", "ur-PK-AsadNeural"],
+};
+const LANG_ALIAS = { tl: "fil" };
+const azureOn = (env) => !!(env.AZURE_SPEECH_KEY && env.AZURE_SPEECH_REGION);
+function azureVoice(env, lang, voice) {
+  const row = AZURE[lang];
+  if (!row) return null;
+  let name = voice === "male" ? row[2] : row[1];
+  try {
+    const custom = env.AZURE_VOICES ? JSON.parse(env.AZURE_VOICES) : null;
+    if (custom && custom[lang] && typeof custom[lang][voice] === "string") name = custom[lang][voice];
+  } catch (e) { /* ignore a broken AZURE_VOICES */ }
+  return { tag: row[0], name };
+}
+const xmlEscape = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+async function azureSpeak(env, v, text, voice) {
+  // A touch slower and calmer than the default: easier to follow while reading.
+  const rate = voice === "male" ? "-6%" : "-4%";
+  const ssml = "<speak version='1.0' xml:lang='" + v.tag + "'><voice name='" + v.name + "'><prosody rate='" + rate + "'>" + xmlEscape(text) + "</prosody></voice></speak>";
+  const res = await fetch("https://" + String(env.AZURE_SPEECH_REGION).trim() + ".tts.speech.microsoft.com/cognitiveservices/v1", {
+    method: "POST",
+    headers: {
+      "Ocp-Apim-Subscription-Key": String(env.AZURE_SPEECH_KEY).trim(),
+      "Content-Type": "application/ssml+xml",
+      "X-Microsoft-OutputFormat": "audio-24khz-48kbitrate-mono-mp3",
+      "User-Agent": "earmark",
+    },
+    body: ssml,
+  });
+  if (res.status === 429) throw Object.assign(new Error("azure 429"), { code: "busy" });
+  if (!res.ok) throw new Error("azure " + res.status + " " + (await res.text().catch(() => "")).slice(0, 200));
+  return new Uint8Array(await res.arrayBuffer());
+}
 
 const json = (status, body) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
@@ -60,6 +130,7 @@ function maleChoice(env) {
   return PREMIUM[name] ? name : "";
 }
 function langsFor(env, voice) {
+  if (azureOn(env)) return Object.keys(AZURE).concat(Object.keys(LANG_ALIAS));
   if (voice === "male") return maleChoice(env) ? ["en"] : [];
   const premium = PREMIUM[choice(env)];
   return Array.from(new Set([...Object.keys(MELO_LANGS), ...(premium ? Object.keys(premium.langs) : [])]));
@@ -102,6 +173,16 @@ async function toBytes(out) {
 
 async function speak(env, lang, text, voice) {
   let lastError = "";
+  const az = azureOn(env) && azureVoice(env, LANG_ALIAS[lang] || lang, voice);
+  if (az) {
+    try {
+      const bytes = await azureSpeak(env, az, text, voice);
+      if (bytes && bytes.length > 200) return { bytes, model: "azure:" + az.name };
+      lastError = "no audio from Azure";
+    } catch (err) {
+      lastError = String((err && err.message) || err);
+    }
+  }
   for (const step of plan(env, lang, voice)) {
     const input = Object.assign({}, step.input);
     if (step.kind === "aura") input.text = text; else input.prompt = text;
@@ -129,7 +210,7 @@ export async function onRequestGet({ request, env }) {
     if (env.ACCESS_CODE && url.searchParams.get("code") !== env.ACCESS_CODE) return json(401, { error: "Add &code=YOUR_CLASS_CODE to the address." });
     if (!env.AI) return json(200, { ok: false, error: "No AI binding. Check wrangler.toml has [ai] binding = \"AI\"." });
     const tries = [];
-    for (const [lang, voice] of [["en", "female"], ["es", "female"], ["en", "male"]]) {
+    for (const [lang, voice] of [["en", "female"], ["en", "male"], ["vi", "female"], ["vi", "male"], ["es", "female"]]) {
       if (!langsFor(env, voice).includes(lang)) { tries.push({ lang, voice, ok: false, error: "not turned on" }); continue; }
       try {
         const r = await speak(env, lang, lang === "en" ? "Hello! This is Earmark's reading voice." : "¡Hola! Esta es la voz de Earmark.", voice);
@@ -138,10 +219,10 @@ export async function onRequestGet({ request, env }) {
         tries.push({ lang, voice, ok: false, error: String(e.message || e).slice(0, 300) });
       }
     }
-    return json(200, { choice: choice(env), male: maleChoice(env) || "device voice", tries });
+    return json(200, { choice: azureOn(env) ? "azure" : choice(env), male: azureOn(env) ? "azure" : (maleChoice(env) || "device voice"), tries });
   }
   const on = !!env.AI && env.TTS !== "off";
-  return json(200, { available: on, model: choice(env), langs: on ? langsFor(env) : [], female: on ? langsFor(env, "female") : [], male: on ? langsFor(env, "male") : [] });
+  return json(200, { available: on, model: azureOn(env) ? "azure" : choice(env), langs: on ? langsFor(env) : [], female: on ? langsFor(env, "female") : [], male: on ? langsFor(env, "male") : [] });
 }
 
 export async function onRequestPost({ request, env, waitUntil }) {
@@ -159,7 +240,8 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (!langsFor(env, voice).includes(lang)) return json(400, { code: "unsupported_lang", message: "No reading voice for that language yet." });
 
   const cache = typeof caches !== "undefined" ? caches.default : null;
-  const key = await cacheKey(voice === "male" ? "male:" + maleChoice(env) + ":" + (env.TTS_MALE_VOICE || "") : choice(env) + ":" + (env.TTS_VOICE || ""), lang, text);
+  const az = azureOn(env) && azureVoice(env, LANG_ALIAS[lang] || lang, voice);
+  const key = await cacheKey(az ? "azure:" + az.name : voice === "male" ? "male:" + maleChoice(env) + ":" + (env.TTS_MALE_VOICE || "") : choice(env) + ":" + (env.TTS_VOICE || ""), lang, text);
   if (cache) {
     const hit = await cache.match(key).catch(() => null);
     if (hit) return hit;
