@@ -14,6 +14,7 @@ const head = `<!doctype html>
 <meta name="description" content="Earmark is a free study app: upload any book, PDF or web page, ask questions answered from the text, have it read aloud in a natural voice, translate it, and learn with flashcards, quizzes and games.">
 <link rel="canonical" href="\${SITE}/">
 <meta name="robots" content="index,follow">
+<meta name="google-site-verification" content="fQiBduHC-Ci-yuCdESMy9poMLhiOSOp9_uSRGNDnLz0">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Earmark">
 <meta property="og:title" content="Earmark — read, ask and listen to any book">
