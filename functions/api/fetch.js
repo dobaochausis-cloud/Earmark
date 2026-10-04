@@ -102,7 +102,12 @@ function htmlToBlocks(html, base) {
   // Prefer the main content when the page marks it.
   const main = html.match(/<(article|main)\b[\s\S]*<\/\1\s*>/i);
   let body = main ? main[0] : (html.match(/<body\b[\s\S]*<\/body\s*>/i) || [html])[0];
-  body = stripBlocks(body, ["nav", "header", "footer", "aside", "form"]);
+  body = stripBlocks(body, ["nav", "footer", "aside", "form", "time"]);
+  // A <header> that holds the article's headline is kept (the headline is
+  // part of the text); other headers (site logo, menus) are dropped.
+  body = body.replace(/<header\b[^>]*>([\s\S]*?)<\/header\s*>/gi, (all, inner) => (/<h1\b/i.test(inner) ? inner : " "));
+  // Bylines, dates, share buttons and similar page details are not the text.
+  body = dropMarked(body);
 
   const blocks = [];
   const stack = [];         // open block tags, innermost last
@@ -146,7 +151,61 @@ function htmlToBlocks(html, base) {
   flush();
   // Drop pictures that only sit next to nothing (galleries at the very end).
   while (blocks.length && blocks[blocks.length - 1].k === "img") blocks.pop();
-  return blocks;
+  return tidyBlocks(blocks);
+}
+
+// Elements whose class / id / test id / itemprop says they are page details
+// (bylines, dates, share bars, tags…) are removed with everything inside.
+const META_ATTR = /\b(?:class|id|data-testid|data-component|itemprop|rel|role)\s*=\s*["'][^"']*\b(byline|author|contributor|dateline|datetime|timestamp|published|date-?time|article-?meta|metadata|share|social|related|newsletter|tags?-?list|topic-?list|breadcrumb|advert|promo|cookie|subscribe)\b/i;
+const VOID_TAGS = new Set(["img", "br", "hr", "input", "meta", "link", "source", "wbr"]);
+function dropMarked(html) {
+  let out = "", i = 0, skip = null, depth = 0;
+  const re = /<(\/?)([a-z][a-z0-9]*)\b[^>]*>/gi;
+  let m;
+  while ((m = re.exec(html))) {
+    const tag = m[2].toLowerCase(), closing = m[1] === "/";
+    if (skip) {
+      if (tag === skip && !VOID_TAGS.has(tag)) depth += closing ? -1 : (m[0].endsWith("/>") ? 0 : 1);
+      if (depth === 0) { skip = null; i = re.lastIndex; }
+      continue;
+    }
+    if (!closing && !VOID_TAGS.has(tag) && !m[0].endsWith("/>") && META_ATTR.test(m[0])) {
+      out += html.slice(i, m.index) + " ";
+      skip = tag; depth = 1;
+      continue;
+    }
+  }
+  return skip ? out : out + html.slice(i);
+}
+
+// Lines that are page furniture, not the story.
+const DATE_LINE = /^(?:(?:published|updated|posted|last updated)\b.*|\d{1,2}(?:st|nd|rd|th)? (?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]* \d{4}|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]* \d{1,2},? \d{4}|\d{4}-\d{2}-\d{2}|\d+ (?:minutes?|hours?|days?|weeks?) ago)$/i;
+function tidyBlocks(blocks) {
+  const out = [];
+  let seenTitle = false, storyStarted = false;
+  for (const b of blocks) {
+    if (b.k === "img") { out.push(b); continue; }
+    let t = b.t;
+    // Picture credits ("Image source, Getty Images"); captions keep their words.
+    if (/^(?:image|picture|photo|media) (?:source|credit)s?\s*[,:]/i.test(t)) continue;
+    t = t.replace(/^(?:image|picture|media) caption\s*[,:]\s*/i, "");
+    if (!t) continue;
+    if (DATE_LINE.test(t.replace(/[|·•]/g, " ").replace(/\s+/g, " ").trim())) continue;
+    if (/^[|·•\-–—]+$/.test(t)) continue;
+    if (b.k === "h1") seenTitle = true;
+    // Between the headline and the first real paragraph: short lines are the
+    // byline, the date and the section label ("By …", "2 October 2026", "News").
+    if (seenTitle && !storyStarted && b.k !== "h1") {
+      const real = (b.k === "p" || b.k === "quote") && (t.length >= 80 || /[.!?…]["'”’)]?$/.test(t));
+      if (!real && !/^h[2-4]$/.test(b.k)) {
+        if (/^by\s/i.test(t) || t.length < 60) continue;
+      }
+      if (real) storyStarted = true;
+    }
+    if (/^by\s.{3,150}$/i.test(t) && !/[.!?]$/.test(t) && !storyStarted) continue;
+    out.push(t === b.t ? b : Object.assign({}, b, { t }));
+  }
+  return out;
 }
 
 // The book text: headings and paragraphs on their own lines, list items as "• …".
