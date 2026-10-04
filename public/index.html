@@ -489,6 +489,7 @@
   .word-lookup:hover{background:var(--paper-sunken);}
   .word-active.word-lookup:hover{background:var(--accent);}
 
+  .word.word-added{ background: color-mix(in srgb, var(--accent, #2b7) 35%, transparent); border-radius: 4px; transition: background .3s; }
   .glossary-tip{
     position:fixed; z-index:80; max-width:260px;
     background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-sm);
@@ -562,6 +563,7 @@
   .read-btn svg{width:13px;height:13px;}
   .sources{color:var(--ink-faint);}
 
+  .chat-hello{ font-family: var(--font-display); font-size: 1.45em; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
   .empty-chat-hint{
     margin:auto; text-align:center; color:var(--ink-faint); font-size:13.5px; max-width:32ch;
   }
@@ -1071,10 +1073,10 @@
     <div class="empty-state" id="emptyState">
       <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M17 2H7a2 2 0 0 0-2 2v18l7-4 7 4V4a2 2 0 0 0-2-2z"/><path d="M9 8h6M9 12h6" stroke-linecap="round"/></svg>
       <h1 data-i18n="emptyTitle">Ask any book a question. Then listen to the answer.</h1>
-      <p data-i18n="emptyDesc">Upload a school PDF, a math textbook, a business book — anything. Earmark reads the real text, answers only from what's actually in it, and can read everything aloud.</p>
+      <p data-i18n="emptyDesc">Upload a school PDF, a business book — anything. Earmark reads the real text, answers only from what's actually in it, and can read everything aloud.</p>
       <button class="cta" id="emptyCta" data-i18n="addFirstBook">Add your first book</button>
       <div class="subjects">
-        <span data-i18n="subjMath">Math</span><span data-i18n="subjScience">Science</span><span data-i18n="subjBusiness">Business</span><span data-i18n="subjLiterature">Literature</span><span data-i18n="subjHistory">History</span><span data-i18n="chipAnyPdf">Any PDF</span>
+        <span data-i18n="subjScience">Science</span><span data-i18n="subjBusiness">Business</span><span data-i18n="subjLiterature">Literature</span><span data-i18n="subjHistory">History</span><span data-i18n="chipAnyPdf">Any PDF</span>
       </div>
     </div>
 
@@ -1174,7 +1176,7 @@
       </div>
 
       <div class="chat" id="chat">
-        <div class="empty-chat-hint" id="chatHint" data-i18n="askHint">Ask something about this book — a concept, a definition, "what happens in chapter 3", anything in the text.</div>
+        <div class="empty-chat-hint" id="chatHint"><div class="chat-hello" data-i18n="askHello">Clementine is here to help!</div><div data-i18n="askHint">Ask something about this book — a concept, a definition, "what happens in chapter 3", anything in the text.</div></div>
       </div>
 
       <div class="resize-handle ask-resize" id="askResize" role="separator" aria-orientation="horizontal" tabindex="0" data-i18n-title="resizeHint" title="Drag to make this taller or shorter"><span></span></div>
@@ -1416,7 +1418,7 @@
       yourLibrary: "Your library", noBooksYet: "No books yet — add one above.",
       removeConfirm: 'Remove "{title}" from your library?',
       emptyTitle: "Ask any book a question. Then listen to the answer.",
-      emptyDesc: "Upload a school PDF, a math textbook, a business book — anything. Earmark reads the real text, answers only from what's actually in it, and can read everything aloud.",
+      emptyDesc: "Upload a school PDF, a business book — anything. Earmark reads the real text, answers only from what's actually in it, and can read everything aloud.",
       addFirstBook: "Add your first book", chipAnyPdf: "Any PDF",
       passageOf: "Passage {i} of {n} · p. {range}",
       listen: "Listen", pause: "Pause", resume: "Resume",
@@ -1451,7 +1453,7 @@
       yourLibrary: "Thư viện của bạn", noBooksYet: "Chưa có sách nào — hãy thêm một cuốn ở trên.",
       removeConfirm: 'Xóa "{title}" khỏi thư viện của bạn?',
       emptyTitle: "Hỏi bất kỳ cuốn sách nào. Rồi nghe câu trả lời.",
-      emptyDesc: "Tải lên một tệp PDF ở trường, sách toán, sách kinh doanh — bất cứ thứ gì. Earmark đọc đúng nội dung thật, chỉ trả lời dựa trên nội dung đó, và có thể đọc to mọi thứ.",
+      emptyDesc: "Tải lên một tệp PDF ở trường, sách kinh doanh — bất cứ thứ gì. Earmark đọc đúng nội dung thật, chỉ trả lời dựa trên nội dung đó, và có thể đọc to mọi thứ.",
       addFirstBook: "Thêm cuốn sách đầu tiên", chipAnyPdf: "Mọi PDF",
       passageOf: "Đoạn {i} / {n} · tr. {range}",
       listen: "Nghe", pause: "Tạm dừng", resume: "Tiếp tục",
@@ -1488,7 +1490,7 @@
       yourLibrary: "Tu biblioteca", noBooksYet: "Aún no hay libros — añade uno arriba.",
       removeConfirm: '¿Quitar "{title}" de tu biblioteca?',
       emptyTitle: "Pregúntale algo a cualquier libro. Luego escucha la respuesta.",
-      emptyDesc: "Sube un PDF de la escuela, un libro de matemáticas, un libro de negocios — lo que sea. Earmark lee el texto real, responde solo con lo que hay en él, y puede leerlo todo en voz alta.",
+      emptyDesc: "Sube un PDF de la escuela, un libro de negocios — lo que sea. Earmark lee el texto real, responde solo con lo que hay en él, y puede leerlo todo en voz alta.",
       addFirstBook: "Añade tu primer libro", chipAnyPdf: "Cualquier PDF",
       passageOf: "Pasaje {i} de {n} · pág. {range}",
       listen: "Escuchar", pause: "Pausar", resume: "Reanudar",
@@ -1523,7 +1525,7 @@
       yourLibrary: "Votre bibliothèque", noBooksYet: "Aucun livre pour l'instant — ajoutez-en un ci-dessus.",
       removeConfirm: 'Retirer "{title}" de votre bibliothèque ?',
       emptyTitle: "Posez une question à n'importe quel livre. Puis écoutez la réponse.",
-      emptyDesc: "Importez un PDF scolaire, un manuel de maths, un livre de commerce — n'importe quoi. Earmark lit le vrai texte, répond uniquement à partir de son contenu, et peut tout lire à voix haute.",
+      emptyDesc: "Importez un PDF scolaire, un livre de commerce — n'importe quoi. Earmark lit le vrai texte, répond uniquement à partir de son contenu, et peut tout lire à voix haute.",
       addFirstBook: "Ajoutez votre premier livre", chipAnyPdf: "N'importe quel PDF",
       passageOf: "Passage {i} sur {n} · p. {range}",
       listen: "Écouter", pause: "Pause", resume: "Reprendre",
@@ -1558,7 +1560,7 @@
       yourLibrary: "Deine Bibliothek", noBooksYet: "Noch keine Bücher — füge oben eines hinzu.",
       removeConfirm: '"{title}" aus deiner Bibliothek entfernen?',
       emptyTitle: "Stelle jedem Buch eine Frage. Hör dir dann die Antwort an.",
-      emptyDesc: "Lade ein Schul-PDF, ein Mathebuch, ein Wirtschaftsbuch hoch — alles ist möglich. Earmark liest den echten Text, antwortet nur auf Basis davon und kann alles vorlesen.",
+      emptyDesc: "Lade ein Schul-PDF, ein Wirtschaftsbuch hoch — alles ist möglich. Earmark liest den echten Text, antwortet nur auf Basis davon und kann alles vorlesen.",
       addFirstBook: "Füge dein erstes Buch hinzu", chipAnyPdf: "Jedes PDF",
       passageOf: "Abschnitt {i} von {n} · S. {range}",
       listen: "Anhören", pause: "Pause", resume: "Fortsetzen",
@@ -1595,7 +1597,7 @@
       yourLibrary: "Sua biblioteca", noBooksYet: "Ainda não há livros — adicione um acima.",
       removeConfirm: 'Remover "{title}" da sua biblioteca?',
       emptyTitle: "Faça uma pergunta a qualquer livro. Depois ouça a resposta.",
-      emptyDesc: "Envie um PDF da escola, um livro de matemática, um livro de negócios — qualquer coisa. O Earmark lê o texto real, responde apenas com base nele, e pode ler tudo em voz alta.",
+      emptyDesc: "Envie um PDF da escola, um livro de negócios — qualquer coisa. O Earmark lê o texto real, responde apenas com base nele, e pode ler tudo em voz alta.",
       addFirstBook: "Adicione seu primeiro livro", chipAnyPdf: "Qualquer PDF",
       passageOf: "Trecho {i} de {n} · pág. {range}",
       listen: "Ouvir", pause: "Pausar", resume: "Continuar",
@@ -1630,7 +1632,7 @@
       yourLibrary: "La tua libreria", noBooksYet: "Ancora nessun libro — aggiungine uno sopra.",
       removeConfirm: 'Rimuovere "{title}" dalla tua libreria?',
       emptyTitle: "Fai una domanda a qualsiasi libro. Poi ascolta la risposta.",
-      emptyDesc: "Carica un PDF scolastico, un libro di matematica, un libro di economia — qualsiasi cosa. Earmark legge il testo reale, risponde solo in base a esso e può leggere tutto ad alta voce.",
+      emptyDesc: "Carica un PDF scolastico, un libro di economia — qualsiasi cosa. Earmark legge il testo reale, risponde solo in base a esso e può leggere tutto ad alta voce.",
       addFirstBook: "Aggiungi il tuo primo libro", chipAnyPdf: "Qualsiasi PDF",
       passageOf: "Passaggio {i} di {n} · pag. {range}",
       listen: "Ascolta", pause: "Pausa", resume: "Riprendi",
@@ -1665,7 +1667,7 @@
       yourLibrary: "Jouw bibliotheek", noBooksYet: "Nog geen boeken — voeg er hierboven een toe.",
       removeConfirm: '"{title}" uit je bibliotheek verwijderen?',
       emptyTitle: "Stel een vraag aan elk boek. Luister dan naar het antwoord.",
-      emptyDesc: "Upload een schoolpdf, een wiskundeboek, een zakelijk boek — wat dan ook. Earmark leest de echte tekst, antwoordt alleen op basis daarvan, en kan alles hardop voorlezen.",
+      emptyDesc: "Upload een schoolpdf, een zakelijk boek — wat dan ook. Earmark leest de echte tekst, antwoordt alleen op basis daarvan, en kan alles hardop voorlezen.",
       addFirstBook: "Voeg je eerste boek toe", chipAnyPdf: "Elke PDF",
       passageOf: "Passage {i} van {n} · p. {range}",
       listen: "Luisteren", pause: "Pauzeren", resume: "Hervatten",
@@ -1700,7 +1702,7 @@
       yourLibrary: "Ваша библиотека", noBooksYet: "Пока нет книг — добавьте одну выше.",
       removeConfirm: 'Удалить «{title}» из вашей библиотеки?',
       emptyTitle: "Задайте вопрос любой книге. Затем прослушайте ответ.",
-      emptyDesc: "Загрузите школьный PDF, учебник по математике, книгу по бизнесу — что угодно. Earmark читает настоящий текст, отвечает только на его основе и может прочитать всё вслух.",
+      emptyDesc: "Загрузите школьный PDF, книгу по бизнесу — что угодно. Earmark читает настоящий текст, отвечает только на его основе и может прочитать всё вслух.",
       addFirstBook: "Добавьте свою первую книгу", chipAnyPdf: "Любой PDF",
       passageOf: "Отрывок {i} из {n} · стр. {range}",
       listen: "Слушать", pause: "Пауза", resume: "Продолжить",
@@ -1735,7 +1737,7 @@
       yourLibrary: "Twoja biblioteka", noBooksYet: "Brak książek — dodaj jedną powyżej.",
       removeConfirm: 'Usunąć "{title}" z biblioteki?',
       emptyTitle: "Zadaj pytanie dowolnej książce. Potem posłuchaj odpowiedzi.",
-      emptyDesc: "Prześlij szkolny PDF, podręcznik do matematyki, książkę biznesową — cokolwiek. Earmark czyta prawdziwy tekst, odpowiada tylko na jego podstawie i może przeczytać wszystko na głos.",
+      emptyDesc: "Prześlij szkolny PDF, książkę biznesową — cokolwiek. Earmark czyta prawdziwy tekst, odpowiada tylko na jego podstawie i może przeczytać wszystko na głos.",
       addFirstBook: "Dodaj pierwszą książkę", chipAnyPdf: "Dowolny PDF",
       passageOf: "Fragment {i} z {n} · s. {range}",
       listen: "Słuchaj", pause: "Wstrzymaj", resume: "Wznów",
@@ -1772,7 +1774,7 @@
       yourLibrary: "Kitaplığın", noBooksYet: "Henüz kitap yok — yukarıdan bir tane ekle.",
       removeConfirm: '"{title}" kitaplığından kaldırılsın mı?',
       emptyTitle: "Herhangi bir kitaba soru sor. Sonra cevabı dinle.",
-      emptyDesc: "Bir okul PDF'i, bir matematik kitabı, bir işletme kitabı — ne olursa olsun yükle. Earmark gerçek metni okur, yalnızca içindekilere göre yanıtlar ve her şeyi sesli okuyabilir.",
+      emptyDesc: "Bir okul PDF'i, bir işletme kitabı — ne olursa olsun yükle. Earmark gerçek metni okur, yalnızca içindekilere göre yanıtlar ve her şeyi sesli okuyabilir.",
       addFirstBook: "İlk kitabını ekle", chipAnyPdf: "Herhangi bir PDF",
       passageOf: "Bölüm {i} / {n} · s. {range}",
       listen: "Dinle", pause: "Duraklat", resume: "Devam et",
@@ -1807,7 +1809,7 @@
       yourLibrary: "مكتبتك", noBooksYet: "لا توجد كتب بعد — أضف واحدًا أعلاه.",
       removeConfirm: 'إزالة "{title}" من مكتبتك؟',
       emptyTitle: "اسأل أي كتاب سؤالاً. ثم استمع إلى الإجابة.",
-      emptyDesc: "ارفع ملف PDF مدرسي، كتاب رياضيات، كتاب أعمال — أي شيء. يقرأ Earmark النص الفعلي، ويجيب فقط بناءً على ما فيه، ويمكنه قراءة كل شيء بصوت عالٍ.",
+      emptyDesc: "ارفع ملف PDF مدرسي، كتاب أعمال — أي شيء. يقرأ Earmark النص الفعلي، ويجيب فقط بناءً على ما فيه، ويمكنه قراءة كل شيء بصوت عالٍ.",
       addFirstBook: "أضف أول كتاب لك", chipAnyPdf: "أي ملف PDF",
       passageOf: "المقطع {i} من {n} · ص. {range}",
       listen: "استماع", pause: "إيقاف مؤقت", resume: "متابعة",
@@ -1842,7 +1844,7 @@
       yourLibrary: "आपकी लाइब्रेरी", noBooksYet: "अभी तक कोई किताब नहीं — ऊपर एक जोड़ें।",
       removeConfirm: 'क्या "{title}" को आपकी लाइब्रेरी से हटाना है?',
       emptyTitle: "किसी भी किताब से सवाल पूछें। फिर जवाब सुनें।",
-      emptyDesc: "एक स्कूल PDF, गणित की किताब, व्यवसाय की किताब — कुछ भी अपलोड करें। Earmark असली टेक्स्ट पढ़ता है, केवल उसी के आधार पर जवाब देता है, और सब कुछ ज़ोर से पढ़ सकता है।",
+      emptyDesc: "एक स्कूल PDF, व्यवसाय की किताब — कुछ भी अपलोड करें। Earmark असली टेक्स्ट पढ़ता है, केवल उसी के आधार पर जवाब देता है, और सब कुछ ज़ोर से पढ़ सकता है।",
       addFirstBook: "अपनी पहली किताब जोड़ें", chipAnyPdf: "कोई भी PDF",
       passageOf: "अंश {i} / {n} · पृ. {range}",
       listen: "सुनें", pause: "रोकें", resume: "जारी रखें",
@@ -1877,7 +1879,7 @@
       yourLibrary: "Perpustakaanmu", noBooksYet: "Belum ada buku — tambahkan satu di atas.",
       removeConfirm: 'Hapus "{title}" dari perpustakaanmu?',
       emptyTitle: "Ajukan pertanyaan ke buku apa pun. Lalu dengarkan jawabannya.",
-      emptyDesc: "Unggah PDF sekolah, buku matematika, buku bisnis — apa saja. Earmark membaca teks aslinya, hanya menjawab berdasarkan isinya, dan bisa membacakan semuanya dengan keras.",
+      emptyDesc: "Unggah PDF sekolah, buku bisnis — apa saja. Earmark membaca teks aslinya, hanya menjawab berdasarkan isinya, dan bisa membacakan semuanya dengan keras.",
       addFirstBook: "Tambahkan buku pertamamu", chipAnyPdf: "PDF apa pun",
       passageOf: "Bagian {i} dari {n} · hal. {range}",
       listen: "Dengarkan", pause: "Jeda", resume: "Lanjutkan",
@@ -1912,7 +1914,7 @@
       yourLibrary: "คลังหนังสือของคุณ", noBooksYet: "ยังไม่มีหนังสือ — เพิ่มเล่มหนึ่งด้านบน",
       removeConfirm: 'นำ "{title}" ออกจากคลังหนังสือของคุณหรือไม่',
       emptyTitle: "ถามคำถามหนังสือเล่มไหนก็ได้ แล้วฟังคำตอบ",
-      emptyDesc: "อัปโหลด PDF จากโรงเรียน หนังสือคณิตศาสตร์ หนังสือธุรกิจ — อะไรก็ได้ Earmark อ่านเนื้อหาจริง ตอบโดยอิงจากเนื้อหานั้นเท่านั้น และสามารถอ่านออกเสียงทั้งหมดได้",
+      emptyDesc: "อัปโหลด PDF จากโรงเรียน หนังสือธุรกิจ — อะไรก็ได้ Earmark อ่านเนื้อหาจริง ตอบโดยอิงจากเนื้อหานั้นเท่านั้น และสามารถอ่านออกเสียงทั้งหมดได้",
       addFirstBook: "เพิ่มหนังสือเล่มแรกของคุณ", chipAnyPdf: "PDF ใดก็ได้",
       passageOf: "ตอนที่ {i} จาก {n} · หน้า {range}",
       listen: "ฟัง", pause: "หยุดชั่วคราว", resume: "เล่นต่อ",
@@ -1949,7 +1951,7 @@
       yourLibrary: "あなたのライブラリ", noBooksYet: "まだ本がありません — 上から追加してください。",
       removeConfirm: '「{title}」をライブラリから削除しますか？',
       emptyTitle: "どの本にも質問できます。答えを聞いてみましょう。",
-      emptyDesc: "学校のPDF、数学の教科書、ビジネス書 — 何でもアップロードしてください。Earmarkは実際のテキストを読み、その内容だけに基づいて答え、すべてを音読することもできます。",
+      emptyDesc: "学校のPDF、ビジネス書 — 何でもアップロードしてください。Earmarkは実際のテキストを読み、その内容だけに基づいて答え、すべてを音読することもできます。",
       addFirstBook: "最初の本を追加", chipAnyPdf: "どんなPDFでも",
       passageOf: "{n}箇所中{i}番目 · p. {range}",
       listen: "聞く", pause: "一時停止", resume: "再開",
@@ -1984,7 +1986,7 @@
       yourLibrary: "내 서재", noBooksYet: "아직 책이 없습니다 — 위에서 하나 추가해 보세요.",
       removeConfirm: '"{title}"을(를) 서재에서 삭제할까요?',
       emptyTitle: "어떤 책이든 질문해 보세요. 그리고 답변을 들어보세요.",
-      emptyDesc: "학교 PDF, 수학 교재, 경영서 — 무엇이든 업로드하세요. Earmark는 실제 텍스트를 읽고 그 내용만을 바탕으로 답하며, 모든 내용을 소리 내어 읽어줄 수 있습니다.",
+      emptyDesc: "학교 PDF, 경영서 — 무엇이든 업로드하세요. Earmark는 실제 텍스트를 읽고 그 내용만을 바탕으로 답하며, 모든 내용을 소리 내어 읽어줄 수 있습니다.",
       addFirstBook: "첫 번째 책 추가하기", chipAnyPdf: "모든 PDF",
       passageOf: "구절 {i}/{n} · {range}쪽",
       listen: "듣기", pause: "일시정지", resume: "재개",
@@ -2019,7 +2021,7 @@
       yourLibrary: "你的书库", noBooksYet: "还没有书籍 — 请在上方添加一本。",
       removeConfirm: '要将"{title}"从书库中移除吗？',
       emptyTitle: "向任意一本书提问，然后听取答案。",
-      emptyDesc: "上传学校的 PDF、数学教材、商业书籍——任何书都可以。Earmark 会阅读真实文本，仅根据其中内容作答，并能将所有内容朗读出来。",
+      emptyDesc: "上传学校的 PDF、商业书籍——任何书都可以。Earmark 会阅读真实文本，仅根据其中内容作答，并能将所有内容朗读出来。",
       addFirstBook: "添加你的第一本书", chipAnyPdf: "任意 PDF",
       passageOf: "第 {i} / {n} 段 · 第 {range} 页",
       listen: "收听", pause: "暂停", resume: "继续",
@@ -2054,7 +2056,7 @@
       yourLibrary: "Ang iyong aklatan", noBooksYet: "Wala pang libro — magdagdag ng isa sa itaas.",
       removeConfirm: 'Alisin ang "{title}" sa iyong aklatan?',
       emptyTitle: "Magtanong sa kahit anong libro. Pagkatapos ay pakinggan ang sagot.",
-      emptyDesc: "Mag-upload ng school PDF, isang aklat sa matematika, isang aklat sa negosyo — kahit ano. Binabasa ng Earmark ang aktwal na teksto, sumasagot lang batay dito, at kaya nitong basahin nang malakas ang lahat.",
+      emptyDesc: "Mag-upload ng school PDF, isang aklat sa negosyo — kahit ano. Binabasa ng Earmark ang aktwal na teksto, sumasagot lang batay dito, at kaya nitong basahin nang malakas ang lahat.",
       addFirstBook: "Idagdag ang iyong unang libro", chipAnyPdf: "Kahit anong PDF",
       passageOf: "Bahagi {i} ng {n} · p. {range}",
       listen: "Makinig", pause: "I-pause", resume: "Ituloy",
@@ -2089,7 +2091,7 @@
       yourLibrary: "הספרייה שלך", noBooksYet: "עדיין אין ספרים — הוסיפו אחד למעלה.",
       removeConfirm: 'להסיר את "{title}" מהספרייה שלך?',
       emptyTitle: "שאלו כל ספר שאלה. ואז האזינו לתשובה.",
-      emptyDesc: "העלו PDF מבית הספר, ספר מתמטיקה, ספר עסקים — כל דבר. Earmark קורא את הטקסט האמיתי, עונה רק על סמך מה שכתוב בו, ויכול להקריא הכול בקול.",
+      emptyDesc: "העלו PDF מבית הספר, ספר עסקים — כל דבר. Earmark קורא את הטקסט האמיתי, עונה רק על סמך מה שכתוב בו, ויכול להקריא הכול בקול.",
       addFirstBook: "הוסיפו את הספר הראשון שלכם", chipAnyPdf: "כל PDF",
       passageOf: "קטע {i} מתוך {n} · עמ' {range}",
       listen: "האזנה", pause: "השהיה", resume: "המשך",
@@ -2126,7 +2128,7 @@
       yourLibrary: "Η βιβλιοθήκη σου", noBooksYet: "Δεν υπάρχουν ακόμη βιβλία — πρόσθεσε ένα παραπάνω.",
       removeConfirm: 'Αφαίρεση του "{title}" από τη βιβλιοθήκη σου;',
       emptyTitle: "Κάνε μια ερώτηση σε οποιοδήποτε βιβλίο. Μετά άκουσε την απάντηση.",
-      emptyDesc: "Ανέβασε ένα σχολικό PDF, ένα βιβλίο μαθηματικών, ένα επιχειρηματικό βιβλίο — οτιδήποτε. Το Earmark διαβάζει το πραγματικό κείμενο, απαντά μόνο βάσει αυτού, και μπορεί να διαβάσει τα πάντα δυνατά.",
+      emptyDesc: "Ανέβασε ένα σχολικό PDF, ένα επιχειρηματικό βιβλίο — οτιδήποτε. Το Earmark διαβάζει το πραγματικό κείμενο, απαντά μόνο βάσει αυτού, και μπορεί να διαβάσει τα πάντα δυνατά.",
       addFirstBook: "Πρόσθεσε το πρώτο σου βιβλίο", chipAnyPdf: "Οποιοδήποτε PDF",
       passageOf: "Απόσπασμα {i} από {n} · σελ. {range}",
       listen: "Ακρόαση", pause: "Παύση", resume: "Συνέχεια",
@@ -2161,7 +2163,7 @@
       yourLibrary: "Ditt bibliotek", noBooksYet: "Inga böcker än — lägg till en ovan.",
       removeConfirm: 'Ta bort "{title}" från ditt bibliotek?',
       emptyTitle: "Ställ en fråga till vilken bok som helst. Lyssna sedan på svaret.",
-      emptyDesc: "Ladda upp en skol-PDF, en matteboka, en affärsbok — vad som helst. Earmark läser den verkliga texten, svarar bara utifrån den, och kan läsa upp allt högt.",
+      emptyDesc: "Ladda upp en skol-PDF, en affärsbok — vad som helst. Earmark läser den verkliga texten, svarar bara utifrån den, och kan läsa upp allt högt.",
       addFirstBook: "Lägg till din första bok", chipAnyPdf: "Vilken PDF som helst",
       passageOf: "Stycke {i} av {n} · s. {range}",
       listen: "Lyssna", pause: "Pausa", resume: "Återuppta",
@@ -2196,7 +2198,7 @@
       yourLibrary: "Ваша бібліотека", noBooksYet: "Книг поки немає — додайте одну вище.",
       removeConfirm: 'Видалити «{title}» з вашої бібліотеки?',
       emptyTitle: "Поставте запитання будь-якій книзі. Потім прослухайте відповідь.",
-      emptyDesc: "Завантажте шкільний PDF, підручник з математики, книгу з бізнесу — що завгодно. Earmark читає справжній текст, відповідає лише на його основі та може прочитати все вголос.",
+      emptyDesc: "Завантажте шкільний PDF, книгу з бізнесу — що завгодно. Earmark читає справжній текст, відповідає лише на його основі та може прочитати все вголос.",
       addFirstBook: "Додайте свою першу книгу", chipAnyPdf: "Будь-який PDF",
       passageOf: "Уривок {i} з {n} · стор. {range}",
       listen: "Слухати", pause: "Пауза", resume: "Продовжити",
@@ -2231,7 +2233,7 @@
       yourLibrary: "Biblioteca ta", noBooksYet: "Încă nu ai cărți — adaugă una mai sus.",
       removeConfirm: 'Elimini "{title}" din biblioteca ta?',
       emptyTitle: "Pune o întrebare oricărei cărți. Apoi ascultă răspunsul.",
-      emptyDesc: "Încarcă un PDF de școală, o carte de matematică, o carte de afaceri — orice. Earmark citește textul real, răspunde doar pe baza lui și poate citi totul cu voce tare.",
+      emptyDesc: "Încarcă un PDF de școală, o carte de afaceri — orice. Earmark citește textul real, răspunde doar pe baza lui și poate citi totul cu voce tare.",
       addFirstBook: "Adaugă prima ta carte", chipAnyPdf: "Orice PDF",
       passageOf: "Pasajul {i} din {n} · pag. {range}",
       listen: "Ascultă", pause: "Pauză", resume: "Reia",
@@ -2266,7 +2268,7 @@
       yourLibrary: "کتابخانه‌ی شما", noBooksYet: "هنوز کتابی نیست — یکی در بالا اضافه کنید.",
       removeConfirm: '"{title}" از کتابخانه‌ی شما حذف شود؟',
       emptyTitle: "از هر کتابی سؤال بپرسید. سپس به پاسخ گوش دهید.",
-      emptyDesc: "یک PDF مدرسه، یک کتاب ریاضی، یک کتاب کسب‌وکار — هر چیزی را بارگذاری کنید. Earmark متن واقعی را می‌خواند، فقط بر اساس همان پاسخ می‌دهد و می‌تواند همه چیز را با صدای بلند بخواند.",
+      emptyDesc: "یک PDF مدرسه، یک کتاب کسب‌وکار — هر چیزی را بارگذاری کنید. Earmark متن واقعی را می‌خواند، فقط بر اساس همان پاسخ می‌دهد و می‌تواند همه چیز را با صدای بلند بخواند.",
       addFirstBook: "اولین کتاب خود را اضافه کنید", chipAnyPdf: "هر PDF",
       passageOf: "قطعه {i} از {n} · ص. {range}",
       listen: "گوش دادن", pause: "مکث", resume: "ادامه",
@@ -2301,7 +2303,7 @@
       yourLibrary: "آپ کی لائبریری", noBooksYet: "ابھی تک کوئی کتاب نہیں — اوپر ایک شامل کریں۔",
       removeConfirm: 'کیا "{title}" کو آپ کی لائبریری سے ہٹا دیا جائے؟',
       emptyTitle: "کسی بھی کتاب سے سوال پوچھیں۔ پھر جواب سنیں۔",
-      emptyDesc: "اسکول کی PDF، ریاضی کی کتاب، کاروباری کتاب — کچھ بھی اپ لوڈ کریں۔ Earmark اصل متن پڑھتا ہے، صرف اسی کی بنیاد پر جواب دیتا ہے، اور سب کچھ بلند آواز میں پڑھ سکتا ہے۔",
+      emptyDesc: "اسکول کی PDF، کاروباری کتاب — کچھ بھی اپ لوڈ کریں۔ Earmark اصل متن پڑھتا ہے، صرف اسی کی بنیاد پر جواب دیتا ہے، اور سب کچھ بلند آواز میں پڑھ سکتا ہے۔",
       addFirstBook: "اپنی پہلی کتاب شامل کریں", chipAnyPdf: "کوئی بھی PDF",
       passageOf: "حصہ {i} از {n} · ص. {range}",
       listen: "سنیں", pause: "موقوف کریں", resume: "جاری رکھیں",
@@ -3348,6 +3350,34 @@
     fa: {"modeRange": "میدان تیر", "modeRangeDesc": "میدان تیر اول‌شخص. ربات‌های تمرینی را وقتی به چپ و راست می‌روند یا ناگهان بیرون می‌آیند بزن. هر خطا یعنی یک سؤال از کتاب؛ با ۳ خطا بازی تمام است.", "gunLabel": "سلاح", "gunPistol": "تپانچه", "gunRifle": "تفنگ", "botsLabel": "ربات‌ها", "botsStrafe": "چپ و راست", "botsPopup": "ناگهان بیرون می‌آیند", "rangeHits": "اصابت: {n}", "rangeResult": "{h} اصابت · دقت {a}٪ · {q} سؤال پاسخ داده شد", "rangeOver": "فرصت‌ها تمام شد!", "rangeTryAgain": "نه دقیقاً. دوباره امتحان کن!", "rangeMissed": "خطا رفت!", "rangeEscaped": "یک ربات فرار کرد!", "rangeAnswerToGo": "برای ادامه تیراندازی جواب بده ({n} فرصت مانده).", "rangeRight": "درست است! برگرد به میدان.", "rangeRightLast": "درست است! این آخرین فرصتت بود.", "rangeBackIn": "برگشت به میدان", "rangeGo": "شروع!"},
     ur: {"modeRange": "شوٹنگ رینج", "modeRangeDesc": "فرسٹ پرسن شوٹنگ رینج۔ دائیں بائیں چلتے یا اچانک ابھرتے ٹریننگ روبوٹس کو نشانہ بناؤ۔ ہر چوک پر کتاب سے ایک سوال؛ 3 چوک اور کھیل ختم۔", "gunLabel": "بندوق", "gunPistol": "پستول", "gunRifle": "رائفل", "botsLabel": "روبوٹ", "botsStrafe": "دائیں بائیں", "botsPopup": "اچانک ابھریں", "rangeHits": "نشانے: {n}", "rangeResult": "{h} نشانے · {a}% درستی · {q} سوالوں کے جواب", "rangeOver": "مواقع ختم!", "rangeTryAgain": "پوری طرح نہیں۔ پھر کوشش کرو!", "rangeMissed": "چوک گئے!", "rangeEscaped": "ایک روبوٹ بچ نکلا!", "rangeAnswerToGo": "شوٹنگ جاری رکھنے کے لیے جواب دو ({n} مواقع باقی)۔", "rangeRight": "صحیح! رینج پر واپس۔", "rangeRightLast": "صحیح! یہ تمہارا آخری موقع تھا۔", "rangeBackIn": "رینج پر واپس", "rangeGo": "شروع!"}
   });
+  addStrings({
+    en: {"askHello": "Clementine is here to help!"},
+    vi: {"askHello": "Clementine luôn sẵn sàng giúp bạn!"},
+    es: {"askHello": "¡Clementine está aquí para ayudarte!"},
+    fr: {"askHello": "Clementine est là pour t'aider !"},
+    de: {"askHello": "Clementine ist da, um dir zu helfen!"},
+    pt: {"askHello": "A Clementine está aqui para ajudar!"},
+    it: {"askHello": "Clementine è qui per aiutarti!"},
+    nl: {"askHello": "Clementine is er om je te helpen!"},
+    ru: {"askHello": "Клементина здесь, чтобы помочь!"},
+    pl: {"askHello": "Clementine jest tu, by pomóc!"},
+    tr: {"askHello": "Clementine yardım etmek için burada!"},
+    ar: {"askHello": "كليمنتين هنا لمساعدتك!"},
+    hi: {"askHello": "क्लेमेंटाइन आपकी मदद के लिए यहाँ है!"},
+    id: {"askHello": "Clementine siap membantu!"},
+    th: {"askHello": "Clementine พร้อมช่วยเหลือคุณ!"},
+    ja: {"askHello": "クレメンタインがお手伝いします！"},
+    ko: {"askHello": "클레멘타인이 도와줄게요!"},
+    zh: {"askHello": "Clementine 随时为你提供帮助！"},
+    tl: {"askHello": "Narito si Clementine para tumulong!"},
+    he: {"askHello": "קלמנטיין כאן כדי לעזור!"},
+    el: {"askHello": "Η Clementine είναι εδώ για να βοηθήσει!"},
+    sv: {"askHello": "Clementine är här för att hjälpa dig!"},
+    uk: {"askHello": "Клементина тут, щоб допомогти!"},
+    ro: {"askHello": "Clementine este aici să te ajute!"},
+    fa: {"askHello": "کلمنتاین اینجاست تا کمکت کند!"},
+    ur: {"askHello": "کلیمنٹائن آپ کی مدد کے لیے یہاں ہے!"},
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -3516,7 +3546,10 @@
       glossaryTip.hidden = true;
       document.body.appendChild(glossaryTip);
       // You can move onto the box (to press "Add to my words"); it closes when you leave it.
-      glossaryTip.addEventListener("mouseenter", () => clearTimeout(glossaryHideTimer));
+      glossaryTip.addEventListener("mouseenter", () => {
+        clearTimeout(glossaryHideTimer);
+        if (glossaryTimer) { clearTimeout(glossaryTimer); glossaryTimer = null; }   // words crossed on the way here don't open
+      });
       glossaryTip.addEventListener("mouseleave", hideGlossaryTip);
       document.addEventListener("touchstart", (e) => { if (!glossaryTip.hidden && !e.target.closest(".glossary-tip")) hideGlossaryTip(); }, { passive: true });
     }
@@ -3524,6 +3557,35 @@
   }
 
   let glossaryHideTimer = 0;
+  // Pointer onto a word: if a box is already open, it is not closed at once
+  // (the pointer may be crossing words on its way to "Add to my words").
+  function glossaryEnterWord(){
+    if (glossaryTimer) { clearTimeout(glossaryTimer); glossaryTimer = null; }
+    if (glossaryTip && !glossaryTip.hidden) {
+      clearTimeout(glossaryHideTimer);
+      glossaryHideTimer = setTimeout(() => { if (glossaryTip) glossaryTip.hidden = true; glossaryToken++; }, 450);
+    } else hideGlossaryTip();
+  }
+  function glossaryLeaveWord(){
+    if (glossaryTimer) { clearTimeout(glossaryTimer); glossaryTimer = null; }
+    if (glossaryTip && !glossaryTip.hidden) { clearTimeout(glossaryHideTimer); glossaryHideTimer = setTimeout(hideGlossaryTip, 450); }
+  }
+  // Three quick clicks/taps on the same word: straight into My words.
+  let tripleEl = null, tripleCount = 0, tripleTimer = 0;
+  function countTriple(span, word){
+    if (span !== tripleEl) { tripleEl = span; tripleCount = 0; }
+    tripleCount++;
+    clearTimeout(tripleTimer);
+    tripleTimer = setTimeout(() => { tripleCount = 0; tripleEl = null; }, 550);
+    if (tripleCount < 3 || !word || /^[0-9]+$/.test(word)) return false;
+    tripleCount = 0; tripleEl = null;
+    try { window.getSelection().removeAllRanges(); } catch (e) {}
+    hideGlossaryTip();
+    span.classList.add("word-added");
+    setTimeout(() => span.classList.remove("word-added"), 900);
+    quickAddWord(word);
+    return true;
+  }
   function hideGlossarySoon(ms){
     if (glossaryTimer) { clearTimeout(glossaryTimer); glossaryTimer = null; }   // the hold hadn't finished yet
     clearTimeout(glossaryHideTimer);
@@ -3634,14 +3696,18 @@
     if (!word || /^[0-9]+$/.test(word)) return;
     span.classList.add("word-lookup");
     function start(){
-      hideGlossaryTip();
+      // While a box is open, crossing other words on the way to it (to press
+      // "Add to my words") must not close it at once: it closes a moment
+      // later unless the pointer reaches the box.
+      glossaryEnterWord();
       glossaryTimer = setTimeout(() => {
         glossaryTimer = null;
         showGlossary(span, word, wordContext(map, wordIndex));
       }, GLOSSARY_DELAY);
     }
     span.addEventListener("mouseenter", start);
-    span.addEventListener("mouseleave", () => hideGlossarySoon(350));
+    span.addEventListener("mouseleave", glossaryLeaveWord);
+    span.addEventListener("click", () => countTriple(span, word));
     span.addEventListener("touchstart", start, { passive: true });
     // After a long press the box stays a few seconds, so its button can be tapped.
     span.addEventListener("touchend", () => { if (glossaryTip && !glossaryTip.hidden) hideGlossarySoon(6000); else hideGlossaryTip(); });
@@ -5657,18 +5723,26 @@
     const box = $("stripSnippet");
     let hoverEl = null;
     const wordAt = (t) => (t && t.closest) ? t.closest(".word") : null;
+    const cleanWord = (span) => span.textContent.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
     function startLookup(span){
-      hideGlossaryTip();
+      glossaryEnterWord();
       const i = +span.dataset.i;
-      const word = span.textContent.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
+      const word = cleanWord(span);
       if (!word || /^[0-9]+$/.test(word) || !stripWordMap) return;
       glossaryTimer = setTimeout(() => { glossaryTimer = null; showGlossary(span, word, wordContext(stripWordMap, i)); }, GLOSSARY_DELAY);
     }
     box.addEventListener("mouseover", (e) => { const sp = wordAt(e.target); if (sp && sp !== hoverEl) { hoverEl = sp; startLookup(sp); } });
-    box.addEventListener("mouseout", (e) => { const sp = wordAt(e.target); if (sp && !sp.contains(e.relatedTarget)) { hoverEl = null; hideGlossaryTip(); } });
-    box.addEventListener("touchstart", (e) => { const sp = wordAt(e.target); if (sp) startLookup(sp); }, { passive: true });
-    ["touchend", "touchcancel", "touchmove"].forEach(ev => box.addEventListener(ev, hideGlossaryTip, { passive: true }));
-    box.addEventListener("click", (e) => { const sp = wordAt(e.target); if (sp) readFromWord(+sp.dataset.i); });
+    box.addEventListener("mouseout", (e) => { const sp = wordAt(e.target); if (sp && !sp.contains(e.relatedTarget)) { hoverEl = null; glossaryLeaveWord(); } });
+    box.addEventListener("touchstart", (e) => { const sp = wordAt(e.target); if (sp) { hideGlossaryTip(); startLookup(sp); } }, { passive: true });
+    // After a long press the box stays a few seconds, so its button can be tapped.
+    box.addEventListener("touchend", () => { if (glossaryTip && !glossaryTip.hidden) hideGlossarySoon(6000); else hideGlossaryTip(); }, { passive: true });
+    ["touchcancel", "touchmove"].forEach(ev => box.addEventListener(ev, hideGlossaryTip, { passive: true }));
+    box.addEventListener("click", (e) => {
+      const sp = wordAt(e.target);
+      if (!sp) return;
+      if (countTriple(sp, cleanWord(sp))) return;
+      readFromWord(+sp.dataset.i);
+    });
     let ticking = false;
     box.addEventListener("scroll", () => {
       if (ticking) return;
@@ -5725,7 +5799,8 @@
     const msgs = state.chatByBook.get(bookId) || [];
     if (!msgs.length) {
       const hint = el("div", "empty-chat-hint");
-      hint.textContent = t("askHint");
+      const hello = el("div", "chat-hello"); hello.textContent = t("askHello"); hint.appendChild(hello);
+      const sub = el("div"); sub.textContent = t("askHint"); hint.appendChild(sub);
       chat.appendChild(hint);
       return;
     }
@@ -6523,6 +6598,23 @@
     inner.appendChild(list);
   }
   // From the word look-up box: add it (with the meaning shown there) to My words.
+  // Triple-click: add the word now, then fill in its meaning in the background.
+  async function quickAddWord(word){
+    const bookId = state.currentBookId;
+    if (!bookId || !word) return;
+    const words = await loadVocab(bookId);
+    if (words.some(x => x.w.toLowerCase() === word.toLowerCase())) { toast(t("vocabHave", { w: word })); return; }
+    const entry = { w: word, def: "", added: new Date().toISOString() };
+    words.unshift(entry);
+    saveVocab(bookId);
+    toast(t("vocabAdded", { w: word }));
+    if (isShowing("vocab", bookId)) renderVocab();
+    if (!sample) return;
+    try {
+      const def = await defineWord(bookId, word);
+      if (def && !entry.def) { entry.def = def; saveVocab(bookId); if (isShowing("vocab", bookId)) renderVocab(); }
+    } catch (e) { /* the "Define for me" button is still there */ }
+  }
   async function addWordFromLookup(word, def){
     const bookId = state.currentBookId;
     if (!bookId) return;
