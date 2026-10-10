@@ -508,6 +508,13 @@
   .word-active.word-lookup:hover{background:var(--accent);}
 
   .word.word-added{ background: color-mix(in srgb, var(--accent, #2b7) 35%, transparent); border-radius: 4px; transition: background .3s; }
+  .color-wrap{ position:relative; display:inline-flex; }
+  .color-pop{ position:absolute; right:0; top:calc(100% + 8px); z-index:60; background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:12px; width:236px; }
+  .color-pop-title{ font-size:.8em; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px; }
+  .swatches{ display:flex; flex-wrap:wrap; gap:8px; }
+  .swatch{ width:34px; height:34px; border-radius:50%; border:2px solid var(--paper-raised); box-shadow:0 0 0 1px var(--line); cursor:pointer; padding:0; position:relative; }
+  .swatch[aria-pressed="true"]{ box-shadow:0 0 0 2px var(--ink); }
+  .swatch[aria-pressed="true"]::after{ content:"✓"; position:absolute; inset:0; display:grid; place-items:center; color:#fff; font-weight:700; font-size:15px; text-shadow:0 1px 2px rgba(0,0,0,.5); }
   .glossary-tip{
     position:fixed; z-index:80; max-width:260px;
     background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-sm);
@@ -1149,6 +1156,10 @@
             <button class="ictrl" id="nextChunk" aria-label="Next page">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 4v16M18 12L6 4v16l12-8z"/></svg>
             </button>
+            <div class="color-wrap">
+              <button type="button" class="ictrl color-btn" id="colorBtn" aria-haspopup="true" aria-expanded="false" data-i18n-aria="colorLabel" aria-label="Colour"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.8 1.8-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.7 1.8-1.7H17a4 4 0 0 0 4-4c0-4.5-4-8.2-9-8.2z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7.3" r="1.2" fill="currentColor"/><circle cx="15" cy="7.6" r="1.2" fill="currentColor"/></svg></button>
+              <div class="color-pop" id="colorPop" hidden><div class="color-pop-title" data-i18n="colorLabel">Colour</div><div class="swatches" data-swatches></div></div>
+            </div>
             <button type="button" class="translate-btn" id="translateBtn" aria-expanded="false" aria-controls="translatePanel">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
               <span data-i18n="translate">Translate</span>
@@ -1257,6 +1268,10 @@
             <option value="1.45" data-i18n="sizeHuge">Huge</option>
           </select>
         </div>
+      </div>
+      <div class="field">
+        <span class="field-label" data-i18n="colorLabel">Colour</span>
+        <div class="swatches" data-swatches></div>
       </div>
       <div class="field">
         <span class="field-label" data-i18n="voiceLabel">Voice</span>
@@ -3424,6 +3439,34 @@
     fa: {"askHint": "هر چیزی دربارهٔ این کتاب بپرسید — یک مفهوم، یک تعریف، هر چیزی در متن."},
     ur: {"askHint": "اس کتاب کے بارے میں کچھ بھی پوچھیں — کوئی تصور، کوئی تعریف، متن میں کچھ بھی۔"},
   });
+  addStrings({
+    en: {"colorLabel": "Colour", "colorClassic": "Classic", "colorRed": "Red", "colorOrange": "Orange", "colorYellow": "Yellow", "colorGreen": "Green", "colorTeal": "Teal", "colorBlue": "Blue", "colorPurple": "Purple", "colorPink": "Pink", "colorGray": "Grey"},
+    vi: {"colorLabel": "Màu sắc", "colorClassic": "Cổ điển", "colorRed": "Đỏ", "colorOrange": "Cam", "colorYellow": "Vàng", "colorGreen": "Xanh lá", "colorTeal": "Xanh ngọc", "colorBlue": "Xanh dương", "colorPurple": "Tím", "colorPink": "Hồng", "colorGray": "Xám"},
+    es: {"colorLabel": "Color", "colorClassic": "Clásico", "colorRed": "Rojo", "colorOrange": "Naranja", "colorYellow": "Amarillo", "colorGreen": "Verde", "colorTeal": "Turquesa", "colorBlue": "Azul", "colorPurple": "Morado", "colorPink": "Rosa", "colorGray": "Gris"},
+    fr: {"colorLabel": "Couleur", "colorClassic": "Classique", "colorRed": "Rouge", "colorOrange": "Orange", "colorYellow": "Jaune", "colorGreen": "Vert", "colorTeal": "Turquoise", "colorBlue": "Bleu", "colorPurple": "Violet", "colorPink": "Rose", "colorGray": "Gris"},
+    de: {"colorLabel": "Farbe", "colorClassic": "Klassisch", "colorRed": "Rot", "colorOrange": "Orange", "colorYellow": "Gelb", "colorGreen": "Grün", "colorTeal": "Türkis", "colorBlue": "Blau", "colorPurple": "Lila", "colorPink": "Rosa", "colorGray": "Grau"},
+    pt: {"colorLabel": "Cor", "colorClassic": "Clássico", "colorRed": "Vermelho", "colorOrange": "Laranja", "colorYellow": "Amarelo", "colorGreen": "Verde", "colorTeal": "Turquesa", "colorBlue": "Azul", "colorPurple": "Roxo", "colorPink": "Rosa", "colorGray": "Cinza"},
+    it: {"colorLabel": "Colore", "colorClassic": "Classico", "colorRed": "Rosso", "colorOrange": "Arancione", "colorYellow": "Giallo", "colorGreen": "Verde", "colorTeal": "Turchese", "colorBlue": "Blu", "colorPurple": "Viola", "colorPink": "Rosa", "colorGray": "Grigio"},
+    nl: {"colorLabel": "Kleur", "colorClassic": "Klassiek", "colorRed": "Rood", "colorOrange": "Oranje", "colorYellow": "Geel", "colorGreen": "Groen", "colorTeal": "Turquoise", "colorBlue": "Blauw", "colorPurple": "Paars", "colorPink": "Roze", "colorGray": "Grijs"},
+    ru: {"colorLabel": "Цвет", "colorClassic": "Классический", "colorRed": "Красный", "colorOrange": "Оранжевый", "colorYellow": "Жёлтый", "colorGreen": "Зелёный", "colorTeal": "Бирюзовый", "colorBlue": "Синий", "colorPurple": "Фиолетовый", "colorPink": "Розовый", "colorGray": "Серый"},
+    pl: {"colorLabel": "Kolor", "colorClassic": "Klasyczny", "colorRed": "Czerwony", "colorOrange": "Pomarańczowy", "colorYellow": "Żółty", "colorGreen": "Zielony", "colorTeal": "Turkusowy", "colorBlue": "Niebieski", "colorPurple": "Fioletowy", "colorPink": "Różowy", "colorGray": "Szary"},
+    tr: {"colorLabel": "Renk", "colorClassic": "Klasik", "colorRed": "Kırmızı", "colorOrange": "Turuncu", "colorYellow": "Sarı", "colorGreen": "Yeşil", "colorTeal": "Turkuaz", "colorBlue": "Mavi", "colorPurple": "Mor", "colorPink": "Pembe", "colorGray": "Gri"},
+    ar: {"colorLabel": "اللون", "colorClassic": "كلاسيكي", "colorRed": "أحمر", "colorOrange": "برتقالي", "colorYellow": "أصفر", "colorGreen": "أخضر", "colorTeal": "فيروزي", "colorBlue": "أزرق", "colorPurple": "بنفسجي", "colorPink": "وردي", "colorGray": "رمادي"},
+    hi: {"colorLabel": "रंग", "colorClassic": "क्लासिक", "colorRed": "लाल", "colorOrange": "नारंगी", "colorYellow": "पीला", "colorGreen": "हरा", "colorTeal": "फ़िरोज़ी", "colorBlue": "नीला", "colorPurple": "बैंगनी", "colorPink": "गुलाबी", "colorGray": "स्लेटी"},
+    id: {"colorLabel": "Warna", "colorClassic": "Klasik", "colorRed": "Merah", "colorOrange": "Oranye", "colorYellow": "Kuning", "colorGreen": "Hijau", "colorTeal": "Toska", "colorBlue": "Biru", "colorPurple": "Ungu", "colorPink": "Merah muda", "colorGray": "Abu-abu"},
+    th: {"colorLabel": "สี", "colorClassic": "คลาสสิก", "colorRed": "แดง", "colorOrange": "ส้ม", "colorYellow": "เหลือง", "colorGreen": "เขียว", "colorTeal": "เขียวน้ำทะเล", "colorBlue": "น้ำเงิน", "colorPurple": "ม่วง", "colorPink": "ชมพู", "colorGray": "เทา"},
+    ja: {"colorLabel": "色", "colorClassic": "クラシック", "colorRed": "赤", "colorOrange": "オレンジ", "colorYellow": "黄", "colorGreen": "緑", "colorTeal": "青緑", "colorBlue": "青", "colorPurple": "紫", "colorPink": "ピンク", "colorGray": "グレー"},
+    ko: {"colorLabel": "색상", "colorClassic": "클래식", "colorRed": "빨강", "colorOrange": "주황", "colorYellow": "노랑", "colorGreen": "초록", "colorTeal": "청록", "colorBlue": "파랑", "colorPurple": "보라", "colorPink": "분홍", "colorGray": "회색"},
+    zh: {"colorLabel": "颜色", "colorClassic": "经典", "colorRed": "红色", "colorOrange": "橙色", "colorYellow": "黄色", "colorGreen": "绿色", "colorTeal": "青色", "colorBlue": "蓝色", "colorPurple": "紫色", "colorPink": "粉色", "colorGray": "灰色"},
+    tl: {"colorLabel": "Kulay", "colorClassic": "Klasiko", "colorRed": "Pula", "colorOrange": "Kahel", "colorYellow": "Dilaw", "colorGreen": "Berde", "colorTeal": "Teal", "colorBlue": "Asul", "colorPurple": "Lila", "colorPink": "Rosas", "colorGray": "Abo"},
+    he: {"colorLabel": "צבע", "colorClassic": "קלאסי", "colorRed": "אדום", "colorOrange": "כתום", "colorYellow": "צהוב", "colorGreen": "ירוק", "colorTeal": "טורקיז", "colorBlue": "כחול", "colorPurple": "סגול", "colorPink": "ורוד", "colorGray": "אפור"},
+    el: {"colorLabel": "Χρώμα", "colorClassic": "Κλασικό", "colorRed": "Κόκκινο", "colorOrange": "Πορτοκαλί", "colorYellow": "Κίτρινο", "colorGreen": "Πράσινο", "colorTeal": "Τιρκουάζ", "colorBlue": "Μπλε", "colorPurple": "Μωβ", "colorPink": "Ροζ", "colorGray": "Γκρι"},
+    sv: {"colorLabel": "Färg", "colorClassic": "Klassisk", "colorRed": "Röd", "colorOrange": "Orange", "colorYellow": "Gul", "colorGreen": "Grön", "colorTeal": "Turkos", "colorBlue": "Blå", "colorPurple": "Lila", "colorPink": "Rosa", "colorGray": "Grå"},
+    uk: {"colorLabel": "Колір", "colorClassic": "Класичний", "colorRed": "Червоний", "colorOrange": "Помаранчевий", "colorYellow": "Жовтий", "colorGreen": "Зелений", "colorTeal": "Бірюзовий", "colorBlue": "Синій", "colorPurple": "Фіолетовий", "colorPink": "Рожевий", "colorGray": "Сірий"},
+    ro: {"colorLabel": "Culoare", "colorClassic": "Clasic", "colorRed": "Roșu", "colorOrange": "Portocaliu", "colorYellow": "Galben", "colorGreen": "Verde", "colorTeal": "Turcoaz", "colorBlue": "Albastru", "colorPurple": "Mov", "colorPink": "Roz", "colorGray": "Gri"},
+    fa: {"colorLabel": "رنگ", "colorClassic": "کلاسیک", "colorRed": "قرمز", "colorOrange": "نارنجی", "colorYellow": "زرد", "colorGreen": "سبز", "colorTeal": "فیروزه‌ای", "colorBlue": "آبی", "colorPurple": "بنفش", "colorPink": "صورتی", "colorGray": "خاکستری"},
+    ur: {"colorLabel": "رنگ", "colorClassic": "کلاسک", "colorRed": "سرخ", "colorOrange": "نارنجی", "colorYellow": "پیلا", "colorGreen": "سبز", "colorTeal": "فیروزی", "colorBlue": "نیلا", "colorPurple": "جامنی", "colorPink": "گلابی", "colorGray": "سرمئی"},
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -3438,6 +3481,7 @@
   let currentLang = safeStorage("get", "earmark_lang") || (navigator.language || "en").slice(0, 2).toLowerCase();
 
   function applyLanguage(){
+    try { renderSwatches(); } catch (e) { /* not set up yet */ }
     const meta = currentLangMeta();
     document.documentElement.lang = currentLang;
     document.documentElement.dir = meta.rtl ? "rtl" : "ltr";
@@ -10160,6 +10204,71 @@
     });
   }
   bindReadingSelect("fontSelect", "font", "earmark_readfont");
+
+  /* ---- colour theme: the reader colour, with the page around it tinted to match ---- */
+  const COLORS = [
+    { id: "classic", key: "colorClassic" },
+    { id: "red", h: 0, key: "colorRed" }, { id: "orange", h: 24, key: "colorOrange" },
+    { id: "yellow", h: 46, key: "colorYellow" }, { id: "green", h: 140, key: "colorGreen" },
+    { id: "teal", h: 174, key: "colorTeal" }, { id: "blue", h: 212, key: "colorBlue" },
+    { id: "purple", h: 268, key: "colorPurple" }, { id: "pink", h: 328, key: "colorPink" },
+    { id: "gray", h: 220, gray: true, key: "colorGray" },
+  ];
+  const COLOR_VARS = ["--listen", "--listen-tint", "--paper", "--paper-raised", "--paper-sunken", "--line"];
+  let colorChoice = safeStorage("get", "earmark_color") || "classic";
+  function isDarkNow(){
+    const th = document.documentElement.getAttribute("data-theme");
+    if (th === "dark") return true;
+    if (th === "light") return false;
+    return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  }
+  function colorSet(c, dark){
+    const h = c.h, k = c.gray ? 0 : 1;   // grey: no colour, just shades
+    const hsl = (s, l) => "hsl(" + h + " " + Math.round(s * k) + "% " + l + "%)";
+    // Yellow is light by nature, so its text colour needs to be darker to stay readable.
+    const deep = c.id === "yellow" ? 26 : c.id === "orange" ? 30 : 33;
+    return dark
+      ? { "--listen": c.gray ? "hsl(220 10% 72%)" : hsl(62, 64), "--listen-tint": hsl(34, 15), "--paper": hsl(22, 9),
+          "--paper-raised": hsl(20, 13), "--paper-sunken": hsl(24, 6.5), "--line": hsl(16, 21) }
+      : { "--listen": c.gray ? "hsl(220 8% 34%)" : hsl(62, deep), "--listen-tint": hsl(52, 88), "--paper": hsl(30, 91),
+          "--paper-raised": hsl(36, 96), "--paper-sunken": hsl(24, 86), "--line": hsl(20, 82) };
+  }
+  function swatchFill(c){
+    if (c.id === "classic") return "linear-gradient(135deg, #4FC2AE 50%, #1C222C 50%)";
+    return c.gray ? "hsl(220 8% 55%)" : "hsl(" + c.h + " 62% " + (c.id === "yellow" ? 55 : 52) + "%)";
+  }
+  function applyColor(){
+    const root = document.documentElement.style;
+    const c = COLORS.find(x => x.id === colorChoice) || COLORS[0];
+    if (c.id === "classic") COLOR_VARS.forEach(v => root.removeProperty(v));
+    else { const set = colorSet(c, isDarkNow()); for (const v in set) root.setProperty(v, set[v]); }
+    document.querySelectorAll("[data-swatches] .swatch").forEach(b => b.setAttribute("aria-pressed", b.dataset.color === colorChoice ? "true" : "false"));
+  }
+  function renderSwatches(){
+    document.querySelectorAll("[data-swatches]").forEach(box => {
+      box.innerHTML = "";
+      for (const c of COLORS) {
+        const b = el("button", "swatch"); b.type = "button"; b.dataset.color = c.id;
+        b.style.background = swatchFill(c);
+        b.title = t(c.key); b.setAttribute("aria-label", t(c.key));
+        b.addEventListener("click", () => { colorChoice = c.id; safeStorage("set", "earmark_color", c.id); applyColor(); });
+        box.appendChild(b);
+      }
+    });
+    applyColor();
+  }
+  (function wireColor(){
+    const btn = $("colorBtn"), pop = $("colorPop");
+    if (btn && pop) {
+      btn.addEventListener("click", (e) => { e.stopPropagation(); pop.hidden = !pop.hidden; btn.setAttribute("aria-expanded", pop.hidden ? "false" : "true"); });
+      document.addEventListener("click", (e) => { if (!pop.hidden && !e.target.closest(".color-wrap")) { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); } });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !pop.hidden) { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); btn.focus(); } });
+    }
+    if (window.matchMedia) { const mq = window.matchMedia("(prefers-color-scheme: dark)"); (mq.addEventListener ? mq.addEventListener("change", applyColor) : mq.addListener(applyColor)); }
+    new MutationObserver(applyColor).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    renderSwatches();
+  })();
+
   bindReadingSelect("spacingSelect", "spacing", "earmark_spacing");
   bindReadingSelect("sizeSelect", "size", "earmark_size");
 
