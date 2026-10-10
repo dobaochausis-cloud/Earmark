@@ -114,7 +114,7 @@
     font-family:var(--font-display); font-weight:700; font-size:17px; color:var(--ink); padding:4px 2px;
     min-width:0;
   }
-  .appbar-home .mark{ width:20px; height:20px; color:var(--accent); flex-shrink:0; }
+  .appbar-home .mark{ width:26px; height:26px; color:var(--accent); flex-shrink:0; }
   .appbar-home span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .appbar-icon-btn{
     display:flex; align-items:center; gap:6px; background:none; border:1px solid var(--line);
@@ -306,6 +306,7 @@
     text-align:center; gap:14px; padding:40px 24px;
   }
   .empty-state .glyph{width:54px;height:54px;color:var(--ink-faint);}
+  .empty-state .logo-glyph{width:84px;height:84px;}
   .empty-state h1{font-size:26px; margin:0; max-width:20ch;}
   .empty-state p{color:var(--ink-soft); max-width:38ch; margin:0; font-size:14.5px;}
   .cta{
@@ -990,7 +991,7 @@
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
     </button>
     <button class="appbar-home" id="homeBtn" data-i18n-aria="home">
-      <svg class="mark" viewBox="0 0 24 24" fill="currentColor"><path d="M5 2h11.5A2.5 2.5 0 0 1 19 4.5V22l-7-4-7 4V4.5A2.5 2.5 0 0 1 7.5 2H5z" opacity=".18"/><path d="M17 2H7a2 2 0 0 0-2 2v18l7-4 7 4V4a2 2 0 0 0-2-2z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      <svg class="mark" viewBox="0 0 512 512" aria-hidden="true"><circle cx="256" cy="256" r="244" fill="#3274B0"/><path d="M170 110h172a16 16 0 0 1 16 16v282l-102-68l-102 68V126a16 16 0 0 1 16-16z" fill="#fff"/><g fill="none" stroke="#3274B0" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(228 224) scale(0.8) translate(-257 -221)" stroke-width="27"><path d="M196 196a62 66 0 1 1 122 18c-6 24-30 34-38 56c-6 18-8 36-30 38c-16 1-26-10-26-22"/><path d="M236 202a24 24 0 0 1 46 6c0 14-14 18-20 30"/></g><path stroke-width="14" d="M305 189C311 218 303 247 280 266"/><path stroke-width="14" d="M324 218C331 239 320 260 301 275"/></g></svg>
       <span>Earmark</span>
     </button>
   </div>
@@ -1061,7 +1062,7 @@
 
   <main class="main" id="main">
     <div class="empty-state" id="emptyState">
-      <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M17 2H7a2 2 0 0 0-2 2v18l7-4 7 4V4a2 2 0 0 0-2-2z"/><path d="M9 8h6M9 12h6" stroke-linecap="round"/></svg>
+      <svg class="glyph logo-glyph" viewBox="0 0 512 512" aria-hidden="true"><circle cx="256" cy="256" r="244" fill="#3274B0"/><path d="M170 110h172a16 16 0 0 1 16 16v282l-102-68l-102 68V126a16 16 0 0 1 16-16z" fill="#fff"/><g fill="none" stroke="#3274B0" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(228 224) scale(0.8) translate(-257 -221)" stroke-width="27"><path d="M196 196a62 66 0 1 1 122 18c-6 24-30 34-38 56c-6 18-8 36-30 38c-16 1-26-10-26-22"/><path d="M236 202a24 24 0 0 1 46 6c0 14-14 18-20 30"/></g><path stroke-width="14" d="M305 189C311 218 303 247 280 266"/><path stroke-width="14" d="M324 218C331 239 320 260 301 275"/></g></svg>
       <h1 data-i18n="emptyTitle">Ask any book a question. Then listen to the answer.</h1>
       <p data-i18n="emptyDesc">Upload a school PDF, a business book — anything. Earmark reads the real text, answers only from what's actually in it, and can read everything aloud.</p>
       <button class="cta" id="emptyCta" data-i18n="addFirstBook">Add your first book</button>
