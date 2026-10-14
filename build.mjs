@@ -17,7 +17,7 @@ const head = `<!doctype html>
 <meta name="google-site-verification" content="fQiBduHC-Ci-yuCdESMy9poMLhiOSOp9_uSRGNDnLz0">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Earmark Buddy">
-<meta property="og:title" content="Earmark Buddy — read, ask and listen to any book">
+<meta property="og:title" content="Earmark Buddy">
 <meta property="og:description" content="Upload any book or PDF, ask questions, listen to it read aloud, and study with flashcards, quizzes and games.">
 <meta property="og:url" content="${SITE}/">
 <meta name="twitter:card" content="summary_large_image">
@@ -37,7 +37,7 @@ const head = `<!doctype html>
 // The app file starts with its <title>, fonts and styles, then the body markup.
 const bodyStart = app.indexOf('<div class="scrim"');
 if (bodyStart < 0) throw new Error("couldn't find where the page body starts");
-const page = head + app.slice(0, bodyStart).replace(/<title>[^<]*<\/title>/, "<title>Earmark Buddy — read, ask and listen to any book</title>") + "</head>\n<body>\n" + app.slice(bodyStart) + "\n</body>\n</html>\n";
+const page = head + app.slice(0, bodyStart).replace(/<title>[^<]*<\/title>/, "<title>Earmark Buddy</title>") + "</head>\n<body>\n" + app.slice(bodyStart) + "\n</body>\n</html>\n";
 writeFileSync(new URL("./public/index.html", import.meta.url), page);
 // Lets phones add Earmark to the home screen with its logo.
 writeFileSync(new URL("./public/manifest.webmanifest", import.meta.url), JSON.stringify({

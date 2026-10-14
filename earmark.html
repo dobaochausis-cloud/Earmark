@@ -490,7 +490,7 @@
   .swatch[aria-pressed="true"]{ box-shadow:0 0 0 2px var(--ink); }
   .swatch[aria-pressed="true"]::after{ content:"✓"; position:absolute; inset:0; display:grid; place-items:center; color:#fff; font-weight:700; font-size:15px; text-shadow:0 1px 2px rgba(0,0,0,.5); }
   .glossary-tip{
-    position:fixed; z-index:80; max-width:260px;
+    position:fixed; z-index:80; max-width:260px; width:max-content; min-width:min(200px, calc(100vw - 16px)); box-sizing:border-box;
     background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-sm);
     box-shadow:var(--shadow); padding:10px 12px; font-size:13px; line-height:1.45;
   }
@@ -553,6 +553,11 @@
   .gt-add{ margin-top:8px; border:1px solid var(--accent); background:none; color:var(--accent-strong); border-radius:99px; padding:4px 10px; font:inherit; font-size:12.5px; font-weight:700; cursor:pointer; }
   .gt-add:disabled{ opacity:.5; }
   .word.w-i{ font-style:italic; }
+  .msg.user .msg-meta{ justify-content:flex-end; }
+  .msg.editing{ max-width:100%; width:100%; align-self:stretch; }
+  .edit-box{ width:100%; box-sizing:border-box; font:inherit; color:var(--ink); background:var(--paper-raised); border:1.5px solid var(--accent); border-radius:var(--radius-sm); padding:10px 12px; resize:none; line-height:1.5; }
+  .edit-row{ display:flex; gap:8px; justify-content:flex-end; }
+  .edit-row .cta, .edit-row .btn-ghost{ width:auto; margin:0; padding:8px 16px; }
   .msg-meta{display:flex; align-items:center; gap:8px; font-size:11.5px; color:var(--ink-faint); padding:0 3px;}
   .read-btn{
     display:inline-flex; align-items:center; gap:4px;
@@ -3439,6 +3444,34 @@
     fa: {"colorLabel": "رنگ", "colorClassic": "کلاسیک", "colorRed": "قرمز", "colorOrange": "نارنجی", "colorYellow": "زرد", "colorGreen": "سبز", "colorTeal": "فیروزه‌ای", "colorBlue": "آبی", "colorPurple": "بنفش", "colorPink": "صورتی", "colorGray": "خاکستری"},
     ur: {"colorLabel": "رنگ", "colorClassic": "کلاسک", "colorRed": "سرخ", "colorOrange": "نارنجی", "colorYellow": "پیلا", "colorGreen": "سبز", "colorTeal": "فیروزی", "colorBlue": "نیلا", "colorPurple": "جامنی", "colorPink": "گلابی", "colorGray": "سرمئی"},
   });
+  addStrings({
+    en: {"chatEdit": "Edit", "chatEditCancel": "Cancel", "chatEditSend": "Send"},
+    vi: {"chatEdit": "Sửa", "chatEditCancel": "Hủy", "chatEditSend": "Gửi"},
+    es: {"chatEdit": "Editar", "chatEditCancel": "Cancelar", "chatEditSend": "Enviar"},
+    fr: {"chatEdit": "Modifier", "chatEditCancel": "Annuler", "chatEditSend": "Envoyer"},
+    de: {"chatEdit": "Bearbeiten", "chatEditCancel": "Abbrechen", "chatEditSend": "Senden"},
+    pt: {"chatEdit": "Editar", "chatEditCancel": "Cancelar", "chatEditSend": "Enviar"},
+    it: {"chatEdit": "Modifica", "chatEditCancel": "Annulla", "chatEditSend": "Invia"},
+    nl: {"chatEdit": "Bewerken", "chatEditCancel": "Annuleren", "chatEditSend": "Versturen"},
+    ru: {"chatEdit": "Изменить", "chatEditCancel": "Отмена", "chatEditSend": "Отправить"},
+    pl: {"chatEdit": "Edytuj", "chatEditCancel": "Anuluj", "chatEditSend": "Wyślij"},
+    tr: {"chatEdit": "Düzenle", "chatEditCancel": "İptal", "chatEditSend": "Gönder"},
+    ar: {"chatEdit": "تعديل", "chatEditCancel": "إلغاء", "chatEditSend": "إرسال"},
+    hi: {"chatEdit": "बदलें", "chatEditCancel": "रद्द करें", "chatEditSend": "भेजें"},
+    id: {"chatEdit": "Edit", "chatEditCancel": "Batal", "chatEditSend": "Kirim"},
+    th: {"chatEdit": "แก้ไข", "chatEditCancel": "ยกเลิก", "chatEditSend": "ส่ง"},
+    ja: {"chatEdit": "編集", "chatEditCancel": "キャンセル", "chatEditSend": "送信"},
+    ko: {"chatEdit": "수정", "chatEditCancel": "취소", "chatEditSend": "보내기"},
+    zh: {"chatEdit": "编辑", "chatEditCancel": "取消", "chatEditSend": "发送"},
+    tl: {"chatEdit": "I-edit", "chatEditCancel": "Kanselahin", "chatEditSend": "Ipadala"},
+    he: {"chatEdit": "עריכה", "chatEditCancel": "ביטול", "chatEditSend": "שליחה"},
+    el: {"chatEdit": "Επεξεργασία", "chatEditCancel": "Ακύρωση", "chatEditSend": "Αποστολή"},
+    sv: {"chatEdit": "Redigera", "chatEditCancel": "Avbryt", "chatEditSend": "Skicka"},
+    uk: {"chatEdit": "Змінити", "chatEditCancel": "Скасувати", "chatEditSend": "Надіслати"},
+    ro: {"chatEdit": "Editează", "chatEditCancel": "Anulează", "chatEditSend": "Trimite"},
+    fa: {"chatEdit": "ویرایش", "chatEditCancel": "لغو", "chatEditSend": "ارسال"},
+    ur: {"chatEdit": "ترمیم", "chatEditCancel": "منسوخ", "chatEditSend": "بھیجیں"},
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -3597,7 +3630,7 @@
      for Q&A (no external dictionary API is reachable from inside the
      artifact sandbox). Results are cached by the platform for a few
      minutes, so re-hovering the same word is instant. */
-  const GLOSSARY_DELAY = 3000;
+  const GLOSSARY_DELAY = 1500;
   let glossaryTimer = null;
   let glossaryToken = 0;
   let glossaryTip = null;
@@ -3612,7 +3645,7 @@
         clearTimeout(glossaryHideTimer);
         if (glossaryTimer) { clearTimeout(glossaryTimer); glossaryTimer = null; }   // words crossed on the way here don't open
       });
-      glossaryTip.addEventListener("mouseleave", hideGlossaryTip);
+      glossaryTip.addEventListener("mouseleave", () => { if (!phraseTipOpen) hideGlossaryTip(); });
       document.addEventListener("touchstart", (e) => { if (!glossaryTip.hidden && !e.target.closest(".glossary-tip")) hideGlossaryTip(); }, { passive: true });
     }
     return glossaryTip;
@@ -3621,8 +3654,10 @@
   let glossaryHideTimer = 0;
   // Pointer onto a word: if a box is already open, it is not closed at once
   // (the pointer may be crossing words on its way to "Add to my words").
+  let phraseTipOpen = false;   // a box for highlighted words stays until you click away
   function glossaryEnterWord(){
     if (glossaryTimer) { clearTimeout(glossaryTimer); glossaryTimer = null; }
+    if (phraseTipOpen) return;
     if (glossaryTip && !glossaryTip.hidden) {
       clearTimeout(glossaryHideTimer);
       glossaryHideTimer = setTimeout(() => { if (glossaryTip) glossaryTip.hidden = true; glossaryToken++; }, 450);
@@ -3630,6 +3665,7 @@
   }
   function glossaryLeaveWord(){
     if (glossaryTimer) { clearTimeout(glossaryTimer); glossaryTimer = null; }
+    if (phraseTipOpen) return;
     if (glossaryTip && !glossaryTip.hidden) { clearTimeout(glossaryHideTimer); glossaryHideTimer = setTimeout(hideGlossaryTip, 450); }
   }
   // Three quick clicks/taps on the same word: straight into My words.
@@ -3654,17 +3690,20 @@
     glossaryHideTimer = setTimeout(hideGlossaryTip, ms);
   }
   function hideGlossaryTip(){
+    phraseTipOpen = false;
     clearTimeout(glossaryHideTimer);
     if (glossaryTimer) { clearTimeout(glossaryTimer); glossaryTimer = null; }
     glossaryToken++;
     if (glossaryTip) glossaryTip.hidden = true;
   }
 
-  function positionGlossaryTip(anchorEl){
+  function positionGlossaryTip(anchorEl, below){
     const tip = ensureGlossaryTip();
     const r = anchorEl.getBoundingClientRect();
     const left = Math.max(8, Math.min(window.innerWidth - 8 - tip.offsetWidth, r.left));
-    const top = r.top > 140 ? (r.top - tip.offsetHeight - 8) : (r.bottom + 8);
+    // Below the highlighted words when asked (the Translate button sits above them).
+    const fitsBelow = r.bottom + 8 + tip.offsetHeight < window.innerHeight;
+    const top = (below && fitsBelow) || r.top <= 140 ? (r.bottom + 8) : (r.top - tip.offsetHeight - 8);
     tip.style.left = left + "px";
     tip.style.top = Math.max(8, top) + "px";
   }
@@ -3724,29 +3763,39 @@
     return out;
   }
 
-  async function showGlossary(wordEl, word, context){
+  async function showGlossary(wordEl, word, context, opts){
+    opts = opts || {};
     const tip = ensureGlossaryTip();
     const myToken = ++glossaryToken;
+    const phrase = !!opts.phrase;
     tip.innerHTML = '<div class="gt-word"></div><div class="gt-loading"></div>';
     tip.querySelector(".gt-word").textContent = word;
     tip.querySelector(".gt-loading").textContent = t("lookupLoading");
     tip.hidden = false;
-    positionGlossaryTip(wordEl);
+    positionGlossaryTip(wordEl, phrase);
 
     if (!sample) { tip.querySelector(".gt-loading").textContent = t("lookupError"); return; }
 
     try {
       const langMeta = currentLangMeta();
-      const prompt = 'A student reading found this word confusing: "' + word + '"\n' +
-        'Context: "' + context + '"\n\n' +
-        'Reply with EXACTLY these three lines and nothing else (no greeting, no extra text):\n' +
-        'POS: <its part of speech, one or two words, written in ' + langMeta.name + '>\n' +
-        'DEFINITION: <one short, simple definition in ' + langMeta.name + ', suited to this context>\n' +
-        'SYNONYMS: <up to 4 synonyms for the word in its own language, comma-separated>';
+      const prompt = phrase
+        ? 'A student reading found these words confusing together: "' + word + '"\n' +
+          'Context: "' + context + '"\n\n' +
+          'Explain what the words mean TOGETHER, as used here (not each word on its own).\n' +
+          'Reply with EXACTLY these three lines and nothing else (no greeting, no extra text):\n' +
+          'POS: <what kind of wording it is, one or two words, written in ' + langMeta.name + ' (for example: phrase, idiom, expression)>\n' +
+          'DEFINITION: <one short, simple explanation in ' + langMeta.name + ' of what it means here>\n' +
+          'SYNONYMS: <up to 3 other ways to say it in its own language, comma-separated>'
+        : 'A student reading found this word confusing: "' + word + '"\n' +
+          'Context: "' + context + '"\n\n' +
+          'Reply with EXACTLY these three lines and nothing else (no greeting, no extra text):\n' +
+          'POS: <its part of speech, one or two words, written in ' + langMeta.name + '>\n' +
+          'DEFINITION: <one short, simple definition in ' + langMeta.name + ', suited to this context>\n' +
+          'SYNONYMS: <up to 4 synonyms for the word in its own language, comma-separated>';
       const result = await sample(prompt, { modelTier: "quick" });
       if (myToken !== glossaryToken) return; // hovered away before this resolved
       renderGlossaryResult(tip, word, parseGlossaryReply(result.text));
-      positionGlossaryTip(wordEl);
+      positionGlossaryTip(wordEl, phrase);
     } catch (e) {
       if (myToken !== glossaryToken) return;
       tip.querySelector(".gt-loading").textContent = t("lookupError");
@@ -3758,6 +3807,7 @@
     if (!word || /^[0-9]+$/.test(word)) return;
     span.classList.add("word-lookup");
     function start(){
+      if (phraseTipOpen) return;
       // While a box is open, crossing other words on the way to it (to press
       // "Add to my words") must not close it at once: it closes a moment
       // later unless the pointer reaches the box.
@@ -4548,7 +4598,15 @@
       "- Keep answers conversational and clear since they may be read aloud — say math or symbols in words too " +
       "(for example \"x squared plus one\", not just the symbols).\n" +
       "- Be thorough like a good tutor, but not padded — no restating the question, no filler.\n" +
-      "- Shape every answer the same way: first answer the question in detail, in clear full paragraphs — describe " +
+      "- This is ONE ongoing conversation. Before answering, reread the student's earlier messages and your earlier " +
+      "answers. When the new message points back to them (\"that\", \"it\", \"my topic\", \"those\", \"again\", " +
+      "\"what about…\"), work out what it refers to from the conversation and answer THAT. Keep track of the student's " +
+      "topic, their assignment (for example how many pieces of evidence they need) and the evidence or ideas they " +
+      "already have: build on them, never give back evidence they already listed, and don't start the task over " +
+      "unless they ask you to. If the student asks about your previous answer (for example \"how does that connect " +
+      "to my topic?\"), answer that question directly first.\n" +
+      "- Shape every full answer the same way (a short follow-up or yes/no question can get a short, direct answer " +
+      "instead): first answer the question in detail, in clear full paragraphs — describe " +
       "and explain whatever the student is asking about (what it is, how and why, with examples from the text). " +
       "Then finish with a short list headed \"Key points:\" of 3 to 5 bullet points (lines starting with \"- \") " +
       "that sum up the answer.\n" +
@@ -4571,8 +4629,12 @@
     }).join("\n\n---\n\n");
   }
 
-  function buildTurnContent(chunks, question){
-    return excerptBlock(chunks) + "\n\nQuestion: " + question;
+  function buildTurnContent(chunks, question, earlier){
+    const recap = earlier && earlier.length
+      ? "\n\nThe student's earlier messages in this conversation (oldest first) — the new message may build on them:\n" +
+        earlier.map((q, i) => (i + 1) + ". " + q).join("\n")
+      : "";
+    return excerptBlock(chunks) + recap + "\n\nNew message from the student: " + question;
   }
 
   // How many past turns (instructions turn never counts against this) ride
@@ -5184,6 +5246,7 @@
     if (!$("translatePanel").hidden) closeTranslate();
 
     renderChat(bookId);
+    loadChat(bookId).then(() => { if (state.currentBookId === bookId) renderChat(bookId); });
     setTab(study.tab);
 
     try {
@@ -5708,6 +5771,40 @@
     try { const out = await translateSnippet(text, meta); if (my === selPop._token && !selPop.hidden) showSnippetResult(body, out, meta, "sel"); }
     catch (e) { if (my === selPop._token) { body.innerHTML = ""; const err = el("div", "setup-error"); err.textContent = sampleErrorText(e); body.appendChild(err); } }
   }
+  // Highlight a few words and keep them highlighted for a moment: their
+  // meaning TOGETHER pops up ("sometimes twice", "pores of life"…).
+  let phraseTimer = 0, pointerDown = false;
+  document.addEventListener("pointerdown", () => { pointerDown = true; }, true);
+  document.addEventListener("pointerup", () => { pointerDown = false; }, true);
+  function selectionContext(text){
+    const sel = window.getSelection();
+    let node = sel && sel.rangeCount ? sel.getRangeAt(0).commonAncestorContainer : null;
+    if (node && node.nodeType !== 1) node = node.parentElement;
+    const box = node && node.closest ? (node.closest(".reader, .bubble, .snippet, .q-text, .fc-text, .web-article, p, li, div") || node) : null;
+    const all = box ? box.textContent.replace(/\s+/g, " ") : text;
+    const i = all.indexOf(text);
+    return i < 0 ? text : all.slice(Math.max(0, i - 200), i + text.length + 200).trim();
+  }
+  function armPhraseLookup(){
+    clearTimeout(phraseTimer);
+    const found = selectedText();
+    if (!found) { if (phraseTipOpen) hideGlossaryTip(); return; }
+    const n = found.text.split(" ").length;
+    if (n < 2 || n > 8 || found.text.length > 90) return;
+    phraseTimer = setTimeout(function fire(){
+      if (pointerDown) { phraseTimer = setTimeout(fire, 250); return; }   // still dragging
+      const now = selectedText();
+      if (!now || now.text !== found.text) return;
+      if (selPop && !selPop.hidden) return;
+      hideGlossaryTip();
+      phraseTipOpen = true;
+      const rect = now.rect;
+      showGlossary({ getBoundingClientRect: () => rect }, now.text.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, ""), selectionContext(now.text), { phrase: true });
+    }, GLOSSARY_DELAY);
+  }
+  document.addEventListener("selectionchange", armPhraseLookup);
+  document.addEventListener("mousedown", (e) => { if (phraseTipOpen && glossaryTip && !glossaryTip.contains(e.target)) hideGlossaryTip(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && phraseTipOpen) hideGlossaryTip(); });
   document.addEventListener("mouseup", onSelectionDone);
   document.addEventListener("touchend", onSelectionDone, { passive: true });
   document.addEventListener("keyup", (e) => { if (e.shiftKey) onSelectionDone(); });
@@ -5787,6 +5884,7 @@
     const wordAt = (t) => (t && t.closest) ? t.closest(".word") : null;
     const cleanWord = (span) => span.textContent.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
     function startLookup(span){
+      if (phraseTipOpen) return;
       glossaryEnterWord();
       const i = +span.dataset.i;
       const word = cleanWord(span);
@@ -5855,6 +5953,40 @@
   $("playChunk").addEventListener("click", toggleStripSpeech);
 
   /* ---- chat ---- */
+  // Chats are saved with the book, so they're still there after closing the tab.
+  const CHAT_KEEP = 80;            // messages kept per book
+  const chatLoaded = new Set();
+  async function loadChat(bookId){
+    if (chatLoaded.has(bookId)) return;
+    chatLoaded.add(bookId);
+    if (!isSavedBook(bookId)) return;
+    try {
+      const d = await db.doc("chats/" + bookId).get();
+      if (!d.exists) return;
+      const saved = (d.data().msgs || []).filter(m => m && (m.role === "user" || m.role === "assistant") && typeof m.text === "string");
+      const live = state.chatByBook.get(bookId) || [];
+      state.chatByBook.set(bookId, saved.concat(live));
+    } catch (e) { /* start with an empty chat */ }
+  }
+  function saveChat(bookId){
+    if (!isSavedBook(bookId)) return;
+    const msgs = (state.chatByBook.get(bookId) || []).filter(m => !m.pending).slice(-CHAT_KEEP)
+      .map(m => ({ role: m.role, text: String(m.text || "").slice(0, 20000), sources: m.sources || "", ok: !!m.ok }));
+    db.doc("chats/" + bookId).set({ bookId, msgs, updatedAt: new Date().toISOString() }).catch(() => {});
+  }
+  // What the AI remembers: the finished questions and answers of this chat.
+  function chatMemory(msgs){
+    const out = [];
+    for (let i = 0; i + 1 < msgs.length; i++) {
+      const q = msgs[i], a = msgs[i + 1];
+      if (q.role === "user" && a.role === "assistant" && a.ok && !a.pending) {
+        out.push({ role: "user", content: "Question: " + q.text });
+        out.push({ role: "assistant", content: trimToBytes(a.text, 4000) });
+        i++;
+      }
+    }
+    return out.slice(-MAX_HISTORY_TURNS);
+  }
   function renderChat(bookId){
     const chat = $("chat");
     chat.innerHTML = "";
@@ -5881,6 +6013,15 @@
       bubble.textContent = m.text || "…";
     }
     wrap.appendChild(bubble);
+    if (m.role === "user" && !chatBusy) {
+      const meta = el("div", "msg-meta");
+      const editBtn = el("button", "read-btn edit-btn"); editBtn.type = "button";
+      editBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h4L19 9l-4-4L4 16v4z" stroke-linejoin="round"/><path d="M13.5 6.5l4 4"/></svg> <span></span>';
+      editBtn.querySelector("span").textContent = t("chatEdit");
+      editBtn.addEventListener("click", () => startEditMessage(wrap, m));
+      meta.appendChild(editBtn);
+      wrap.appendChild(meta);
+    }
     if (m.role === "assistant" && !m.pending) {
       const meta = el("div", "msg-meta");
       const readBtn = el("button", "read-btn");
@@ -5905,17 +6046,55 @@
     return wrap;
   }
 
-  async function askQuestion(){
+  var chatBusy = false;   // var: renderChat can run before this line
+  // Edit a message you sent: change it, and the chat continues from there
+  // (the answers after it are replaced by a new one).
+  function startEditMessage(wrap, m){
+    if (chatBusy) return;
     const bookId = state.currentBookId;
-    if (!bookId) return;
+    const msgs = state.chatByBook.get(bookId) || [];
+    const at = msgs.indexOf(m);
+    if (at < 0) return;
+    wrap.innerHTML = "";
+    wrap.classList.add("editing");
+    const box = el("textarea", "edit-box"); box.value = m.text; box.rows = 3;
+    const row = el("div", "edit-row");
+    const cancel = el("button", "btn-ghost"); cancel.type = "button"; cancel.textContent = t("chatEditCancel");
+    const save = el("button", "cta"); save.type = "button"; save.textContent = t("chatEditSend");
+    row.appendChild(cancel); row.appendChild(save);
+    wrap.appendChild(box); wrap.appendChild(row);
+    box.focus(); box.setSelectionRange(box.value.length, box.value.length);
+    autoGrow(box);
+    box.addEventListener("input", () => autoGrow(box));
+    cancel.addEventListener("click", () => renderChat(bookId));
+    const send = () => {
+      const text = box.value.trim();
+      if (!text) return;
+      msgs.splice(at);          // drop this message and everything after it
+      saveChat(bookId);
+      askQuestion(text);
+    };
+    save.addEventListener("click", send);
+    box.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+      else if (e.key === "Escape") { e.preventDefault(); renderChat(bookId); }
+    });
+  }
+
+  async function askQuestion(edited){
+    const bookId = state.currentBookId;
+    if (!bookId || chatBusy) return;
     const input = $("questionInput");
-    const question = input.value.trim();
+    const question = typeof edited === "string" ? edited : input.value.trim();
     if (!question) return;
-    input.value = "";
-    autoGrow(input);
+    if (typeof edited !== "string") { input.value = ""; autoGrow(input); }
+    await loadChat(bookId);
 
     if (!state.chatByBook.has(bookId)) state.chatByBook.set(bookId, []);
     const msgs = state.chatByBook.get(bookId);
+    const history = chatMemory(msgs);
+    const earlier = msgs.filter(m => m.role === "user").slice(-3).map(m => m.text.length > 500 ? m.text.slice(0, 500) + "…" : m.text);
+    chatBusy = true;
     msgs.push({ role: "user", text: question });
     const pendingMsg = { role: "assistant", text: "", pending: true };
     msgs.push(pendingMsg);
@@ -5924,6 +6103,7 @@
     if (!sample) {
       pendingMsg.text = t("errSampleUnavailable");
       pendingMsg.pending = false;
+      chatBusy = false;
       renderChat(bookId);
       return;
     }
@@ -5931,10 +6111,14 @@
     try {
       const loaded = await ensureBookLoaded(bookId);
       const book = state.books.find(b => b.id === bookId);
-      const allChunks = retrieve(question, loaded.chunks, loaded.index, 6);
-
-      if (!state.apiHistoryByBook.has(bookId)) state.apiHistoryByBook.set(bookId, []);
-      const history = state.apiHistoryByBook.get(bookId);
+      // Book passages for this message — and, for a follow-up like "how does
+      // that fit my topic?", also for the messages just before it.
+      let allChunks = retrieve(question, loaded.chunks, loaded.index, 6);
+      if (earlier.length) {
+        const prev = retrieve(earlier.slice(-2).join("\n"), loaded.chunks, loaded.index, 3);
+        const seen = new Set(allChunks);
+        allChunks = allChunks.slice(0, 4).concat(prev.filter(c => !seen.has(c)), allChunks.slice(4)).slice(0, 7);
+      }
       const instructions = buildStandingInstructions(book);
 
       // Builds the call inside the byte budget. Memory (earlier questions
@@ -5944,12 +6128,12 @@
         let past = history.slice(-MAX_HISTORY_TURNS);
         while (past.length && historyBytes(past) > budget / 3) past = past.slice(2);
         const guide = guideText(bookId, Math.floor(budget * 0.3));
-        const fixed = byteLen(instructions) + byteLen(guide) + byteLen(question) + historyBytes(past) + 400;
+        const fixed = byteLen(instructions) + byteLen(guide) + byteLen(question) + byteLen(earlier.join("\n")) + historyBytes(past) + 600;
         const fitted = fitChunks(allChunks.slice(0, maxChunks), budget - fixed);
         return { fitted, messages: [
           { role: "user", content: guide ? instructions + "\n\n" + guide : instructions },
           ...past,
-          { role: "user", content: buildTurnContent(fitted, question) }
+          { role: "user", content: buildTurnContent(fitted, question, earlier) }
         ] };
       }
 
@@ -5978,17 +6162,16 @@
 
       pendingMsg.text = result.text;
       pendingMsg.pending = false;
+      pendingMsg.ok = true;
+      chatBusy = false;
       const pages = chunks.map(c => c.endPage !== c.startPage ? (c.startPage + "–" + c.endPage) : String(c.startPage));
       pendingMsg.sources = Array.from(new Set(pages)).slice(0, 4).join(", ");
       renderChat(bookId);
-
-      // Memory keeps just the question and a capped answer — not the book
-      // excerpts, which are re-fetched fresh for every new question. (Storing
-      // them was what pushed the second question over the size limit.)
-      history.push({ role: "user", content: "Question: " + question });
-      history.push({ role: "assistant", content: trimToBytes(result.text, 4000) });
-      if (history.length > MAX_HISTORY_TURNS) history.splice(0, history.length - MAX_HISTORY_TURNS);
+      // Memory (chatMemory) keeps just the questions and capped answers — not
+      // the book excerpts, which are fetched fresh for every new question.
+      saveChat(bookId);
     } catch (e) {
+      chatBusy = false;
       const code = e && e.code;
       let msg = t("errGeneric");
       if (code === "not_granted") msg = t("errNotGranted");
@@ -5999,10 +6182,11 @@
       pendingMsg.text = e && e.text ? e.text : msg;
       pendingMsg.pending = false;
       renderChat(bookId);
+      saveChat(bookId);
     }
   }
 
-  $("sendBtn").addEventListener("click", askQuestion);
+  $("sendBtn").addEventListener("click", () => askQuestion());
   $("questionInput").addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); askQuestion(); }
   });
@@ -6479,6 +6663,8 @@
       try { await db.doc("qbank/" + bookId).delete(); } catch (e) {}
       try { await db.doc("guides/" + bookId).delete(); } catch (e) {}
       try { await db.doc("vocab/" + bookId).delete(); } catch (e) {}
+      try { await db.doc("chats/" + bookId).delete(); } catch (e) {}
+      state.chatByBook.delete(bookId); chatLoaded.delete(bookId);
       vocab.lists.delete(bookId);
       guides.delete(bookId);
       qbanks.delete(bookId);
