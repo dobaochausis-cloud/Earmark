@@ -341,6 +341,33 @@
   };
 
   /* ---------------- the same entry point the app uses on claude.ai ---------------- */
+  /* ---------------- installing + the phone's Share menu ---------------- */
+  // The service worker lets phones install the site and send files to it.
+  if ("serviceWorker" in navigator && location.protocol === "https:") {
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  }
+  // Opened from the Share menu: hand the shared file or link to the app.
+  (function sharedItem() {
+    const p = new URLSearchParams(location.search);
+    const shared = p.get("shared");
+    if (!shared) return;
+    history.replaceState(null, "", location.pathname);
+    if (shared !== "file") {
+      window.__earmarkShared = Promise.resolve(/^https?:\/\//.test(shared) ? { url: shared } : null);
+      return;
+    }
+    window.__earmarkShared = (async () => {
+      if (!("caches" in window)) return null;
+      const cache = await caches.open("earmark-share");
+      const res = await cache.match("/shared-file");
+      if (!res) return null;
+      await cache.delete("/shared-file");
+      const name = decodeURIComponent(res.headers.get("x-name") || "Shared file");
+      const blob = await res.blob();
+      return { file: new File([blob], name, { type: res.headers.get("content-type") || blob.type }) };
+    })().catch(() => null);
+  })();
+
   const namespaces = { db: dbApi, assets: assetsApi, sample: sampleApi };
   window.claude = {
     use: async (name) => {

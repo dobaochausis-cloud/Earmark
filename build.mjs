@@ -50,6 +50,12 @@ writeFileSync(new URL("./public/manifest.webmanifest", import.meta.url), JSON.st
   name: "Earmark Buddy", short_name: "Earmark", start_url: "/", display: "standalone",
   background_color: "#ffffff", theme_color: "#3274B0",
   icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }, { src: "/icon-512.png", sizes: "512x512", type: "image/png" }],
+  id: "/", scope: "/",
+  // Shows "Earmark Buddy" in the phone's Share menu (once the app is installed).
+  share_target: {
+    action: "/share-target", method: "POST", enctype: "multipart/form-data",
+    params: { title: "title", text: "text", url: "url", files: [{ name: "file", accept: ["application/pdf", ".pdf", "text/plain", ".txt"] }] },
+  },
 }, null, 2) + "\n");
 // Help search engines find the site.
 writeFileSync(new URL("./public/robots.txt", import.meta.url), "User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: " + SITE + "/sitemap.xml\n");

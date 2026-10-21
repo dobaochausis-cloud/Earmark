@@ -580,6 +580,23 @@
   .gt-add{ margin-top:8px; border:1px solid var(--accent); background:none; color:var(--accent-strong); border-radius:99px; padding:4px 10px; font:inherit; font-size:12.5px; font-weight:700; cursor:pointer; }
   .gt-add:disabled{ opacity:.5; }
   .word.w-i{ font-style:italic; }
+  .own-quiz{ margin-top:22px; padding-top:18px; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:10px; align-items:center; text-align:center; }
+  .own-quiz h4{ margin:0; font-size:16px; }
+  .own-quiz p{ margin:0; color:var(--ink-soft); font-size:14px; }
+  .own-list{ align-self:stretch; text-align:left; margin:4px 0 0; padding-left:22px; display:flex; flex-direction:column; gap:6px; }
+  .own-list li{ font-size:14px; }
+  .own-list .own-q{ margin-right:8px; }
+  .own-list button{ margin-right:6px; }
+  .link-btn{ background:none; border:none; color:var(--accent); font:inherit; font-size:13px; font-weight:600; cursor:pointer; padding:2px 4px; display:inline-flex; align-items:center; gap:4px; }
+  .link-btn svg, .card-ops .link-danger svg{ width:14px; height:14px; }
+  .card-ops{ display:flex; justify-content:center; gap:14px; margin-top:4px; }
+  .card-ops .link-danger{ display:inline-flex; align-items:center; gap:4px; }
+  .own-input{ width:100%; box-sizing:border-box; font:inherit; color:var(--ink); background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-sm); padding:9px 10px; resize:vertical; }
+  .own-input:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+  .own-option{ display:flex; align-items:center; gap:8px; text-transform:none !important; letter-spacing:0 !important; font-weight:400 !important; }
+  .own-option input[type=radio]{ width:18px; height:18px; flex-shrink:0; accent-color:var(--listen); }
+  .own-letter{ font-weight:700; color:var(--ink-soft); width:14px; }
+  .own-editor .modal-card{ max-width:480px; }
   .msg.user .msg-meta{ justify-content:flex-end; }
   .msg.editing{ max-width:100%; width:100%; align-self:stretch; }
   .edit-box{ width:100%; box-sizing:border-box; font:inherit; color:var(--ink); background:var(--paper-raised); border:1.5px solid var(--accent); border-radius:var(--radius-sm); padding:10px 12px; resize:none; line-height:1.5; }
@@ -3502,6 +3519,34 @@
     fa: {"chatEdit": "ویرایش", "chatEditCancel": "لغو", "chatEditSend": "ارسال"},
     ur: {"chatEdit": "ترمیم", "chatEditCancel": "منسوخ", "chatEditSend": "بھیجیں"},
   });
+  addStrings({
+    en: {"ownCardBtn": "Make my own card", "ownEditCard": "Edit card", "ownDeleteCard": "Delete card", "ownFront": "Front (question or word)", "ownBack": "Back (answer)", "ownSave": "Save", "ownSaveAnother": "Save + add another", "ownNeedCard": "Write something on both sides of the card.", "ownCardAdded": "Card added", "ownCardsDesc": "Or write your own cards.", "ownQuizTitle": "Your own quiz", "ownQuizDesc": "Write your own questions, then quiz yourself.", "ownWriteQuestion": "Write a question", "ownEditQuestion": "Edit question", "ownTakeQuiz": "Take my quiz ({n})", "ownQuestion": "Question", "ownAnswers": "Answers (tap the circle next to the right one)", "ownCorrect": "Right answer", "ownExplain": "Why it's right (optional)", "ownNeedAnswers": "Write the question and at least two answers, and choose the right one.", "ownQuestionAdded": "Question added", "ownDelete": "Delete"},
+    vi: {"ownCardBtn": "Tự tạo thẻ", "ownEditCard": "Sửa thẻ", "ownDeleteCard": "Xóa thẻ", "ownFront": "Mặt trước (câu hỏi hoặc từ)", "ownBack": "Mặt sau (câu trả lời)", "ownSave": "Lưu", "ownSaveAnother": "Lưu + thêm thẻ khác", "ownNeedCard": "Hãy viết cả hai mặt của thẻ.", "ownCardAdded": "Đã thêm thẻ", "ownCardsDesc": "Hoặc tự viết thẻ của bạn.", "ownQuizTitle": "Bài kiểm tra của bạn", "ownQuizDesc": "Tự viết câu hỏi rồi tự kiểm tra.", "ownWriteQuestion": "Viết câu hỏi", "ownEditQuestion": "Sửa câu hỏi", "ownTakeQuiz": "Làm bài của tôi ({n})", "ownQuestion": "Câu hỏi", "ownAnswers": "Các đáp án (chạm vào vòng tròn cạnh đáp án đúng)", "ownCorrect": "Đáp án đúng", "ownExplain": "Vì sao đúng (không bắt buộc)", "ownNeedAnswers": "Hãy viết câu hỏi, ít nhất hai đáp án và chọn đáp án đúng.", "ownQuestionAdded": "Đã thêm câu hỏi", "ownDelete": "Xóa"},
+    es: {"ownCardBtn": "Crear mi tarjeta", "ownEditCard": "Editar tarjeta", "ownDeleteCard": "Borrar tarjeta", "ownFront": "Frente (pregunta o palabra)", "ownBack": "Reverso (respuesta)", "ownSave": "Guardar", "ownSaveAnother": "Guardar + añadir otra", "ownNeedCard": "Escribe algo en los dos lados de la tarjeta.", "ownCardAdded": "Tarjeta añadida", "ownCardsDesc": "O escribe tus propias tarjetas.", "ownQuizTitle": "Tu propio cuestionario", "ownQuizDesc": "Escribe tus preguntas y ponte a prueba.", "ownWriteQuestion": "Escribir una pregunta", "ownEditQuestion": "Editar pregunta", "ownTakeQuiz": "Hacer mi cuestionario ({n})", "ownQuestion": "Pregunta", "ownAnswers": "Respuestas (toca el círculo de la correcta)", "ownCorrect": "Respuesta correcta", "ownExplain": "Por qué es correcta (opcional)", "ownNeedAnswers": "Escribe la pregunta, al menos dos respuestas y elige la correcta.", "ownQuestionAdded": "Pregunta añadida", "ownDelete": "Borrar"},
+    fr: {"ownCardBtn": "Créer ma carte", "ownEditCard": "Modifier la carte", "ownDeleteCard": "Supprimer la carte", "ownFront": "Recto (question ou mot)", "ownBack": "Verso (réponse)", "ownSave": "Enregistrer", "ownSaveAnother": "Enregistrer + en ajouter une", "ownNeedCard": "Écris quelque chose des deux côtés de la carte.", "ownCardAdded": "Carte ajoutée", "ownCardsDesc": "Ou écris tes propres cartes.", "ownQuizTitle": "Ton propre quiz", "ownQuizDesc": "Écris tes questions, puis teste-toi.", "ownWriteQuestion": "Écrire une question", "ownEditQuestion": "Modifier la question", "ownTakeQuiz": "Faire mon quiz ({n})", "ownQuestion": "Question", "ownAnswers": "Réponses (touche le cercle de la bonne)", "ownCorrect": "Bonne réponse", "ownExplain": "Pourquoi c'est juste (facultatif)", "ownNeedAnswers": "Écris la question, au moins deux réponses, et choisis la bonne.", "ownQuestionAdded": "Question ajoutée", "ownDelete": "Supprimer"},
+    de: {"ownCardBtn": "Eigene Karte erstellen", "ownEditCard": "Karte bearbeiten", "ownDeleteCard": "Karte löschen", "ownFront": "Vorderseite (Frage oder Wort)", "ownBack": "Rückseite (Antwort)", "ownSave": "Speichern", "ownSaveAnother": "Speichern + weitere", "ownNeedCard": "Schreib etwas auf beide Seiten der Karte.", "ownCardAdded": "Karte hinzugefügt", "ownCardsDesc": "Oder schreib deine eigenen Karten.", "ownQuizTitle": "Dein eigenes Quiz", "ownQuizDesc": "Schreib eigene Fragen und teste dich selbst.", "ownWriteQuestion": "Frage schreiben", "ownEditQuestion": "Frage bearbeiten", "ownTakeQuiz": "Mein Quiz starten ({n})", "ownQuestion": "Frage", "ownAnswers": "Antworten (tippe auf den Kreis der richtigen)", "ownCorrect": "Richtige Antwort", "ownExplain": "Warum sie richtig ist (optional)", "ownNeedAnswers": "Schreib die Frage, mindestens zwei Antworten und wähle die richtige.", "ownQuestionAdded": "Frage hinzugefügt", "ownDelete": "Löschen"},
+    pt: {"ownCardBtn": "Criar meu cartão", "ownEditCard": "Editar cartão", "ownDeleteCard": "Excluir cartão", "ownFront": "Frente (pergunta ou palavra)", "ownBack": "Verso (resposta)", "ownSave": "Salvar", "ownSaveAnother": "Salvar + adicionar outro", "ownNeedCard": "Escreva algo nos dois lados do cartão.", "ownCardAdded": "Cartão adicionado", "ownCardsDesc": "Ou escreva seus próprios cartões.", "ownQuizTitle": "Seu próprio quiz", "ownQuizDesc": "Escreva suas perguntas e teste-se.", "ownWriteQuestion": "Escrever uma pergunta", "ownEditQuestion": "Editar pergunta", "ownTakeQuiz": "Fazer meu quiz ({n})", "ownQuestion": "Pergunta", "ownAnswers": "Respostas (toque no círculo da certa)", "ownCorrect": "Resposta certa", "ownExplain": "Por que está certa (opcional)", "ownNeedAnswers": "Escreva a pergunta, pelo menos duas respostas e escolha a certa.", "ownQuestionAdded": "Pergunta adicionada", "ownDelete": "Excluir"},
+    it: {"ownCardBtn": "Crea la mia carta", "ownEditCard": "Modifica carta", "ownDeleteCard": "Elimina carta", "ownFront": "Fronte (domanda o parola)", "ownBack": "Retro (risposta)", "ownSave": "Salva", "ownSaveAnother": "Salva + aggiungi un'altra", "ownNeedCard": "Scrivi qualcosa su entrambi i lati.", "ownCardAdded": "Carta aggiunta", "ownCardsDesc": "Oppure scrivi le tue carte.", "ownQuizTitle": "Il tuo quiz", "ownQuizDesc": "Scrivi le tue domande e mettiti alla prova.", "ownWriteQuestion": "Scrivi una domanda", "ownEditQuestion": "Modifica domanda", "ownTakeQuiz": "Fai il mio quiz ({n})", "ownQuestion": "Domanda", "ownAnswers": "Risposte (tocca il cerchio di quella giusta)", "ownCorrect": "Risposta giusta", "ownExplain": "Perché è giusta (facoltativo)", "ownNeedAnswers": "Scrivi la domanda, almeno due risposte e scegli quella giusta.", "ownQuestionAdded": "Domanda aggiunta", "ownDelete": "Elimina"},
+    nl: {"ownCardBtn": "Eigen kaart maken", "ownEditCard": "Kaart bewerken", "ownDeleteCard": "Kaart verwijderen", "ownFront": "Voorkant (vraag of woord)", "ownBack": "Achterkant (antwoord)", "ownSave": "Opslaan", "ownSaveAnother": "Opslaan + nog een", "ownNeedCard": "Schrijf iets op beide kanten van de kaart.", "ownCardAdded": "Kaart toegevoegd", "ownCardsDesc": "Of schrijf je eigen kaarten.", "ownQuizTitle": "Je eigen quiz", "ownQuizDesc": "Schrijf je eigen vragen en test jezelf.", "ownWriteQuestion": "Vraag schrijven", "ownEditQuestion": "Vraag bewerken", "ownTakeQuiz": "Mijn quiz doen ({n})", "ownQuestion": "Vraag", "ownAnswers": "Antwoorden (tik op het rondje bij het goede)", "ownCorrect": "Goed antwoord", "ownExplain": "Waarom het goed is (optioneel)", "ownNeedAnswers": "Schrijf de vraag, minstens twee antwoorden en kies het goede.", "ownQuestionAdded": "Vraag toegevoegd", "ownDelete": "Verwijderen"},
+    ru: {"ownCardBtn": "Создать свою карточку", "ownEditCard": "Изменить карточку", "ownDeleteCard": "Удалить карточку", "ownFront": "Лицевая сторона (вопрос или слово)", "ownBack": "Обратная сторона (ответ)", "ownSave": "Сохранить", "ownSaveAnother": "Сохранить и добавить ещё", "ownNeedCard": "Напишите что-нибудь на обеих сторонах.", "ownCardAdded": "Карточка добавлена", "ownCardsDesc": "Или напишите свои карточки.", "ownQuizTitle": "Свой тест", "ownQuizDesc": "Напишите свои вопросы и проверьте себя.", "ownWriteQuestion": "Написать вопрос", "ownEditQuestion": "Изменить вопрос", "ownTakeQuiz": "Пройти мой тест ({n})", "ownQuestion": "Вопрос", "ownAnswers": "Ответы (нажмите кружок у верного)", "ownCorrect": "Верный ответ", "ownExplain": "Почему верно (необязательно)", "ownNeedAnswers": "Напишите вопрос, хотя бы два ответа и выберите верный.", "ownQuestionAdded": "Вопрос добавлен", "ownDelete": "Удалить"},
+    pl: {"ownCardBtn": "Stwórz własną fiszkę", "ownEditCard": "Edytuj fiszkę", "ownDeleteCard": "Usuń fiszkę", "ownFront": "Przód (pytanie lub słowo)", "ownBack": "Tył (odpowiedź)", "ownSave": "Zapisz", "ownSaveAnother": "Zapisz + dodaj kolejną", "ownNeedCard": "Napisz coś na obu stronach fiszki.", "ownCardAdded": "Dodano fiszkę", "ownCardsDesc": "Albo napisz własne fiszki.", "ownQuizTitle": "Twój własny quiz", "ownQuizDesc": "Napisz własne pytania i sprawdź się.", "ownWriteQuestion": "Napisz pytanie", "ownEditQuestion": "Edytuj pytanie", "ownTakeQuiz": "Rozwiąż mój quiz ({n})", "ownQuestion": "Pytanie", "ownAnswers": "Odpowiedzi (dotknij kółka przy dobrej)", "ownCorrect": "Dobra odpowiedź", "ownExplain": "Dlaczego jest dobra (opcjonalnie)", "ownNeedAnswers": "Napisz pytanie, co najmniej dwie odpowiedzi i wybierz dobrą.", "ownQuestionAdded": "Dodano pytanie", "ownDelete": "Usuń"},
+    tr: {"ownCardBtn": "Kendi kartımı yap", "ownEditCard": "Kartı düzenle", "ownDeleteCard": "Kartı sil", "ownFront": "Ön yüz (soru veya kelime)", "ownBack": "Arka yüz (cevap)", "ownSave": "Kaydet", "ownSaveAnother": "Kaydet + bir tane daha", "ownNeedCard": "Kartın iki yüzüne de bir şey yaz.", "ownCardAdded": "Kart eklendi", "ownCardsDesc": "Ya da kendi kartlarını yaz.", "ownQuizTitle": "Kendi testin", "ownQuizDesc": "Kendi sorularını yaz, sonra kendini test et.", "ownWriteQuestion": "Soru yaz", "ownEditQuestion": "Soruyu düzenle", "ownTakeQuiz": "Testimi çöz ({n})", "ownQuestion": "Soru", "ownAnswers": "Cevaplar (doğru olanın yanındaki daireye dokun)", "ownCorrect": "Doğru cevap", "ownExplain": "Neden doğru (isteğe bağlı)", "ownNeedAnswers": "Soruyu, en az iki cevabı yaz ve doğru olanı seç.", "ownQuestionAdded": "Soru eklendi", "ownDelete": "Sil"},
+    ar: {"ownCardBtn": "أنشئ بطاقتي", "ownEditCard": "تعديل البطاقة", "ownDeleteCard": "حذف البطاقة", "ownFront": "الوجه (سؤال أو كلمة)", "ownBack": "الظهر (الإجابة)", "ownSave": "حفظ", "ownSaveAnother": "حفظ + إضافة أخرى", "ownNeedCard": "اكتب شيئًا على وجهي البطاقة.", "ownCardAdded": "تمت إضافة البطاقة", "ownCardsDesc": "أو اكتب بطاقاتك بنفسك.", "ownQuizTitle": "اختبارك الخاص", "ownQuizDesc": "اكتب أسئلتك ثم اختبر نفسك.", "ownWriteQuestion": "اكتب سؤالًا", "ownEditQuestion": "تعديل السؤال", "ownTakeQuiz": "ابدأ اختباري ({n})", "ownQuestion": "السؤال", "ownAnswers": "الإجابات (اضغط الدائرة بجانب الصحيحة)", "ownCorrect": "الإجابة الصحيحة", "ownExplain": "لماذا هي صحيحة (اختياري)", "ownNeedAnswers": "اكتب السؤال وإجابتين على الأقل واختر الصحيحة.", "ownQuestionAdded": "تمت إضافة السؤال", "ownDelete": "حذف"},
+    hi: {"ownCardBtn": "अपना कार्ड बनाएँ", "ownEditCard": "कार्ड बदलें", "ownDeleteCard": "कार्ड हटाएँ", "ownFront": "सामने (सवाल या शब्द)", "ownBack": "पीछे (जवाब)", "ownSave": "सेव करें", "ownSaveAnother": "सेव करें + और जोड़ें", "ownNeedCard": "कार्ड के दोनों ओर कुछ लिखें।", "ownCardAdded": "कार्ड जुड़ गया", "ownCardsDesc": "या अपने कार्ड खुद लिखें।", "ownQuizTitle": "आपकी अपनी क्विज़", "ownQuizDesc": "अपने सवाल लिखें, फिर खुद को जाँचें।", "ownWriteQuestion": "सवाल लिखें", "ownEditQuestion": "सवाल बदलें", "ownTakeQuiz": "मेरी क्विज़ दें ({n})", "ownQuestion": "सवाल", "ownAnswers": "जवाब (सही वाले के पास के गोले पर टैप करें)", "ownCorrect": "सही जवाब", "ownExplain": "यह सही क्यों है (वैकल्पिक)", "ownNeedAnswers": "सवाल, कम से कम दो जवाब लिखें और सही चुनें।", "ownQuestionAdded": "सवाल जुड़ गया", "ownDelete": "हटाएँ"},
+    id: {"ownCardBtn": "Buat kartu sendiri", "ownEditCard": "Edit kartu", "ownDeleteCard": "Hapus kartu", "ownFront": "Depan (pertanyaan atau kata)", "ownBack": "Belakang (jawaban)", "ownSave": "Simpan", "ownSaveAnother": "Simpan + tambah lagi", "ownNeedCard": "Tulis sesuatu di kedua sisi kartu.", "ownCardAdded": "Kartu ditambahkan", "ownCardsDesc": "Atau tulis kartumu sendiri.", "ownQuizTitle": "Kuis buatanmu", "ownQuizDesc": "Tulis pertanyaanmu sendiri, lalu uji dirimu.", "ownWriteQuestion": "Tulis pertanyaan", "ownEditQuestion": "Edit pertanyaan", "ownTakeQuiz": "Kerjakan kuisku ({n})", "ownQuestion": "Pertanyaan", "ownAnswers": "Jawaban (ketuk lingkaran di jawaban yang benar)", "ownCorrect": "Jawaban benar", "ownExplain": "Kenapa benar (opsional)", "ownNeedAnswers": "Tulis pertanyaan, minimal dua jawaban, dan pilih yang benar.", "ownQuestionAdded": "Pertanyaan ditambahkan", "ownDelete": "Hapus"},
+    th: {"ownCardBtn": "สร้างบัตรเอง", "ownEditCard": "แก้ไขบัตร", "ownDeleteCard": "ลบบัตร", "ownFront": "ด้านหน้า (คำถามหรือคำศัพท์)", "ownBack": "ด้านหลัง (คำตอบ)", "ownSave": "บันทึก", "ownSaveAnother": "บันทึก + เพิ่มอีก", "ownNeedCard": "เขียนทั้งสองด้านของบัตร", "ownCardAdded": "เพิ่มบัตรแล้ว", "ownCardsDesc": "หรือเขียนบัตรของคุณเอง", "ownQuizTitle": "แบบทดสอบของคุณเอง", "ownQuizDesc": "เขียนคำถามเอง แล้วทดสอบตัวเอง", "ownWriteQuestion": "เขียนคำถาม", "ownEditQuestion": "แก้ไขคำถาม", "ownTakeQuiz": "ทำแบบทดสอบของฉัน ({n})", "ownQuestion": "คำถาม", "ownAnswers": "คำตอบ (แตะวงกลมข้างคำตอบที่ถูก)", "ownCorrect": "คำตอบที่ถูก", "ownExplain": "ทำไมถึงถูก (ไม่บังคับ)", "ownNeedAnswers": "เขียนคำถาม คำตอบอย่างน้อยสองข้อ และเลือกข้อที่ถูก", "ownQuestionAdded": "เพิ่มคำถามแล้ว", "ownDelete": "ลบ"},
+    ja: {"ownCardBtn": "自分でカードを作る", "ownEditCard": "カードを編集", "ownDeleteCard": "カードを削除", "ownFront": "表(質問や単語)", "ownBack": "裏(答え)", "ownSave": "保存", "ownSaveAnother": "保存して続けて追加", "ownNeedCard": "カードの両面に書いてください。", "ownCardAdded": "カードを追加しました", "ownCardsDesc": "または自分でカードを書きましょう。", "ownQuizTitle": "自分のクイズ", "ownQuizDesc": "自分で問題を書いて、自分を試そう。", "ownWriteQuestion": "問題を書く", "ownEditQuestion": "問題を編集", "ownTakeQuiz": "自分のクイズに挑戦({n})", "ownQuestion": "問題", "ownAnswers": "答え(正解の横の丸をタップ)", "ownCorrect": "正解", "ownExplain": "正解の理由(任意)", "ownNeedAnswers": "問題と2つ以上の答えを書き、正解を選んでください。", "ownQuestionAdded": "問題を追加しました", "ownDelete": "削除"},
+    ko: {"ownCardBtn": "내 카드 만들기", "ownEditCard": "카드 수정", "ownDeleteCard": "카드 삭제", "ownFront": "앞면(질문 또는 단어)", "ownBack": "뒷면(답)", "ownSave": "저장", "ownSaveAnother": "저장 + 하나 더", "ownNeedCard": "카드 양면에 모두 써 주세요.", "ownCardAdded": "카드를 추가했어요", "ownCardsDesc": "또는 직접 카드를 써 보세요.", "ownQuizTitle": "나만의 퀴즈", "ownQuizDesc": "직접 질문을 쓰고 스스로 풀어 보세요.", "ownWriteQuestion": "질문 쓰기", "ownEditQuestion": "질문 수정", "ownTakeQuiz": "내 퀴즈 풀기 ({n})", "ownQuestion": "질문", "ownAnswers": "답(정답 옆 동그라미를 누르세요)", "ownCorrect": "정답", "ownExplain": "정답인 이유(선택)", "ownNeedAnswers": "질문과 답을 두 개 이상 쓰고 정답을 고르세요.", "ownQuestionAdded": "질문을 추가했어요", "ownDelete": "삭제"},
+    zh: {"ownCardBtn": "自己做卡片", "ownEditCard": "编辑卡片", "ownDeleteCard": "删除卡片", "ownFront": "正面(问题或单词)", "ownBack": "背面(答案)", "ownSave": "保存", "ownSaveAnother": "保存并再加一张", "ownNeedCard": "请在卡片两面都写上内容。", "ownCardAdded": "已添加卡片", "ownCardsDesc": "或者自己写卡片。", "ownQuizTitle": "你自己的测验", "ownQuizDesc": "自己写题目,然后测试自己。", "ownWriteQuestion": "写一道题", "ownEditQuestion": "编辑题目", "ownTakeQuiz": "做我的测验({n})", "ownQuestion": "题目", "ownAnswers": "答案(点一下正确答案旁的圆圈)", "ownCorrect": "正确答案", "ownExplain": "为什么正确(可选)", "ownNeedAnswers": "请写题目和至少两个答案,并选出正确的一个。", "ownQuestionAdded": "已添加题目", "ownDelete": "删除"},
+    tl: {"ownCardBtn": "Gumawa ng sariling card", "ownEditCard": "I-edit ang card", "ownDeleteCard": "Burahin ang card", "ownFront": "Harap (tanong o salita)", "ownBack": "Likod (sagot)", "ownSave": "I-save", "ownSaveAnother": "I-save + magdagdag pa", "ownNeedCard": "Magsulat sa magkabilang panig ng card.", "ownCardAdded": "Naidagdag ang card", "ownCardsDesc": "O isulat ang sarili mong mga card.", "ownQuizTitle": "Sarili mong quiz", "ownQuizDesc": "Isulat ang sarili mong mga tanong, saka subukan ang sarili.", "ownWriteQuestion": "Magsulat ng tanong", "ownEditQuestion": "I-edit ang tanong", "ownTakeQuiz": "Sagutan ang quiz ko ({n})", "ownQuestion": "Tanong", "ownAnswers": "Mga sagot (pindutin ang bilog sa tamang sagot)", "ownCorrect": "Tamang sagot", "ownExplain": "Bakit ito tama (opsyonal)", "ownNeedAnswers": "Isulat ang tanong, kahit dalawang sagot, at piliin ang tama.", "ownQuestionAdded": "Naidagdag ang tanong", "ownDelete": "Burahin"},
+    he: {"ownCardBtn": "צור כרטיס משלי", "ownEditCard": "ערוך כרטיס", "ownDeleteCard": "מחק כרטיס", "ownFront": "צד קדמי (שאלה או מילה)", "ownBack": "צד אחורי (תשובה)", "ownSave": "שמור", "ownSaveAnother": "שמור + הוסף עוד", "ownNeedCard": "כתבו משהו בשני צדי הכרטיס.", "ownCardAdded": "הכרטיס נוסף", "ownCardsDesc": "או כתבו כרטיסים משלכם.", "ownQuizTitle": "החידון שלך", "ownQuizDesc": "כתבו שאלות משלכם ובחנו את עצמכם.", "ownWriteQuestion": "כתוב שאלה", "ownEditQuestion": "ערוך שאלה", "ownTakeQuiz": "פתור את החידון שלי ({n})", "ownQuestion": "שאלה", "ownAnswers": "תשובות (הקישו על העיגול ליד הנכונה)", "ownCorrect": "תשובה נכונה", "ownExplain": "למה זה נכון (לא חובה)", "ownNeedAnswers": "כתבו את השאלה, לפחות שתי תשובות ובחרו את הנכונה.", "ownQuestionAdded": "השאלה נוספה", "ownDelete": "מחק"},
+    el: {"ownCardBtn": "Φτιάξε δική μου κάρτα", "ownEditCard": "Επεξεργασία κάρτας", "ownDeleteCard": "Διαγραφή κάρτας", "ownFront": "Μπροστά (ερώτηση ή λέξη)", "ownBack": "Πίσω (απάντηση)", "ownSave": "Αποθήκευση", "ownSaveAnother": "Αποθήκευση + άλλη μία", "ownNeedCard": "Γράψε κάτι και στις δύο πλευρές.", "ownCardAdded": "Η κάρτα προστέθηκε", "ownCardsDesc": "Ή γράψε τις δικές σου κάρτες.", "ownQuizTitle": "Το δικό σου κουίζ", "ownQuizDesc": "Γράψε δικές σου ερωτήσεις και εξέτασε τον εαυτό σου.", "ownWriteQuestion": "Γράψε ερώτηση", "ownEditQuestion": "Επεξεργασία ερώτησης", "ownTakeQuiz": "Κάνε το κουίζ μου ({n})", "ownQuestion": "Ερώτηση", "ownAnswers": "Απαντήσεις (πάτα τον κύκλο δίπλα στη σωστή)", "ownCorrect": "Σωστή απάντηση", "ownExplain": "Γιατί είναι σωστή (προαιρετικό)", "ownNeedAnswers": "Γράψε την ερώτηση, τουλάχιστον δύο απαντήσεις και διάλεξε τη σωστή.", "ownQuestionAdded": "Η ερώτηση προστέθηκε", "ownDelete": "Διαγραφή"},
+    sv: {"ownCardBtn": "Gör ett eget kort", "ownEditCard": "Redigera kort", "ownDeleteCard": "Ta bort kort", "ownFront": "Framsida (fråga eller ord)", "ownBack": "Baksida (svar)", "ownSave": "Spara", "ownSaveAnother": "Spara + lägg till fler", "ownNeedCard": "Skriv något på båda sidorna av kortet.", "ownCardAdded": "Kortet har lagts till", "ownCardsDesc": "Eller skriv dina egna kort.", "ownQuizTitle": "Ditt eget quiz", "ownQuizDesc": "Skriv egna frågor och testa dig själv.", "ownWriteQuestion": "Skriv en fråga", "ownEditQuestion": "Redigera fråga", "ownTakeQuiz": "Gör mitt quiz ({n})", "ownQuestion": "Fråga", "ownAnswers": "Svar (tryck på cirkeln vid det rätta)", "ownCorrect": "Rätt svar", "ownExplain": "Varför det är rätt (valfritt)", "ownNeedAnswers": "Skriv frågan, minst två svar och välj det rätta.", "ownQuestionAdded": "Frågan har lagts till", "ownDelete": "Ta bort"},
+    uk: {"ownCardBtn": "Створити свою картку", "ownEditCard": "Змінити картку", "ownDeleteCard": "Видалити картку", "ownFront": "Лицьовий бік (питання або слово)", "ownBack": "Зворотний бік (відповідь)", "ownSave": "Зберегти", "ownSaveAnother": "Зберегти й додати ще", "ownNeedCard": "Напишіть щось на обох боках картки.", "ownCardAdded": "Картку додано", "ownCardsDesc": "Або напишіть свої картки.", "ownQuizTitle": "Свій тест", "ownQuizDesc": "Напишіть свої питання й перевірте себе.", "ownWriteQuestion": "Написати питання", "ownEditQuestion": "Змінити питання", "ownTakeQuiz": "Пройти мій тест ({n})", "ownQuestion": "Питання", "ownAnswers": "Відповіді (натисніть кружечок біля правильної)", "ownCorrect": "Правильна відповідь", "ownExplain": "Чому правильно (необов'язково)", "ownNeedAnswers": "Напишіть питання, щонайменше дві відповіді й виберіть правильну.", "ownQuestionAdded": "Питання додано", "ownDelete": "Видалити"},
+    ro: {"ownCardBtn": "Fă-mi propria fișă", "ownEditCard": "Editează fișa", "ownDeleteCard": "Șterge fișa", "ownFront": "Față (întrebare sau cuvânt)", "ownBack": "Verso (răspuns)", "ownSave": "Salvează", "ownSaveAnother": "Salvează + adaugă alta", "ownNeedCard": "Scrie ceva pe ambele fețe ale fișei.", "ownCardAdded": "Fișă adăugată", "ownCardsDesc": "Sau scrie-ți propriile fișe.", "ownQuizTitle": "Testul tău", "ownQuizDesc": "Scrie-ți întrebările, apoi testează-te.", "ownWriteQuestion": "Scrie o întrebare", "ownEditQuestion": "Editează întrebarea", "ownTakeQuiz": "Fă testul meu ({n})", "ownQuestion": "Întrebare", "ownAnswers": "Răspunsuri (atinge cercul de lângă cel corect)", "ownCorrect": "Răspuns corect", "ownExplain": "De ce e corect (opțional)", "ownNeedAnswers": "Scrie întrebarea, cel puțin două răspunsuri și alege-l pe cel corect.", "ownQuestionAdded": "Întrebare adăugată", "ownDelete": "Șterge"},
+    fa: {"ownCardBtn": "کارت خودم را بسازم", "ownEditCard": "ویرایش کارت", "ownDeleteCard": "حذف کارت", "ownFront": "رو (سؤال یا کلمه)", "ownBack": "پشت (جواب)", "ownSave": "ذخیره", "ownSaveAnother": "ذخیره + افزودن بیشتر", "ownNeedCard": "روی هر دو طرف کارت چیزی بنویسید.", "ownCardAdded": "کارت اضافه شد", "ownCardsDesc": "یا کارت‌های خودتان را بنویسید.", "ownQuizTitle": "آزمون خودت", "ownQuizDesc": "سؤال‌های خودت را بنویس و خودت را بسنج.", "ownWriteQuestion": "نوشتن سؤال", "ownEditQuestion": "ویرایش سؤال", "ownTakeQuiz": "آزمون من ({n})", "ownQuestion": "سؤال", "ownAnswers": "جواب‌ها (روی دایرهٔ کنار جواب درست بزنید)", "ownCorrect": "جواب درست", "ownExplain": "چرا درست است (اختیاری)", "ownNeedAnswers": "سؤال، دست‌کم دو جواب بنویسید و جواب درست را انتخاب کنید.", "ownQuestionAdded": "سؤال اضافه شد", "ownDelete": "حذف"},
+    ur: {"ownCardBtn": "اپنا کارڈ بنائیں", "ownEditCard": "کارڈ میں ترمیم", "ownDeleteCard": "کارڈ حذف کریں", "ownFront": "سامنے (سوال یا لفظ)", "ownBack": "پیچھے (جواب)", "ownSave": "محفوظ کریں", "ownSaveAnother": "محفوظ کریں + اور شامل کریں", "ownNeedCard": "کارڈ کے دونوں طرف کچھ لکھیں۔", "ownCardAdded": "کارڈ شامل ہو گیا", "ownCardsDesc": "یا اپنے کارڈ خود لکھیں۔", "ownQuizTitle": "آپ کا اپنا کوئز", "ownQuizDesc": "اپنے سوال لکھیں، پھر خود کو جانچیں۔", "ownWriteQuestion": "سوال لکھیں", "ownEditQuestion": "سوال میں ترمیم", "ownTakeQuiz": "میرا کوئز دیں ({n})", "ownQuestion": "سوال", "ownAnswers": "جواب (صحیح جواب کے ساتھ والے دائرے پر ٹیپ کریں)", "ownCorrect": "صحیح جواب", "ownExplain": "یہ صحیح کیوں ہے (اختیاری)", "ownNeedAnswers": "سوال، کم از کم دو جواب لکھیں اور صحیح منتخب کریں۔", "ownQuestionAdded": "سوال شامل ہو گیا", "ownDelete": "حذف کریں"},
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -5034,6 +5079,19 @@
     $("uploadStatus").textContent = "";
   }
 
+  // A file or link sent to Earmark from the phone's Share menu (website only):
+  // it goes straight into the "Add a book" flow.
+  function importShared(){
+    if (!window.__earmarkShared) return;
+    window.__earmarkShared.then((item) => {
+      if (!item) return;
+      if (window.innerWidth <= 760) openSidebar();
+      $("uploadPanel").hidden = false;
+      if (item.file) pickFile(item.file);
+      else if (item.url) { $("linkInput").value = item.url; startLinkImport(); }
+    }).catch(() => {});
+  }
+
   async function startUpload(){
     if (!pendingFile) return;
     const title = $("bookTitle").value.trim() || pendingFile.name;
@@ -6248,6 +6306,8 @@
     flip: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     shuffle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>',
+    pencil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h4L19 9l-4-4L4 16v4z" stroke-linejoin="round"/><path d="M13.5 6.5l4 4"/></svg>',
+    trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     again: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     cardsGlyph: '<svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 6V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2"/><path d="M7 12h6M7 15h4" stroke-linecap="round"/></svg>',
@@ -6694,6 +6754,8 @@
       try { await db.doc("guides/" + bookId).delete(); } catch (e) {}
       try { await db.doc("vocab/" + bookId).delete(); } catch (e) {}
       try { await db.doc("chats/" + bookId).delete(); } catch (e) {}
+      try { await db.doc("myquiz/" + bookId).delete(); } catch (e) {}
+      ownQuizzes.delete(bookId);
       state.chatByBook.delete(bookId); chatLoaded.delete(bookId);
       vocab.lists.delete(bookId);
       guides.delete(bookId);
@@ -7082,6 +7144,13 @@
     const { deck, pos, list } = deckView(bookId);
     if (!deck.cards.length) {
       inner.appendChild(study.busy.has(busyKey) ? busyNote(t("makingCards")) : studySetup("cards", bookId));
+      if (!study.busy.has(busyKey)) {
+        const own = el("div", "own-quiz");
+        const p = el("p"); p.textContent = t("ownCardsDesc"); own.appendChild(p);
+        const row = el("div", "study-row");
+        row.appendChild(iconBtn("pill-btn", ICONS.pencil, t("ownCardBtn"), () => editOwnCard(bookId)));
+        own.appendChild(row); inner.appendChild(own);
+      }
       return;
     }
 
@@ -7166,6 +7235,19 @@
       judge.appendChild(iconBtn("pill-btn good", ICONS.check, t("gotIt"), () => mark(true)));
       inner.appendChild(judge);
     }
+    const cardOps = el("div", "card-ops");
+    const edB = el("button", "link-btn"); edB.type = "button"; edB.innerHTML = ICONS.pencil + "<span></span>"; edB.querySelector("span").textContent = t("ownEditCard");
+    edB.addEventListener("click", () => { pauseSpeech(); editOwnCard(bookId, cardIdx); });
+    const delB = el("button", "link-danger"); delB.type = "button"; delB.innerHTML = ICONS.trash + "<span></span>"; delB.querySelector("span").textContent = t("ownDeleteCard");
+    delB.addEventListener("click", () => {
+      pauseSpeech();
+      deck.cards.splice(cardIdx, 1);
+      saveDeck(bookId);
+      pos.flipped = false;
+      renderCards();
+    });
+    cardOps.appendChild(edB); cardOps.appendChild(delB);
+    inner.appendChild(cardOps);
 
     inner.appendChild(deckTools(bookId, deck, pos));
   }
@@ -7190,6 +7272,7 @@
     const more = iconBtn("pill-btn", busy ? "" : ICONS.plus, busy ? t("makingCards") : t("addMore"), () => makeCards(bookId, "book", 8, true));
     more.disabled = busy || !sample || deck.cards.length >= MAX_DECK_CARDS;
     tools.appendChild(more);
+    tools.appendChild(iconBtn("pill-btn", ICONS.pencil, t("ownCardBtn"), () => editOwnCard(bookId)));
     tools.appendChild(el("span", "spacer"));
     const del = el("button", "link-danger"); del.type = "button"; del.textContent = t("deleteDeck");
     del.addEventListener("click", async () => {
@@ -7204,6 +7287,163 @@
     });
     tools.appendChild(del);
     return tools;
+  }
+
+  /* ---- make your own: a small dialog for writing a card or a question ---- */
+  function openEditor(title, build, onSave, opts){
+    opts = opts || {};
+    const back = el("div", "modal-backdrop own-editor");
+    const card = el("div", "modal-card"); card.setAttribute("role", "dialog"); card.setAttribute("aria-modal", "true");
+    const head = el("div", "modal-head");
+    const h = el("h2"); h.textContent = title; head.appendChild(h);
+    const x = el("button", "modal-close"); x.type = "button"; x.innerHTML = "&times;"; x.setAttribute("aria-label", t("close"));
+    head.appendChild(x); card.appendChild(head);
+    const body = el("div", "modal-body"); card.appendChild(body);
+    const read = build(body);
+    const err = el("div", "setup-error"); err.hidden = true; err.setAttribute("role", "alert"); body.appendChild(err);
+    const row = el("div", "edit-row");
+    const cancel = el("button", "btn-ghost"); cancel.type = "button"; cancel.textContent = t("chatEditCancel"); row.appendChild(cancel);
+    let another = null;
+    if (opts.another) { another = el("button", "btn-ghost"); another.type = "button"; another.textContent = t("ownSaveAnother"); row.appendChild(another); }
+    const save = el("button", "cta"); save.type = "button"; save.textContent = t("ownSave"); row.appendChild(save);
+    body.appendChild(row);
+    back.appendChild(card); document.body.appendChild(back);
+    const close = () => { back.remove(); document.removeEventListener("keydown", onKey); };
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    document.addEventListener("keydown", onKey);
+    x.addEventListener("click", close); cancel.addEventListener("click", close);
+    back.addEventListener("mousedown", (e) => { if (e.target === back) close(); });
+    const commit = (again) => {
+      const value = read();
+      if (value && value.error) { err.textContent = value.error; err.hidden = false; return; }
+      onSave(value);
+      if (again && opts.reset) { opts.reset(); err.hidden = true; } else close();
+    };
+    save.addEventListener("click", () => commit(false));
+    if (another) another.addEventListener("click", () => commit(true));
+    const first = body.querySelector("textarea, input"); if (first) first.focus();
+  }
+  function editorField(body, label, value, rows){
+    const f = el("div", "field");
+    const l = el("label"); l.textContent = label; f.appendChild(l);
+    const box = el("textarea", "own-input"); box.rows = rows || 2; box.value = value || "";
+    f.appendChild(box); body.appendChild(f);
+    return box;
+  }
+
+  // A flashcard you write yourself (or fix one Earmark made).
+  async function editOwnCard(bookId, index){
+    await loadStudyData(bookId);
+    const deck = study.decks.get(bookId);
+    const old = index != null ? deck.cards[index] : null;
+    let front, backBox;
+    openEditor(t(old ? "ownEditCard" : "ownCardBtn"), (body) => {
+      front = editorField(body, t("ownFront"), old && old.front, 2);
+      backBox = editorField(body, t("ownBack"), old && old.back, 3);
+      return () => {
+        const f = front.value.trim(), b = backBox.value.trim();
+        if (!f || !b) return { error: t("ownNeedCard") };
+        return { front: f.slice(0, 600), back: b.slice(0, 900) };
+      };
+    }, (v) => {
+      if (old) { old.front = v.front; old.back = v.back; }
+      else {
+        deck.cards.push({ front: v.front, back: v.back, page: null, known: false, mine: true });
+        if (deck.cards.length > MAX_DECK_CARDS) deck.cards.splice(0, deck.cards.length - MAX_DECK_CARDS);
+        toast(t("ownCardAdded"));
+      }
+      saveDeck(bookId);
+      if (isShowing("cards", bookId)) renderCards();
+    }, { another: !old, reset: () => { front.value = ""; backBox.value = ""; front.focus(); } });
+  }
+
+  // Questions you write yourself, kept with the book.
+  const ownQuizzes = new Map();   // bookId → [{q, options, answer, explain}]
+  async function loadOwnQuiz(bookId){
+    if (ownQuizzes.has(bookId)) return ownQuizzes.get(bookId);
+    let list = [];
+    if (isSavedBook(bookId)) { try { const d = await db.doc("myquiz/" + bookId).get(); if (d.exists) list = d.data().questions || []; } catch (e) {} }
+    ownQuizzes.set(bookId, list);
+    return list;
+  }
+  function saveOwnQuiz(bookId){
+    if (!isSavedBook(bookId)) return;
+    db.doc("myquiz/" + bookId).set({ bookId, questions: ownQuizzes.get(bookId) || [], updatedAt: new Date().toISOString() }).catch(() => toast(t("saveError")));
+  }
+  async function editOwnQuestion(bookId, index){
+    const list = await loadOwnQuiz(bookId);
+    const old = index != null ? list[index] : null;
+    let qBox, optBoxes = [], radios = [], explainBox;
+    const group = "own-correct-" + Date.now();
+    openEditor(t(old ? "ownEditQuestion" : "ownWriteQuestion"), (body) => {
+      qBox = editorField(body, t("ownQuestion"), old && old.q, 2);
+      const f = el("div", "field");
+      const l = el("label"); l.textContent = t("ownAnswers"); f.appendChild(l);
+      for (let k = 0; k < 4; k++) {
+        const row = el("label", "own-option");
+        const r = el("input"); r.type = "radio"; r.name = group; r.value = String(k);
+        r.checked = old ? old.answer === k : k === 0;
+        r.setAttribute("aria-label", t("ownCorrect") + " " + LETTERS[k]);
+        const letter = el("span", "own-letter"); letter.textContent = LETTERS[k];
+        const inp = el("input", "own-input"); inp.type = "text"; inp.value = old && old.options[k] ? old.options[k] : "";
+        row.appendChild(r); row.appendChild(letter); row.appendChild(inp); f.appendChild(row);
+        radios.push(r); optBoxes.push(inp);
+      }
+      body.appendChild(f);
+      explainBox = editorField(body, t("ownExplain"), old && old.explain, 2);
+      return () => {
+        const q = qBox.value.trim();
+        const pick = radios.findIndex(r => r.checked);
+        const raw = optBoxes.map(b => b.value.trim());
+        if (!q || raw.filter(Boolean).length < 2 || !raw[pick]) return { error: t("ownNeedAnswers") };
+        const options = [], map = {};
+        raw.forEach((o, k) => { if (o) { map[k] = options.length; options.push(o.slice(0, 300)); } });
+        return { q: q.slice(0, 600), options, answer: map[pick], explain: explainBox.value.trim().slice(0, 900), mine: true };
+      };
+    }, (v) => {
+      if (old) list[index] = v; else { list.push(v); toast(t("ownQuestionAdded")); }
+      saveOwnQuiz(bookId);
+      if (isShowing("quiz", bookId)) renderQuiz();
+    }, { another: !old, reset: () => { qBox.value = ""; optBoxes.forEach(b => { b.value = ""; }); radios[0].checked = true; explainBox.value = ""; qBox.focus(); } });
+  }
+  function startOwnQuiz(bookId){
+    const list = ownQuizzes.get(bookId) || [];
+    if (!list.length) return;
+    const questions = shuffled(list.slice()).map(q => {
+      const order = shuffled(q.options.map((_, k) => k));
+      return Object.assign({}, q, { options: order.map(k => q.options[k]), answer: order.indexOf(q.answer) });
+    });
+    study.quizzes.set(bookId, { questions, i: 0, picks: [], savedMissed: false, scope: "mine", count: questions.length, target: questions.length, loadingMore: false });
+    renderQuiz();
+  }
+  // The "Your own quiz" box under the quiz setup.
+  function ownQuizSection(bookId){
+    const box = el("div", "own-quiz");
+    const list = ownQuizzes.get(bookId);
+    if (!list) {
+      loadOwnQuiz(bookId).then(() => { if (isShowing("quiz", bookId) && !study.quizzes.get(bookId)) renderQuiz(); });
+      return box;
+    }
+    const h = el("h4"); h.textContent = t("ownQuizTitle"); box.appendChild(h);
+    const p = el("p"); p.textContent = t("ownQuizDesc"); box.appendChild(p);
+    const row = el("div", "study-row");
+    row.appendChild(iconBtn("pill-btn", ICONS.pencil, t("ownWriteQuestion"), () => editOwnQuestion(bookId)));
+    if (list.length) row.appendChild(iconBtn("pill-btn primary", ICONS.quizGlyph.replace(' class="glyph"', ""), t("ownTakeQuiz", { n: list.length }), () => startOwnQuiz(bookId)));
+    box.appendChild(row);
+    if (list.length) {
+      const ul = el("ol", "own-list");
+      list.forEach((q, k) => {
+        const li = el("li");
+        const txt = el("span", "own-q"); txt.textContent = q.q; li.appendChild(txt);
+        const ed = el("button", "link-btn"); ed.type = "button"; ed.textContent = t("chatEdit");
+        ed.addEventListener("click", () => editOwnQuestion(bookId, k));
+        const del = el("button", "link-danger"); del.type = "button"; del.textContent = t("ownDelete");
+        del.addEventListener("click", () => { list.splice(k, 1); saveOwnQuiz(bookId); renderQuiz(); });
+        li.appendChild(ed); li.appendChild(del); ul.appendChild(li);
+      });
+      box.appendChild(ul);
+    }
+    return box;
   }
 
   /* ---- quiz ---- */
@@ -7273,7 +7513,7 @@
     }
     if (study.busy.has("quiz:" + bookId)) { inner.appendChild(busyNote(t("makingQuiz"))); return; }
     const quiz = study.quizzes.get(bookId);
-    if (!quiz) { inner.appendChild(studySetup("quiz", bookId)); return; }
+    if (!quiz) { inner.appendChild(studySetup("quiz", bookId)); inner.appendChild(ownQuizSection(bookId)); return; }
     if (quiz.target == null) quiz.target = quiz.questions.length;
     if (quizDone(quiz)) { renderQuizResults(inner, bookId, quiz); return; }
     if (quiz.i >= quiz.questions.length) { inner.appendChild(busyNote(t("makingQuiz"))); return; }  // next batch still coming
@@ -7434,7 +7674,10 @@
       quiz.i = 0; quiz.picks = []; quiz.savedMissed = false; quiz.target = quiz.questions.length;
       renderQuiz();
     }));
-    actions.appendChild(iconBtn("pill-btn", ICONS.plus, t("newQuiz"), () => makeQuiz(bookId, quiz.scope || "book", quiz.count || total)));
+    actions.appendChild(iconBtn("pill-btn", ICONS.plus, t("newQuiz"), () => {
+      if (quiz.scope === "mine") { study.quizzes.delete(bookId); renderQuiz(); }
+      else makeQuiz(bookId, quiz.scope || "book", quiz.count || total);
+    }));
     inner.appendChild(actions);
 
     if (missed.length) {
@@ -10523,6 +10766,7 @@
     applyLanguage();
     await capsReady;
     await loadLibrary();
+    importShared();
   })();
 })();
 </script>
