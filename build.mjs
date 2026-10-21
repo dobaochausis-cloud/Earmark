@@ -37,7 +37,13 @@ const head = `<!doctype html>
 // The app file starts with its <title>, fonts and styles, then the body markup.
 const bodyStart = app.indexOf('<div class="scrim"');
 if (bodyStart < 0) throw new Error("couldn't find where the page body starts");
-const page = head + app.slice(0, bodyStart).replace(/<title>[^<]*<\/title>/, "<title>Earmark Buddy</title>") + "</head>\n<body>\n" + app.slice(bodyStart) + "\n</body>\n</html>\n";
+// On the website only: the site's name as visible text on the welcome
+// screen, so search engines connect "Earmark Buddy" with this page.
+const anyPdf = '<span data-i18n="chipAnyPdf">Any PDF</span>\n      </div>';
+if (!app.includes(anyPdf)) throw new Error("couldn't find the end of the welcome screen");
+const tagline = '<p class="site-tagline" style="margin-top:28px;font-size:13px;color:var(--ink-faint);text-align:center"><strong>Earmark Buddy</strong> · a free study app to read, ask about and listen to any book</p>';
+const appOut = app.replace(anyPdf, anyPdf + "\n      " + tagline);
+const page = head + appOut.slice(0, bodyStart).replace(/<title>[^<]*<\/title>/, "<title>Earmark Buddy</title>") + "</head>\n<body>\n" + appOut.slice(bodyStart) + "\n</body>\n</html>\n";
 writeFileSync(new URL("./public/index.html", import.meta.url), page);
 // Lets phones add Earmark to the home screen with its logo.
 writeFileSync(new URL("./public/manifest.webmanifest", import.meta.url), JSON.stringify({
