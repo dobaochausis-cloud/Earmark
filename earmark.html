@@ -9078,58 +9078,27 @@
       card.appendChild(difficultyRow());
       card.appendChild(toggleRow());
       const grid = el("div", "mode-grid");
-      // Each game plays differently: aim-and-zap, a timed climb, a word
-      // grid, and a quick true-or-false party game.
+      // Each game plays differently: a timed climb, a word grid, and a
+      // quick true-or-false party game.
       const modes = [
-        ["arena", t("modeRange"), t("modeRangeDesc"), "#8fd16a"],
         ["monkey", t("modeMonkey"), t("modeMonkeyDesc"), "#c9962e"],
         ["crossword", t("modeCrossword"), t("modeCrosswordDesc"), "#6fc8ff"],
         ["fib", t("modeFib"), t("modeFibDesc"), "#ff7ab8"]
       ];
       for (const [id, name, desc, col] of modes) {
-        const arena = id === "arena";
-        const m = el(arena ? "div" : "button", "mode-card" + (arena ? " arena" : ""));
-        if (!arena) m.type = "button";
+        const m = el("button", "mode-card");
+        m.type = "button";
         m.style.setProperty("--mode", col);
         const nm = el("span", "mode-name"); nm.textContent = name; m.appendChild(nm);
         const ds = el("span", "mode-desc"); ds.textContent = desc; m.appendChild(ds);
-        const best = arena ? Math.max(...ARENA_MODES.map(getBest)) : getBest(id);
+        const best = getBest(id);
         if (best) { const bs = el("span", "mode-best"); bs.textContent = id === "monkey" ? t("monkeyBestTrees", { n: best }) : t("gameBest", { s: best }); m.appendChild(bs); }
-        if (arena) {
-          // Pick a gun and how the bots move, then start.
-          const pick = (label, key, options, storage) => {
-            const row = el("div", "range-pick");
-            const l = el("span", "range-pick-label"); l.textContent = label; row.appendChild(l);
-            const seg = el("div", "diff-seg range-seg");
-            for (const [val, text] of options) {
-              const b = el("button", "diff-btn"); b.type = "button"; b.textContent = text;
-              b.setAttribute("aria-pressed", game[key] === val ? "true" : "false");
-              b.addEventListener("click", () => {
-                game[key] = val; safeStorage("set", storage, val);
-                seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
-                if (key === "gun" && game.three) buildGun(game.three, val);
-              });
-              seg.appendChild(b);
-            }
-            row.appendChild(seg);
-            return row;
-          };
-          m.appendChild(pick(t("gunLabel"), "gun", [["pistol", t("gunPistol")], ["rifle", t("gunRifle")]], "earmark_range_gun"));
-          m.appendChild(pick(t("botsLabel"), "botMode", [["strafe", t("botsStrafe")], ["popup", t("botsPopup")]], "earmark_range_bots"));
-          const go = el("button", "mode-play world"); go.type = "button"; go.textContent = t("gameStart");
-          go.disabled = !sample || !!game.noThree;
-          go.addEventListener("click", () => startMode("range"));
-          m.appendChild(go);
-          if (game.noThree) { const n = el("span", "mode-desc"); n.textContent = game.noThree; m.appendChild(n); }
-        } else {
-          const go = el("span", "mode-play"); go.textContent = t("gameStart"); m.appendChild(go);
-          m.disabled = !sample;
-          m.addEventListener("click", () => startMode(id));
-        }
+        const go = el("span", "mode-play"); go.textContent = t("gameStart"); m.appendChild(go);
+        m.disabled = !sample;
+        m.addEventListener("click", () => startMode(id));
         grid.appendChild(m);
       }
       card.appendChild(grid);
-      const how = el("p", "go-how"); how.textContent = t(coarsePointer ? "gameHowTouch" : "gameHowDesktop"); card.appendChild(how);
       if (!sample) { const n = el("div", "setup-note"); n.textContent = t("errSampleUnavailable"); card.appendChild(n); }
       if (game.fetchError) { const e = el("div", "setup-error"); e.setAttribute("role", "alert"); e.textContent = game.fetchError; card.appendChild(e); }
       return;
@@ -9332,31 +9301,8 @@
     }
     renderGameOverlay();
     if (game.phase === "puzzle") { showPuzzleStage(true); puz.paused = false; }
-    if (!game.three) {
-      // Only ever build ONE 3D view, even if this runs again while three.js is
-      // still downloading — a second, never-drawn canvas would sit on top and
-      // show as a solid black screen.
-      if (!game.threeInit) {
-        game.threeInit = loadThree().then(() => {
-          if (game.three) return game.three;
-          const s3 = buildScene($("gameStage"));
-          if (s3) { game.three = s3; buildGun(s3, game.gun); }
-          return s3;
-        });
-      }
-      let built = null;
-      try { built = await game.threeInit; }
-      // No 3D here: the other games still work, only the arena is switched off.
-      catch (e) { game.threeInit = null; game.noThree = t("gameLoadError"); renderGameOverlay(); return; }
-      if (!built) { game.threeInit = null; game.noThree = t("gameNoWebGL"); renderGameOverlay(); return; }
-    }
-    // If the game panel was rebuilt, move the 3D view into the new one.
-    const stageNow = $("gameStage"), cv = game.three.renderer.domElement;
-    if (stageNow && cv.parentNode !== stageNow) stageNow.insertBefore(cv, stageNow.firstChild);
-    sizeScene();
     if (game.phase === "monkey") { showMonkeyStage(true); renderMonkeyPanel(); return; }
     if (game.phase === "puzzle") return;
-    if (!game.raf && study.tab === "game") { game.lastT = performance.now(); game.raf = requestAnimationFrame(gameLoop); }
   }
 
   /* ================= Puzzle games =================
