@@ -3620,6 +3620,34 @@
     fa: {"voiceOnlySome": "بلندخوانی به انگلیسی، اسپانیایی، فرانسوی، چینی، ژاپنی و کره‌ای کار می‌کند."},
     ur: {"voiceOnlySome": "بلند آواز سے پڑھنا انگریزی، ہسپانوی، فرانسیسی، چینی، جاپانی اور کوریائی میں ہے۔"},
   });
+  addStrings({
+    en: {"langVoice": "read aloud", "langNoVoice": "no read-aloud yet"},
+    vi: {"langVoice": "có đọc to", "langNoVoice": "chưa có đọc to"},
+    es: {"langVoice": "lectura en voz alta", "langNoVoice": "aún sin lectura en voz alta"},
+    fr: {"langVoice": "lecture à voix haute", "langNoVoice": "pas encore de lecture à voix haute"},
+    de: {"langVoice": "Vorlesen", "langNoVoice": "noch kein Vorlesen"},
+    pt: {"langVoice": "leitura em voz alta", "langNoVoice": "ainda sem leitura em voz alta"},
+    it: {"langVoice": "lettura ad alta voce", "langNoVoice": "ancora senza lettura ad alta voce"},
+    nl: {"langVoice": "voorlezen", "langNoVoice": "nog geen voorlezen"},
+    ru: {"langVoice": "чтение вслух", "langNoVoice": "пока без чтения вслух"},
+    pl: {"langVoice": "czytanie na głos", "langNoVoice": "jeszcze bez czytania na głos"},
+    tr: {"langVoice": "sesli okuma", "langNoVoice": "henüz sesli okuma yok"},
+    ar: {"langVoice": "قراءة بصوت عالٍ", "langNoVoice": "لا قراءة بصوت عالٍ بعد"},
+    hi: {"langVoice": "ज़ोर से पढ़ना", "langNoVoice": "अभी ज़ोर से पढ़ना नहीं"},
+    id: {"langVoice": "dibacakan", "langNoVoice": "belum bisa dibacakan"},
+    th: {"langVoice": "อ่านออกเสียง", "langNoVoice": "ยังไม่มีการอ่านออกเสียง"},
+    ja: {"langVoice": "読み上げあり", "langNoVoice": "読み上げはまだありません"},
+    ko: {"langVoice": "소리 내어 읽기", "langNoVoice": "아직 소리 내어 읽기 없음"},
+    zh: {"langVoice": "可朗读", "langNoVoice": "暂不支持朗读"},
+    tl: {"langVoice": "binabasa nang malakas", "langNoVoice": "wala pang pagbasa nang malakas"},
+    he: {"langVoice": "הקראה", "langNoVoice": "עדיין בלי הקראה"},
+    el: {"langVoice": "ανάγνωση φωναχτά", "langNoVoice": "χωρίς ανάγνωση φωναχτά ακόμα"},
+    sv: {"langVoice": "uppläsning", "langNoVoice": "ingen uppläsning än"},
+    uk: {"langVoice": "читання вголос", "langNoVoice": "поки без читання вголос"},
+    ro: {"langVoice": "citire cu voce tare", "langNoVoice": "încă fără citire cu voce tare"},
+    fa: {"langVoice": "بلندخوانی", "langNoVoice": "هنوز بلندخوانی ندارد"},
+    ur: {"langVoice": "بلند آواز سے پڑھنا", "langNoVoice": "ابھی بلند آواز سے پڑھنا نہیں"},
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -10925,7 +10953,8 @@
     for (const l of LANGS) {
       const o = el("option");
       o.value = l.code;
-      o.textContent = l.native;
+      // Which languages can be read aloud (see VOICE_LANGS).
+      o.textContent = l.native + (VOICE_LANGS[l.code] ? "  🔊 " + t("langVoice") : "  · " + t("langNoVoice"));
       if (l.code === currentLang) o.selected = true;
       sel.appendChild(o);
     }
@@ -10934,6 +10963,7 @@
     currentLang = e.target.value;
     safeStorage("set", "earmark_lang", currentLang);
     applyLanguage();
+    populateLangSelect();   // the "read aloud" labels in the new language
   });
 
 
