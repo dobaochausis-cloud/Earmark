@@ -1477,6 +1477,8 @@
   ];
 
   const STR = {};
+  // Read-aloud is offered in these six languages only (the ones with a good voice).
+  const VOICE_LANGS = { en: "en-US", es: "es-ES", fr: "fr-FR", zh: "zh-CN", ja: "ja-JP", ko: "ko-KR" };
   function addStrings(pack){
     for (const lang in pack) STR[lang] = Object.assign(STR[lang] || {}, pack[lang]);
   }
@@ -3590,6 +3592,34 @@
     fa: {"setsCardsTitle": "مجموعه کارت‌های تو", "setsQuizTitle": "آزمون‌های تو", "setsByEarmark": "ساخت Earmark", "setsByYou": "ساخت تو", "setsNewEarmark": "مجموعهٔ تازه از Earmark", "setsNewOwn": "مجموعهٔ تازهٔ خودم", "setsNewEarmarkQuiz": "آزمون تازه از Earmark", "setsNewOwnQuiz": "آزمون تازهٔ خودم", "setsAllCards": "همهٔ مجموعه‌ها", "setsAllQuizzes": "همهٔ آزمون‌ها", "setsRename": "تغییر نام", "setsName": "نام", "setsDelete": "حذف این مجموعه", "setsDeleteConfirm": "«{name}» حذف شود؟", "setsCardCount": "{n} کارت · {k} بلد", "setsQuestionCount": "{n} سؤال", "setsBest": "بهترین {s}/{n}", "setsEmptyCards": "هنوز کارتی در این مجموعه نیست.", "setsEmptyQuiz": "هنوز سؤالی نیست. اولی را بنویس.", "setMyCards": "کارت‌های من", "setMyQuiz": "آزمون من", "setMissed": "سؤال‌های غلط آزمون", "pagesRange": "صفحه‌های {a}–{b}"},
     ur: {"setsCardsTitle": "آپ کے کارڈ سیٹ", "setsQuizTitle": "آپ کے کوئز", "setsByEarmark": "Earmark نے بنایا", "setsByYou": "آپ نے بنایا", "setsNewEarmark": "Earmark سے نیا سیٹ", "setsNewOwn": "میرا اپنا نیا سیٹ", "setsNewEarmarkQuiz": "Earmark سے نیا کوئز", "setsNewOwnQuiz": "میرا اپنا نیا کوئز", "setsAllCards": "تمام سیٹ", "setsAllQuizzes": "تمام کوئز", "setsRename": "نام بدلیں", "setsName": "نام", "setsDelete": "یہ سیٹ حذف کریں", "setsDeleteConfirm": "“{name}” حذف کریں؟", "setsCardCount": "{n} کارڈ · {k} یاد", "setsQuestionCount": "{n} سوال", "setsBest": "بہترین {s}/{n}", "setsEmptyCards": "اس سیٹ میں ابھی کوئی کارڈ نہیں۔", "setsEmptyQuiz": "ابھی کوئی سوال نہیں۔ پہلا لکھیں۔", "setMyCards": "میرے کارڈ", "setMyQuiz": "میرا کوئز", "setMissed": "کوئز میں غلط سوال", "pagesRange": "صفحات {a}–{b}"},
   });
+  addStrings({
+    en: {"voiceOnlySome": "Read-aloud works in English, Spanish, French, Chinese, Japanese and Korean."},
+    vi: {"voiceOnlySome": "Đọc to có sẵn bằng tiếng Anh, Tây Ban Nha, Pháp, Trung, Nhật và Hàn."},
+    es: {"voiceOnlySome": "La lectura en voz alta funciona en inglés, español, francés, chino, japonés y coreano."},
+    fr: {"voiceOnlySome": "La lecture à voix haute fonctionne en anglais, espagnol, français, chinois, japonais et coréen."},
+    de: {"voiceOnlySome": "Vorlesen gibt es auf Englisch, Spanisch, Französisch, Chinesisch, Japanisch und Koreanisch."},
+    pt: {"voiceOnlySome": "A leitura em voz alta funciona em inglês, espanhol, francês, chinês, japonês e coreano."},
+    it: {"voiceOnlySome": "La lettura ad alta voce funziona in inglese, spagnolo, francese, cinese, giapponese e coreano."},
+    nl: {"voiceOnlySome": "Voorlezen werkt in het Engels, Spaans, Frans, Chinees, Japans en Koreaans."},
+    ru: {"voiceOnlySome": "Чтение вслух доступно на английском, испанском, французском, китайском, японском и корейском."},
+    pl: {"voiceOnlySome": "Czytanie na głos działa po angielsku, hiszpańsku, francusku, chińsku, japońsku i koreańsku."},
+    tr: {"voiceOnlySome": "Sesli okuma İngilizce, İspanyolca, Fransızca, Çince, Japonca ve Korece çalışır."},
+    ar: {"voiceOnlySome": "القراءة بصوت عالٍ متاحة بالإنجليزية والإسبانية والفرنسية والصينية واليابانية والكورية."},
+    hi: {"voiceOnlySome": "ज़ोर से पढ़ना अंग्रेज़ी, स्पेनिश, फ़्रेंच, चीनी, जापानी और कोरियाई में है।"},
+    id: {"voiceOnlySome": "Bacakan tersedia dalam bahasa Inggris, Spanyol, Prancis, Mandarin, Jepang, dan Korea."},
+    th: {"voiceOnlySome": "การอ่านออกเสียงใช้ได้กับภาษาอังกฤษ สเปน ฝรั่งเศส จีน ญี่ปุ่น และเกาหลี"},
+    ja: {"voiceOnlySome": "読み上げは英語・スペイン語・フランス語・中国語・日本語・韓国語に対応しています。"},
+    ko: {"voiceOnlySome": "소리 내어 읽기는 영어, 스페인어, 프랑스어, 중국어, 일본어, 한국어로 됩니다."},
+    zh: {"voiceOnlySome": "朗读支持英语、西班牙语、法语、中文、日语和韩语。"},
+    tl: {"voiceOnlySome": "Gumagana ang pagbasa nang malakas sa Ingles, Espanyol, Pranses, Tsino, Hapon at Koreano."},
+    he: {"voiceOnlySome": "הקראה זמינה באנגלית, ספרדית, צרפתית, סינית, יפנית וקוריאנית."},
+    el: {"voiceOnlySome": "Η ανάγνωση φωναχτά λειτουργεί σε αγγλικά, ισπανικά, γαλλικά, κινέζικα, ιαπωνικά και κορεατικά."},
+    sv: {"voiceOnlySome": "Uppläsning finns på engelska, spanska, franska, kinesiska, japanska och koreanska."},
+    uk: {"voiceOnlySome": "Читання вголос доступне англійською, іспанською, французькою, китайською, японською та корейською."},
+    ro: {"voiceOnlySome": "Citirea cu voce tare merge în engleză, spaniolă, franceză, chineză, japoneză și coreeană."},
+    fa: {"voiceOnlySome": "بلندخوانی به انگلیسی، اسپانیایی، فرانسوی، چینی، ژاپنی و کره‌ای کار می‌کند."},
+    ur: {"voiceOnlySome": "بلند آواز سے پڑھنا انگریزی، ہسپانوی، فرانسیسی، چینی، جاپانی اور کوریائی میں ہے۔"},
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -3720,6 +3750,7 @@
     if (!hint) return;
     const meta = currentLangMeta();
     hint.hidden = false;
+    if (!VOICE_LANGS[currentLang]) { hint.textContent = t("voiceOnlySome"); return; }
     if (cloudLangFor({ lang: meta.speech })) { hint.textContent = ""; hint.hidden = true; return; }
     const pick = pickDeviceVoice(meta.speech, speech.gender);
     if (!pick.voice) { hint.textContent = t("noVoicesForLang", { lang: meta.native }); return; }
@@ -4243,7 +4274,47 @@
     return w;
   }
 
+  /* Read-aloud is offered in six languages only: the ones with a good voice. */
+  // Which language is this text in? (So an English book is read in English
+  // even when the app is set to Vietnamese.) null = not one of the six.
+  function textLang(text){
+    const sample = String(text || "").slice(0, 3000);
+    const count = (re) => (sample.match(re) || []).length;
+    const letters = count(/\p{L}/gu) || 1;
+    if (count(/[\uAC00-\uD7AF]/g) / letters > 0.2) return "ko";
+    if (count(/[\u3040-\u30FF]/g) / letters > 0.05) return "ja";
+    if (count(/[\u4E00-\u9FFF]/g) / letters > 0.2) return "zh";
+    if (count(/[^\p{Script=Latin}\P{L}]/gu) / letters > 0.3) return null;          // Cyrillic, Arabic, Thai, Hindi…
+    if (count(/[ăâđêôơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/giu) / letters > 0.03) return null;   // Vietnamese
+    const words = sample.toLowerCase().match(/\p{L}+/gu) || [];
+    if (words.length < 4) return null;
+    const lists = {
+      en: "the and of to is that it in was for you with on as are this be have not",
+      es: "el la de que y los las en por una es con para del no se lo como más",
+      fr: "le la les et des est une que dans pour pas du il qui sur au ce elle",
+      other: "der die und das ist nicht ein ich zu mit het een van niet não com uma uma il che non gli della di jest nie się i na ve bir bu ile ang mga yang dan ini itu tidak och är att det på är şu bir ve",
+    };
+    const score = {};
+    for (const k in lists) { const set = new Set(lists[k].split(" ")); score[k] = words.filter(w => set.has(w)).length; }
+    const best = Object.keys(score).sort((a, b) => score[b] - score[a])[0];
+    if (!score[best]) return "en";
+    return best === "other" ? null : best;
+  }
+  function speechLangOf(map){
+    if (map.lang) { const c = String(map.lang).split("-")[0].toLowerCase(); return VOICE_LANGS[c] ? c : null; }
+    const ui = currentLang;
+    const text = map.text || "";
+    // Short app messages (game questions, previews) are in the app's language.
+    if (text.length < 60 && VOICE_LANGS[ui]) return ui;
+    return textLang(text);
+  }
+
   function speakHighlighted(map, onEnd){
+    if (map && map.words && map.words.length) {
+      const vl = speechLangOf(map);
+      if (!vl) { toast(t("voiceOnlySome")); if (onEnd) onEnd(); return; }
+      if (!map.lang) map.lang = VOICE_LANGS[vl];
+    }
     const cloudLang = cloudLangFor(map);
     if ((!speech.supported && !cloudLang) || !map || !map.words.length) { if (onEnd) onEnd(); return; }
     cancelSpeechOutput();
@@ -6055,7 +6126,8 @@
     safeStorage("set", "earmark_rate", e.target.value);
   });
   // The preview goes through exactly the same voice as reading does.
-  function previewVoice(){ speech.speak(t("previewLine"), () => {}); }
+  // In an app language without a voice, the preview is in English.
+  function previewVoice(){ speech.speak(VOICE_LANGS[currentLang] ? t("previewLine") : STR.en.previewLine, () => {}); }
   $("previewVoice").addEventListener("click", previewVoice);
 
   function setPlayIcon(playing){
