@@ -3646,7 +3646,8 @@
     const hint = $("vsHint");
     if (!hint) return;
     const meta = currentLangMeta();
-    if (cloudLangFor({ lang: meta.speech })) { hint.textContent = t("voiceNatural"); return; }
+    hint.hidden = false;
+    if (cloudLangFor({ lang: meta.speech })) { hint.textContent = ""; hint.hidden = true; return; }
     const pick = pickDeviceVoice(meta.speech, speech.gender);
     if (!pick.voice) { hint.textContent = t("noVoicesForLang", { lang: meta.native }); return; }
     hint.textContent = pick.exact ? t("voiceDevice", { name: pick.voice.name.replace(/\s*\(.*\)\s*$/, "") }) : t(speech.gender === "male" ? "voiceNoMale" : "voiceNoFemale", { lang: meta.native });
@@ -4259,7 +4260,13 @@
         const audio = cloudAudio;
         audio.src = url;
         const male = speech.gender === "male";
-        audio.playbackRate = Math.min(2, Math.max(0.5, speech.rate * (male ? 0.94 : unit.style.rate)));
+        const want = speech.rate * (male ? 0.94 : unit.style.rate);
+        // The free female voice sounds young: played a little lower and slower
+        // it becomes calmer and warmer (only at normal speeds or slower, so a
+        // fast speed never turns it squeaky).
+        const calm = !male && want <= 1.05;
+        audio.preservesPitch = !calm; audio.mozPreservesPitch = !calm; audio.webkitPreservesPitch = !calm;
+        audio.playbackRate = Math.min(2, Math.max(0.5, calm ? want * 0.93 : want));
         audio.volume = male ? 0.88 : 1;
         const weights = charWeights(raw);
         const total = weights[raw.length] || 1;
