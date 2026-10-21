@@ -66,7 +66,7 @@ Azure's neural voices sound like real people, and Azure has a **female and a mal
 3. In Cloudflare → your Pages project → **Settings → Variables and Secrets**, add:
    - `AZURE_SPEECH_KEY` = Key 1, as a **Secret** (never paste it anywhere else)
    - `AZURE_SPEECH_REGION` = the region, for example `eastus`
-4. **Redeploy** (Deployments → ⋯ → Retry deployment). Open `/api/tts?test=1`: the tries should say `azure:…Neural`.
+4. **Redeploy** (Deployments → ⋯ → Retry deployment). Open `/api/tts?test=1`: it tries a female and a male voice in **every** language, and each line should say `azure:…Neural`. If a voice name ever changes at Microsoft, Earmark picks another real voice of the same gender for that language by itself.
 
 The free tier covers a set number of characters each month (see Azure's Speech pricing page for the current amount). Every clip is cached, so a class reading the same book only pays once. If the month's allowance runs out, Earmark falls back to the voices below. To swap a voice, add `AZURE_VOICES`, for example `{"en":{"male":"en-US-BrianNeural"}}`.
 

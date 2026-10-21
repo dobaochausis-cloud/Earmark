@@ -580,6 +580,21 @@
   .gt-add{ margin-top:8px; border:1px solid var(--accent); background:none; color:var(--accent-strong); border-radius:99px; padding:4px 10px; font:inherit; font-size:12.5px; font-weight:700; cursor:pointer; }
   .gt-add:disabled{ opacity:.5; }
   .word.w-i{ font-style:italic; }
+  .sets-title{ margin:4px 0 12px; font-size:18px; }
+  .set-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+  .set-item{ display:flex; align-items:center; gap:6px; }
+  .set-main{ flex:1; min-width:0; display:grid; grid-template-columns:1fr auto; grid-template-rows:auto auto; gap:2px 10px; text-align:left;
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 14px; cursor:pointer; color:var(--ink); font:inherit; }
+  .set-main:hover{ border-color:var(--accent); }
+  .set-name{ font-weight:700; font-size:15px; overflow:hidden; text-overflow:ellipsis; }
+  .set-meta{ grid-column:1; font-size:12.5px; color:var(--ink-soft); }
+  .set-tag{ grid-column:2; grid-row:1 / span 2; align-self:center; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    padding:4px 8px; border-radius:999px; background:var(--listen-tint); color:var(--listen); white-space:nowrap; }
+  .set-tag.mine{ background:var(--accent-tint, #CCE4F2); color:var(--accent); }
+  .set-head{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+  .set-head-name{ font-weight:700; font-size:16px; flex:1; min-width:0; }
+  .sets-back{ padding-left:0; }
+  .own-quiz-manage{ border-top:none; margin-top:6px; padding-top:0; }
   .own-quiz{ margin-top:22px; padding-top:18px; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:10px; align-items:center; text-align:center; }
   .own-quiz h4{ margin:0; font-size:16px; }
   .own-quiz p{ margin:0; color:var(--ink-soft); font-size:14px; }
@@ -3547,6 +3562,34 @@
     fa: {"ownCardBtn": "کارت خودم را بسازم", "ownEditCard": "ویرایش کارت", "ownDeleteCard": "حذف کارت", "ownFront": "رو (سؤال یا کلمه)", "ownBack": "پشت (جواب)", "ownSave": "ذخیره", "ownSaveAnother": "ذخیره + افزودن بیشتر", "ownNeedCard": "روی هر دو طرف کارت چیزی بنویسید.", "ownCardAdded": "کارت اضافه شد", "ownCardsDesc": "یا کارت‌های خودتان را بنویسید.", "ownQuizTitle": "آزمون خودت", "ownQuizDesc": "سؤال‌های خودت را بنویس و خودت را بسنج.", "ownWriteQuestion": "نوشتن سؤال", "ownEditQuestion": "ویرایش سؤال", "ownTakeQuiz": "آزمون من ({n})", "ownQuestion": "سؤال", "ownAnswers": "جواب‌ها (روی دایرهٔ کنار جواب درست بزنید)", "ownCorrect": "جواب درست", "ownExplain": "چرا درست است (اختیاری)", "ownNeedAnswers": "سؤال، دست‌کم دو جواب بنویسید و جواب درست را انتخاب کنید.", "ownQuestionAdded": "سؤال اضافه شد", "ownDelete": "حذف"},
     ur: {"ownCardBtn": "اپنا کارڈ بنائیں", "ownEditCard": "کارڈ میں ترمیم", "ownDeleteCard": "کارڈ حذف کریں", "ownFront": "سامنے (سوال یا لفظ)", "ownBack": "پیچھے (جواب)", "ownSave": "محفوظ کریں", "ownSaveAnother": "محفوظ کریں + اور شامل کریں", "ownNeedCard": "کارڈ کے دونوں طرف کچھ لکھیں۔", "ownCardAdded": "کارڈ شامل ہو گیا", "ownCardsDesc": "یا اپنے کارڈ خود لکھیں۔", "ownQuizTitle": "آپ کا اپنا کوئز", "ownQuizDesc": "اپنے سوال لکھیں، پھر خود کو جانچیں۔", "ownWriteQuestion": "سوال لکھیں", "ownEditQuestion": "سوال میں ترمیم", "ownTakeQuiz": "میرا کوئز دیں ({n})", "ownQuestion": "سوال", "ownAnswers": "جواب (صحیح جواب کے ساتھ والے دائرے پر ٹیپ کریں)", "ownCorrect": "صحیح جواب", "ownExplain": "یہ صحیح کیوں ہے (اختیاری)", "ownNeedAnswers": "سوال، کم از کم دو جواب لکھیں اور صحیح منتخب کریں۔", "ownQuestionAdded": "سوال شامل ہو گیا", "ownDelete": "حذف کریں"},
   });
+  addStrings({
+    en: {"setsCardsTitle": "Your flashcard sets", "setsQuizTitle": "Your quizzes", "setsByEarmark": "Made by Earmark", "setsByYou": "Made by you", "setsNewEarmark": "New set by Earmark", "setsNewOwn": "New set of my own", "setsNewEarmarkQuiz": "New quiz by Earmark", "setsNewOwnQuiz": "New quiz of my own", "setsAllCards": "All sets", "setsAllQuizzes": "All quizzes", "setsRename": "Rename", "setsName": "Name", "setsDelete": "Delete this set", "setsDeleteConfirm": "Delete “{name}”?", "setsCardCount": "{n} cards · {k} known", "setsQuestionCount": "{n} questions", "setsBest": "best {s}/{n}", "setsEmptyCards": "No cards in this set yet.", "setsEmptyQuiz": "No questions yet. Write your first one.", "setMyCards": "My cards", "setMyQuiz": "My quiz", "setMissed": "Missed quiz questions", "pagesRange": "Pages {a}–{b}"},
+    vi: {"setsCardsTitle": "Các bộ thẻ của bạn", "setsQuizTitle": "Các bài kiểm tra của bạn", "setsByEarmark": "Earmark tạo", "setsByYou": "Bạn tạo", "setsNewEarmark": "Bộ mới do Earmark tạo", "setsNewOwn": "Tự tạo bộ mới", "setsNewEarmarkQuiz": "Bài mới do Earmark tạo", "setsNewOwnQuiz": "Tự tạo bài mới", "setsAllCards": "Tất cả các bộ", "setsAllQuizzes": "Tất cả bài kiểm tra", "setsRename": "Đổi tên", "setsName": "Tên", "setsDelete": "Xóa bộ này", "setsDeleteConfirm": "Xóa “{name}”?", "setsCardCount": "{n} thẻ · đã thuộc {k}", "setsQuestionCount": "{n} câu hỏi", "setsBest": "cao nhất {s}/{n}", "setsEmptyCards": "Bộ này chưa có thẻ nào.", "setsEmptyQuiz": "Chưa có câu hỏi. Hãy viết câu đầu tiên.", "setMyCards": "Thẻ của tôi", "setMyQuiz": "Bài của tôi", "setMissed": "Câu làm sai trong bài kiểm tra", "pagesRange": "Trang {a}–{b}"},
+    es: {"setsCardsTitle": "Tus juegos de tarjetas", "setsQuizTitle": "Tus cuestionarios", "setsByEarmark": "Hecho por Earmark", "setsByYou": "Hecho por ti", "setsNewEarmark": "Nuevo juego de Earmark", "setsNewOwn": "Nuevo juego propio", "setsNewEarmarkQuiz": "Nuevo cuestionario de Earmark", "setsNewOwnQuiz": "Nuevo cuestionario propio", "setsAllCards": "Todos los juegos", "setsAllQuizzes": "Todos los cuestionarios", "setsRename": "Renombrar", "setsName": "Nombre", "setsDelete": "Borrar este juego", "setsDeleteConfirm": "¿Borrar «{name}»?", "setsCardCount": "{n} tarjetas · {k} sabidas", "setsQuestionCount": "{n} preguntas", "setsBest": "mejor {s}/{n}", "setsEmptyCards": "Aún no hay tarjetas.", "setsEmptyQuiz": "Aún no hay preguntas. Escribe la primera.", "setMyCards": "Mis tarjetas", "setMyQuiz": "Mi cuestionario", "setMissed": "Preguntas falladas", "pagesRange": "Páginas {a}–{b}"},
+    fr: {"setsCardsTitle": "Tes paquets de cartes", "setsQuizTitle": "Tes quiz", "setsByEarmark": "Fait par Earmark", "setsByYou": "Fait par toi", "setsNewEarmark": "Nouveau paquet par Earmark", "setsNewOwn": "Nouveau paquet perso", "setsNewEarmarkQuiz": "Nouveau quiz par Earmark", "setsNewOwnQuiz": "Nouveau quiz perso", "setsAllCards": "Tous les paquets", "setsAllQuizzes": "Tous les quiz", "setsRename": "Renommer", "setsName": "Nom", "setsDelete": "Supprimer ce paquet", "setsDeleteConfirm": "Supprimer « {name} » ?", "setsCardCount": "{n} cartes · {k} sues", "setsQuestionCount": "{n} questions", "setsBest": "meilleur {s}/{n}", "setsEmptyCards": "Pas encore de cartes.", "setsEmptyQuiz": "Pas encore de questions. Écris la première.", "setMyCards": "Mes cartes", "setMyQuiz": "Mon quiz", "setMissed": "Questions ratées", "pagesRange": "Pages {a}–{b}"},
+    de: {"setsCardsTitle": "Deine Kartensets", "setsQuizTitle": "Deine Quiz", "setsByEarmark": "Von Earmark", "setsByYou": "Von dir", "setsNewEarmark": "Neues Set von Earmark", "setsNewOwn": "Eigenes neues Set", "setsNewEarmarkQuiz": "Neues Quiz von Earmark", "setsNewOwnQuiz": "Eigenes neues Quiz", "setsAllCards": "Alle Sets", "setsAllQuizzes": "Alle Quiz", "setsRename": "Umbenennen", "setsName": "Name", "setsDelete": "Dieses Set löschen", "setsDeleteConfirm": "„{name}“ löschen?", "setsCardCount": "{n} Karten · {k} gewusst", "setsQuestionCount": "{n} Fragen", "setsBest": "beste {s}/{n}", "setsEmptyCards": "Noch keine Karten.", "setsEmptyQuiz": "Noch keine Fragen. Schreib die erste.", "setMyCards": "Meine Karten", "setMyQuiz": "Mein Quiz", "setMissed": "Falsch beantwortete Fragen", "pagesRange": "Seiten {a}–{b}"},
+    pt: {"setsCardsTitle": "Seus conjuntos de cartões", "setsQuizTitle": "Seus quizzes", "setsByEarmark": "Feito pelo Earmark", "setsByYou": "Feito por você", "setsNewEarmark": "Novo conjunto do Earmark", "setsNewOwn": "Novo conjunto meu", "setsNewEarmarkQuiz": "Novo quiz do Earmark", "setsNewOwnQuiz": "Novo quiz meu", "setsAllCards": "Todos os conjuntos", "setsAllQuizzes": "Todos os quizzes", "setsRename": "Renomear", "setsName": "Nome", "setsDelete": "Excluir este conjunto", "setsDeleteConfirm": "Excluir “{name}”?", "setsCardCount": "{n} cartões · {k} sabidos", "setsQuestionCount": "{n} perguntas", "setsBest": "melhor {s}/{n}", "setsEmptyCards": "Ainda não há cartões.", "setsEmptyQuiz": "Ainda não há perguntas. Escreva a primeira.", "setMyCards": "Meus cartões", "setMyQuiz": "Meu quiz", "setMissed": "Perguntas erradas", "pagesRange": "Páginas {a}–{b}"},
+    it: {"setsCardsTitle": "I tuoi set di carte", "setsQuizTitle": "I tuoi quiz", "setsByEarmark": "Fatto da Earmark", "setsByYou": "Fatto da te", "setsNewEarmark": "Nuovo set di Earmark", "setsNewOwn": "Nuovo set mio", "setsNewEarmarkQuiz": "Nuovo quiz di Earmark", "setsNewOwnQuiz": "Nuovo quiz mio", "setsAllCards": "Tutti i set", "setsAllQuizzes": "Tutti i quiz", "setsRename": "Rinomina", "setsName": "Nome", "setsDelete": "Elimina questo set", "setsDeleteConfirm": "Eliminare «{name}»?", "setsCardCount": "{n} carte · {k} sapute", "setsQuestionCount": "{n} domande", "setsBest": "migliore {s}/{n}", "setsEmptyCards": "Ancora nessuna carta.", "setsEmptyQuiz": "Ancora nessuna domanda. Scrivi la prima.", "setMyCards": "Le mie carte", "setMyQuiz": "Il mio quiz", "setMissed": "Domande sbagliate", "pagesRange": "Pagine {a}–{b}"},
+    nl: {"setsCardsTitle": "Je kaartsets", "setsQuizTitle": "Je quizzen", "setsByEarmark": "Gemaakt door Earmark", "setsByYou": "Gemaakt door jou", "setsNewEarmark": "Nieuwe set van Earmark", "setsNewOwn": "Eigen nieuwe set", "setsNewEarmarkQuiz": "Nieuwe quiz van Earmark", "setsNewOwnQuiz": "Eigen nieuwe quiz", "setsAllCards": "Alle sets", "setsAllQuizzes": "Alle quizzen", "setsRename": "Hernoemen", "setsName": "Naam", "setsDelete": "Deze set verwijderen", "setsDeleteConfirm": "‘{name}’ verwijderen?", "setsCardCount": "{n} kaarten · {k} gekend", "setsQuestionCount": "{n} vragen", "setsBest": "beste {s}/{n}", "setsEmptyCards": "Nog geen kaarten.", "setsEmptyQuiz": "Nog geen vragen. Schrijf de eerste.", "setMyCards": "Mijn kaarten", "setMyQuiz": "Mijn quiz", "setMissed": "Fout beantwoorde vragen", "pagesRange": "Pagina’s {a}–{b}"},
+    ru: {"setsCardsTitle": "Ваши наборы карточек", "setsQuizTitle": "Ваши тесты", "setsByEarmark": "Создано Earmark", "setsByYou": "Создано вами", "setsNewEarmark": "Новый набор от Earmark", "setsNewOwn": "Свой новый набор", "setsNewEarmarkQuiz": "Новый тест от Earmark", "setsNewOwnQuiz": "Свой новый тест", "setsAllCards": "Все наборы", "setsAllQuizzes": "Все тесты", "setsRename": "Переименовать", "setsName": "Название", "setsDelete": "Удалить набор", "setsDeleteConfirm": "Удалить «{name}»?", "setsCardCount": "{n} карт. · выучено {k}", "setsQuestionCount": "{n} вопр.", "setsBest": "лучший {s}/{n}", "setsEmptyCards": "В наборе пока нет карточек.", "setsEmptyQuiz": "Вопросов пока нет. Напишите первый.", "setMyCards": "Мои карточки", "setMyQuiz": "Мой тест", "setMissed": "Ошибки в тестах", "pagesRange": "Стр. {a}–{b}"},
+    pl: {"setsCardsTitle": "Twoje zestawy fiszek", "setsQuizTitle": "Twoje quizy", "setsByEarmark": "Od Earmark", "setsByYou": "Twoje", "setsNewEarmark": "Nowy zestaw od Earmark", "setsNewOwn": "Własny nowy zestaw", "setsNewEarmarkQuiz": "Nowy quiz od Earmark", "setsNewOwnQuiz": "Własny nowy quiz", "setsAllCards": "Wszystkie zestawy", "setsAllQuizzes": "Wszystkie quizy", "setsRename": "Zmień nazwę", "setsName": "Nazwa", "setsDelete": "Usuń ten zestaw", "setsDeleteConfirm": "Usunąć „{name}”?", "setsCardCount": "{n} fiszek · {k} umiesz", "setsQuestionCount": "{n} pytań", "setsBest": "najlepiej {s}/{n}", "setsEmptyCards": "W tym zestawie nie ma jeszcze fiszek.", "setsEmptyQuiz": "Brak pytań. Napisz pierwsze.", "setMyCards": "Moje fiszki", "setMyQuiz": "Mój quiz", "setMissed": "Błędne odpowiedzi z quizów", "pagesRange": "Strony {a}–{b}"},
+    tr: {"setsCardsTitle": "Kart setlerin", "setsQuizTitle": "Testlerin", "setsByEarmark": "Earmark yaptı", "setsByYou": "Sen yaptın", "setsNewEarmark": "Earmark'tan yeni set", "setsNewOwn": "Kendi yeni setim", "setsNewEarmarkQuiz": "Earmark'tan yeni test", "setsNewOwnQuiz": "Kendi yeni testim", "setsAllCards": "Tüm setler", "setsAllQuizzes": "Tüm testler", "setsRename": "Yeniden adlandır", "setsName": "Ad", "setsDelete": "Bu seti sil", "setsDeleteConfirm": "“{name}” silinsin mi?", "setsCardCount": "{n} kart · {k} biliniyor", "setsQuestionCount": "{n} soru", "setsBest": "en iyi {s}/{n}", "setsEmptyCards": "Bu sette henüz kart yok.", "setsEmptyQuiz": "Henüz soru yok. İlkini yaz.", "setMyCards": "Kartlarım", "setMyQuiz": "Testim", "setMissed": "Yanlış yapılan sorular", "pagesRange": "Sayfa {a}–{b}"},
+    ar: {"setsCardsTitle": "مجموعات بطاقاتك", "setsQuizTitle": "اختباراتك", "setsByEarmark": "من صنع Earmark", "setsByYou": "من صنعك", "setsNewEarmark": "مجموعة جديدة من Earmark", "setsNewOwn": "مجموعة جديدة خاصة بي", "setsNewEarmarkQuiz": "اختبار جديد من Earmark", "setsNewOwnQuiz": "اختبار جديد خاص بي", "setsAllCards": "كل المجموعات", "setsAllQuizzes": "كل الاختبارات", "setsRename": "إعادة تسمية", "setsName": "الاسم", "setsDelete": "احذف هذه المجموعة", "setsDeleteConfirm": "حذف «{name}»؟", "setsCardCount": "{n} بطاقة · {k} محفوظة", "setsQuestionCount": "{n} سؤال", "setsBest": "الأفضل {s}/{n}", "setsEmptyCards": "لا توجد بطاقات بعد.", "setsEmptyQuiz": "لا توجد أسئلة بعد. اكتب أول سؤال.", "setMyCards": "بطاقاتي", "setMyQuiz": "اختباري", "setMissed": "أسئلة أخطأت فيها", "pagesRange": "الصفحات {a}–{b}"},
+    hi: {"setsCardsTitle": "आपके फ़्लैशकार्ड सेट", "setsQuizTitle": "आपकी क्विज़", "setsByEarmark": "Earmark ने बनाया", "setsByYou": "आपने बनाया", "setsNewEarmark": "Earmark से नया सेट", "setsNewOwn": "मेरा अपना नया सेट", "setsNewEarmarkQuiz": "Earmark से नई क्विज़", "setsNewOwnQuiz": "मेरी अपनी नई क्विज़", "setsAllCards": "सभी सेट", "setsAllQuizzes": "सभी क्विज़", "setsRename": "नाम बदलें", "setsName": "नाम", "setsDelete": "यह सेट हटाएँ", "setsDeleteConfirm": "“{name}” हटाएँ?", "setsCardCount": "{n} कार्ड · {k} याद", "setsQuestionCount": "{n} सवाल", "setsBest": "सबसे अच्छा {s}/{n}", "setsEmptyCards": "इस सेट में अभी कोई कार्ड नहीं।", "setsEmptyQuiz": "अभी कोई सवाल नहीं। पहला लिखें।", "setMyCards": "मेरे कार्ड", "setMyQuiz": "मेरी क्विज़", "setMissed": "क्विज़ में गलत सवाल", "pagesRange": "पेज {a}–{b}"},
+    id: {"setsCardsTitle": "Set kartumu", "setsQuizTitle": "Kuismu", "setsByEarmark": "Dibuat Earmark", "setsByYou": "Dibuat olehmu", "setsNewEarmark": "Set baru dari Earmark", "setsNewOwn": "Set baru buatanku", "setsNewEarmarkQuiz": "Kuis baru dari Earmark", "setsNewOwnQuiz": "Kuis baru buatanku", "setsAllCards": "Semua set", "setsAllQuizzes": "Semua kuis", "setsRename": "Ganti nama", "setsName": "Nama", "setsDelete": "Hapus set ini", "setsDeleteConfirm": "Hapus “{name}”?", "setsCardCount": "{n} kartu · {k} hafal", "setsQuestionCount": "{n} pertanyaan", "setsBest": "terbaik {s}/{n}", "setsEmptyCards": "Belum ada kartu di set ini.", "setsEmptyQuiz": "Belum ada pertanyaan. Tulis yang pertama.", "setMyCards": "Kartuku", "setMyQuiz": "Kuisku", "setMissed": "Soal kuis yang salah", "pagesRange": "Halaman {a}–{b}"},
+    th: {"setsCardsTitle": "ชุดบัตรของคุณ", "setsQuizTitle": "แบบทดสอบของคุณ", "setsByEarmark": "Earmark ทำ", "setsByYou": "คุณทำ", "setsNewEarmark": "ชุดใหม่จาก Earmark", "setsNewOwn": "ชุดใหม่ของฉันเอง", "setsNewEarmarkQuiz": "แบบทดสอบใหม่จาก Earmark", "setsNewOwnQuiz": "แบบทดสอบใหม่ของฉันเอง", "setsAllCards": "ทุกชุด", "setsAllQuizzes": "แบบทดสอบทั้งหมด", "setsRename": "เปลี่ยนชื่อ", "setsName": "ชื่อ", "setsDelete": "ลบชุดนี้", "setsDeleteConfirm": "ลบ “{name}” ไหม", "setsCardCount": "{n} บัตร · จำได้ {k}", "setsQuestionCount": "{n} คำถาม", "setsBest": "ดีที่สุด {s}/{n}", "setsEmptyCards": "ชุดนี้ยังไม่มีบัตร", "setsEmptyQuiz": "ยังไม่มีคำถาม เขียนข้อแรกเลย", "setMyCards": "บัตรของฉัน", "setMyQuiz": "แบบทดสอบของฉัน", "setMissed": "ข้อที่ตอบผิด", "pagesRange": "หน้า {a}–{b}"},
+    ja: {"setsCardsTitle": "あなたのカードセット", "setsQuizTitle": "あなたのクイズ", "setsByEarmark": "Earmarkが作成", "setsByYou": "あなたが作成", "setsNewEarmark": "Earmarkで新しいセット", "setsNewOwn": "自分で新しいセット", "setsNewEarmarkQuiz": "Earmarkで新しいクイズ", "setsNewOwnQuiz": "自分で新しいクイズ", "setsAllCards": "すべてのセット", "setsAllQuizzes": "すべてのクイズ", "setsRename": "名前を変更", "setsName": "名前", "setsDelete": "このセットを削除", "setsDeleteConfirm": "「{name}」を削除しますか?", "setsCardCount": "{n}枚 · 覚えた{k}", "setsQuestionCount": "{n}問", "setsBest": "最高 {s}/{n}", "setsEmptyCards": "このセットにはまだカードがありません。", "setsEmptyQuiz": "まだ問題がありません。最初の1問を書きましょう。", "setMyCards": "自分のカード", "setMyQuiz": "自分のクイズ", "setMissed": "クイズで間違えた問題", "pagesRange": "{a}–{b}ページ"},
+    ko: {"setsCardsTitle": "내 카드 세트", "setsQuizTitle": "내 퀴즈", "setsByEarmark": "Earmark가 만듦", "setsByYou": "내가 만듦", "setsNewEarmark": "Earmark로 새 세트", "setsNewOwn": "직접 새 세트", "setsNewEarmarkQuiz": "Earmark로 새 퀴즈", "setsNewOwnQuiz": "직접 새 퀴즈", "setsAllCards": "모든 세트", "setsAllQuizzes": "모든 퀴즈", "setsRename": "이름 바꾸기", "setsName": "이름", "setsDelete": "이 세트 삭제", "setsDeleteConfirm": "“{name}”을(를) 삭제할까요?", "setsCardCount": "카드 {n}장 · 외운 카드 {k}", "setsQuestionCount": "질문 {n}개", "setsBest": "최고 {s}/{n}", "setsEmptyCards": "이 세트에는 아직 카드가 없어요.", "setsEmptyQuiz": "아직 질문이 없어요. 첫 질문을 써 보세요.", "setMyCards": "내 카드", "setMyQuiz": "내 퀴즈", "setMissed": "퀴즈에서 틀린 문제", "pagesRange": "{a}–{b}쪽"},
+    zh: {"setsCardsTitle": "你的卡片组", "setsQuizTitle": "你的测验", "setsByEarmark": "Earmark 制作", "setsByYou": "你制作", "setsNewEarmark": "Earmark 新建卡片组", "setsNewOwn": "自己新建卡片组", "setsNewEarmarkQuiz": "Earmark 新建测验", "setsNewOwnQuiz": "自己新建测验", "setsAllCards": "所有卡片组", "setsAllQuizzes": "所有测验", "setsRename": "重命名", "setsName": "名称", "setsDelete": "删除这组", "setsDeleteConfirm": "删除“{name}”?", "setsCardCount": "{n} 张 · 已掌握 {k}", "setsQuestionCount": "{n} 题", "setsBest": "最佳 {s}/{n}", "setsEmptyCards": "这组还没有卡片。", "setsEmptyQuiz": "还没有题目。写下第一题吧。", "setMyCards": "我的卡片", "setMyQuiz": "我的测验", "setMissed": "测验错题", "pagesRange": "第 {a}–{b} 页"},
+    tl: {"setsCardsTitle": "Mga set ng card mo", "setsQuizTitle": "Mga quiz mo", "setsByEarmark": "Gawa ng Earmark", "setsByYou": "Gawa mo", "setsNewEarmark": "Bagong set mula sa Earmark", "setsNewOwn": "Sarili kong bagong set", "setsNewEarmarkQuiz": "Bagong quiz mula sa Earmark", "setsNewOwnQuiz": "Sarili kong bagong quiz", "setsAllCards": "Lahat ng set", "setsAllQuizzes": "Lahat ng quiz", "setsRename": "Palitan ang pangalan", "setsName": "Pangalan", "setsDelete": "Burahin ang set na ito", "setsDeleteConfirm": "Burahin ang “{name}”?", "setsCardCount": "{n} card · {k} alam na", "setsQuestionCount": "{n} tanong", "setsBest": "pinakamataas {s}/{n}", "setsEmptyCards": "Wala pang card dito.", "setsEmptyQuiz": "Wala pang tanong. Isulat ang una.", "setMyCards": "Mga card ko", "setMyQuiz": "Quiz ko", "setMissed": "Mga maling sagot sa quiz", "pagesRange": "Pahina {a}–{b}"},
+    he: {"setsCardsTitle": "ערכות הכרטיסים שלך", "setsQuizTitle": "החידונים שלך", "setsByEarmark": "נוצר ע״י Earmark", "setsByYou": "נוצר על ידך", "setsNewEarmark": "ערכה חדשה מ-Earmark", "setsNewOwn": "ערכה חדשה משלי", "setsNewEarmarkQuiz": "חידון חדש מ-Earmark", "setsNewOwnQuiz": "חידון חדש משלי", "setsAllCards": "כל הערכות", "setsAllQuizzes": "כל החידונים", "setsRename": "שינוי שם", "setsName": "שם", "setsDelete": "מחק ערכה זו", "setsDeleteConfirm": "למחוק את „{name}”?", "setsCardCount": "{n} כרטיסים · {k} ידועים", "setsQuestionCount": "{n} שאלות", "setsBest": "הכי טוב {s}/{n}", "setsEmptyCards": "אין עדיין כרטיסים בערכה.", "setsEmptyQuiz": "אין עדיין שאלות. כתבו את הראשונה.", "setMyCards": "הכרטיסים שלי", "setMyQuiz": "החידון שלי", "setMissed": "שאלות שטעיתי בהן", "pagesRange": "עמודים {a}–{b}"},
+    el: {"setsCardsTitle": "Τα σετ καρτών σου", "setsQuizTitle": "Τα κουίζ σου", "setsByEarmark": "Από το Earmark", "setsByYou": "Από εσένα", "setsNewEarmark": "Νέο σετ από το Earmark", "setsNewOwn": "Δικό μου νέο σετ", "setsNewEarmarkQuiz": "Νέο κουίζ από το Earmark", "setsNewOwnQuiz": "Δικό μου νέο κουίζ", "setsAllCards": "Όλα τα σετ", "setsAllQuizzes": "Όλα τα κουίζ", "setsRename": "Μετονομασία", "setsName": "Όνομα", "setsDelete": "Διαγραφή σετ", "setsDeleteConfirm": "Διαγραφή «{name}»;", "setsCardCount": "{n} κάρτες · {k} γνωστές", "setsQuestionCount": "{n} ερωτήσεις", "setsBest": "καλύτερο {s}/{n}", "setsEmptyCards": "Δεν υπάρχουν κάρτες ακόμα.", "setsEmptyQuiz": "Δεν υπάρχουν ερωτήσεις. Γράψε την πρώτη.", "setMyCards": "Οι κάρτες μου", "setMyQuiz": "Το κουίζ μου", "setMissed": "Λάθη από κουίζ", "pagesRange": "Σελίδες {a}–{b}"},
+    sv: {"setsCardsTitle": "Dina kortlekar", "setsQuizTitle": "Dina quiz", "setsByEarmark": "Gjort av Earmark", "setsByYou": "Gjort av dig", "setsNewEarmark": "Ny lek från Earmark", "setsNewOwn": "Egen ny lek", "setsNewEarmarkQuiz": "Nytt quiz från Earmark", "setsNewOwnQuiz": "Eget nytt quiz", "setsAllCards": "Alla lekar", "setsAllQuizzes": "Alla quiz", "setsRename": "Byt namn", "setsName": "Namn", "setsDelete": "Ta bort leken", "setsDeleteConfirm": "Ta bort ”{name}”?", "setsCardCount": "{n} kort · {k} kan", "setsQuestionCount": "{n} frågor", "setsBest": "bästa {s}/{n}", "setsEmptyCards": "Inga kort i leken än.", "setsEmptyQuiz": "Inga frågor än. Skriv den första.", "setMyCards": "Mina kort", "setMyQuiz": "Mitt quiz", "setMissed": "Missade quizfrågor", "pagesRange": "Sidor {a}–{b}"},
+    uk: {"setsCardsTitle": "Ваші набори карток", "setsQuizTitle": "Ваші тести", "setsByEarmark": "Створено Earmark", "setsByYou": "Створено вами", "setsNewEarmark": "Новий набір від Earmark", "setsNewOwn": "Свій новий набір", "setsNewEarmarkQuiz": "Новий тест від Earmark", "setsNewOwnQuiz": "Свій новий тест", "setsAllCards": "Усі набори", "setsAllQuizzes": "Усі тести", "setsRename": "Перейменувати", "setsName": "Назва", "setsDelete": "Видалити набір", "setsDeleteConfirm": "Видалити «{name}»?", "setsCardCount": "{n} карт. · вивчено {k}", "setsQuestionCount": "{n} пит.", "setsBest": "найкраще {s}/{n}", "setsEmptyCards": "У наборі ще немає карток.", "setsEmptyQuiz": "Питань ще немає. Напишіть перше.", "setMyCards": "Мої картки", "setMyQuiz": "Мій тест", "setMissed": "Помилки в тестах", "pagesRange": "Стор. {a}–{b}"},
+    ro: {"setsCardsTitle": "Seturile tale de fișe", "setsQuizTitle": "Testele tale", "setsByEarmark": "Făcut de Earmark", "setsByYou": "Făcut de tine", "setsNewEarmark": "Set nou de la Earmark", "setsNewOwn": "Set nou al meu", "setsNewEarmarkQuiz": "Test nou de la Earmark", "setsNewOwnQuiz": "Test nou al meu", "setsAllCards": "Toate seturile", "setsAllQuizzes": "Toate testele", "setsRename": "Redenumește", "setsName": "Nume", "setsDelete": "Șterge acest set", "setsDeleteConfirm": "Ștergi „{name}”?", "setsCardCount": "{n} fișe · {k} știute", "setsQuestionCount": "{n} întrebări", "setsBest": "cel mai bun {s}/{n}", "setsEmptyCards": "Încă nu sunt fișe.", "setsEmptyQuiz": "Încă nu sunt întrebări. Scrie-o pe prima.", "setMyCards": "Fișele mele", "setMyQuiz": "Testul meu", "setMissed": "Întrebări greșite", "pagesRange": "Paginile {a}–{b}"},
+    fa: {"setsCardsTitle": "مجموعه کارت‌های تو", "setsQuizTitle": "آزمون‌های تو", "setsByEarmark": "ساخت Earmark", "setsByYou": "ساخت تو", "setsNewEarmark": "مجموعهٔ تازه از Earmark", "setsNewOwn": "مجموعهٔ تازهٔ خودم", "setsNewEarmarkQuiz": "آزمون تازه از Earmark", "setsNewOwnQuiz": "آزمون تازهٔ خودم", "setsAllCards": "همهٔ مجموعه‌ها", "setsAllQuizzes": "همهٔ آزمون‌ها", "setsRename": "تغییر نام", "setsName": "نام", "setsDelete": "حذف این مجموعه", "setsDeleteConfirm": "«{name}» حذف شود؟", "setsCardCount": "{n} کارت · {k} بلد", "setsQuestionCount": "{n} سؤال", "setsBest": "بهترین {s}/{n}", "setsEmptyCards": "هنوز کارتی در این مجموعه نیست.", "setsEmptyQuiz": "هنوز سؤالی نیست. اولی را بنویس.", "setMyCards": "کارت‌های من", "setMyQuiz": "آزمون من", "setMissed": "سؤال‌های غلط آزمون", "pagesRange": "صفحه‌های {a}–{b}"},
+    ur: {"setsCardsTitle": "آپ کے کارڈ سیٹ", "setsQuizTitle": "آپ کے کوئز", "setsByEarmark": "Earmark نے بنایا", "setsByYou": "آپ نے بنایا", "setsNewEarmark": "Earmark سے نیا سیٹ", "setsNewOwn": "میرا اپنا نیا سیٹ", "setsNewEarmarkQuiz": "Earmark سے نیا کوئز", "setsNewOwnQuiz": "میرا اپنا نیا کوئز", "setsAllCards": "تمام سیٹ", "setsAllQuizzes": "تمام کوئز", "setsRename": "نام بدلیں", "setsName": "نام", "setsDelete": "یہ سیٹ حذف کریں", "setsDeleteConfirm": "“{name}” حذف کریں؟", "setsCardCount": "{n} کارڈ · {k} یاد", "setsQuestionCount": "{n} سوال", "setsBest": "بہترین {s}/{n}", "setsEmptyCards": "اس سیٹ میں ابھی کوئی کارڈ نہیں۔", "setsEmptyQuiz": "ابھی کوئی سوال نہیں۔ پہلا لکھیں۔", "setMyCards": "میرے کارڈ", "setMyQuiz": "میرا کوئز", "setMissed": "کوئز میں غلط سوال", "pagesRange": "صفحات {a}–{b}"},
+  });
   // LANG_PACKS_END
 
   function currentLangMeta(){ return LANGS.find(l => l.code === currentLang) || LANGS[0]; }
@@ -6293,7 +6336,7 @@
      word highlighting, pause and resume as the rest of the app.
      Decks and quiz scores are saved per book in `db` (decks/<bookId>,
      quizStats/<bookId>); outside Claude they live for this visit only. */
-  const MAX_DECK_CARDS = 200;
+  const MAX_DECK_CARDS = 800;   // all sets of one book together
   const study = {
     tab: "ask",
     decks: new Map(),     // bookId -> { cards: [{front, back, page, known}] }
@@ -6729,10 +6772,12 @@
         const [d, q] = await Promise.all([db.doc("decks/" + bookId).get(), db.doc("quizStats/" + bookId).get()]);
         const dd = d.exists ? d.data() : null;
         if (dd && Array.isArray(dd.cards)) deck.cards = dd.cards.map(c => Object.assign({}, c));
+        if (dd && Array.isArray(dd.sets)) deck.sets = dd.sets.map(x => Object.assign({}, x));
         const qd = q.exists ? q.data() : null;
         if (qd && typeof qd.last === "number") stats = Object.assign({}, qd);
       } catch (e) { /* start empty */ }
     }
+    migrateDeckSets(deck);
     if (!study.decks.has(bookId)) study.decks.set(bookId, deck);
     if (stats && !study.quizStats.has(bookId)) study.quizStats.set(bookId, stats);
   }
@@ -6741,7 +6786,7 @@
     if (!isSavedBook(bookId)) return;
     const deck = study.decks.get(bookId);
     if (!deck) return;
-    db.doc("decks/" + bookId).set({ bookId, cards: deck.cards, updatedAt: new Date().toISOString() }).catch(() => toast(t("saveError")));
+    db.doc("decks/" + bookId).set({ bookId, cards: deck.cards, sets: deck.sets || [], updatedAt: new Date().toISOString() }).catch(() => toast(t("saveError")));
   }
 
   function saveQuizStats(bookId){
@@ -6762,7 +6807,8 @@
       try { await db.doc("vocab/" + bookId).delete(); } catch (e) {}
       try { await db.doc("chats/" + bookId).delete(); } catch (e) {}
       try { await db.doc("myquiz/" + bookId).delete(); } catch (e) {}
-      ownQuizzes.delete(bookId);
+      try { await db.doc("quizsets/" + bookId).delete(); } catch (e) {}
+      quizSets.delete(bookId);
       state.chatByBook.delete(bookId); chatLoaded.delete(bookId);
       vocab.lists.delete(bookId);
       guides.delete(bookId);
@@ -7104,19 +7150,26 @@
       await loadStudyData(bookId);
       const book = state.books.find(b => b.id === bookId) || { title: "" };
       const deck = study.decks.get(bookId);
-      const avoid = append ? deck.cards.slice(-40).map(c => c.front.slice(0, 60)) : [];
+      const pos0 = study.deckPos.get(bookId) || {};
+      const target = append ? deck.sets.find(x => x.id === pos0.set) : null;
+      const avoid = target ? deck.cards.filter(c => c.set === target.id).slice(-40).map(c => c.front.slice(0, 60)) : [];
       const raw = await sample.json(flashcardPrompt(book, studyExcerpts(bookId, loaded, scope), count, avoid), { modelTier: "default", cache: false });
       const cards = cleanCards(raw);
       if (!cards.length) throw { code: "invalid_json" };
-      if (append) {
-        const had = deck.cards.length;
-        deck.cards = deck.cards.concat(cards).slice(0, MAX_DECK_CARDS);
+      if (target) {
+        const had = deck.cards.filter(c => c.set === target.id).length;
+        cards.forEach(c => { c.set = target.id; });
+        deck.cards = deck.cards.concat(cards).slice(-MAX_DECK_CARDS);
         const pos = study.deckPos.get(bookId);
         if (pos) { pos.onlyLearning = false; pos.i = had; pos.flipped = false; }
-        toast(t("addedCards", { n: deck.cards.length - had }));
+        toast(t("addedCards", { n: cards.length }));
       } else {
-        deck.cards = cards;
-        study.deckPos.set(bookId, { i: 0, flipped: false, onlyLearning: false });
+        // A new set, named after what it covers ("Whole book", a chapter, pages…).
+        const set = { id: newSetId(), name: scopeName(bookId, scope), mine: false, scope };
+        deck.sets.push(set);
+        cards.forEach(c => { c.set = set.id; });
+        deck.cards = deck.cards.concat(cards).slice(-MAX_DECK_CARDS);
+        study.deckPos.set(bookId, { i: 0, flipped: false, onlyLearning: false, set: set.id });
       }
       saveDeck(bookId);
     } catch (e) {
@@ -7128,11 +7181,78 @@
     }
   }
 
+  /* ---- sets: every group of flashcards or quiz questions, by Earmark or by you ---- */
+  const newSetId = () => "s" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  // Cards saved before sets existed go into "Made by Earmark" or "My cards".
+  function migrateDeckSets(deck){
+    if (!Array.isArray(deck.sets)) deck.sets = [];
+    for (const c of deck.cards) {
+      if (c.set && deck.sets.some(x => x.id === c.set)) continue;
+      const id = c.mine ? "mine" : "ai";
+      if (!deck.sets.some(x => x.id === id)) deck.sets.push({ id, name: "", mine: !!c.mine, scope: "book" });
+      c.set = id;
+    }
+  }
+  function setName(set){
+    if (set.name) return set.name;
+    if (set.id === "missed") return t("setMissed");
+    return t(set.mine ? (set.quiz ? "setMyQuiz" : "setMyCards") : "setsByEarmark");
+  }
+  function scopeName(bookId, scope){
+    if (!scope || scope === "book") return t("scopeBook");
+    if (scope === "passage") return t("scopePassage");
+    const m = String(scope).match(/^pages:(\d+)-(\d+)$/);
+    if (m) return t("pagesRange", { a: m[1], b: m[2] });
+    const c = String(scope).match(/^ch:(\d+)$/);
+    if (c) {
+      const book = state.books.find(b => b.id === bookId);
+      const loaded = state.loaded.get(bookId);
+      const ch = loaded && book ? findChapters(book, loaded)[+c[1]] : null;
+      if (ch) return ch.title;
+    }
+    return t("scopeBook");
+  }
+  // "1 cards" → "1 card" (English only needs this).
+  const one = (text) => text.replace(/(^|\D)1 cards\b/, "$11 card").replace(/(^|\D)1 questions\b/, "$11 question");
+  function byLabel(mine){ return t(mine ? "setsByYou" : "setsByEarmark"); }
+  // Ask for a name (new set, or renaming one).
+  function askSetName(title, current, onDone){
+    let box;
+    openEditor(title, (body) => {
+      const f = el("div", "field");
+      const l = el("label"); l.textContent = t("setsName"); f.appendChild(l);
+      box = el("input", "own-input"); box.type = "text"; box.value = current || ""; box.maxLength = 80;
+      f.appendChild(box); body.appendChild(f);
+      box.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); body.parentElement.querySelector(".edit-row .cta").click(); } });
+      return () => ({ name: box.value.trim().slice(0, 80) });
+    }, (v) => onDone(v.name));
+  }
+  function setRow(name, meta, mine, onOpen, extra){
+    const row = el("div", "set-item");
+    const main = el("button", "set-main"); main.type = "button";
+    const n = el("span", "set-name"); n.textContent = name; main.appendChild(n);
+    const m = el("span", "set-meta"); m.textContent = meta; main.appendChild(m);
+    const tag = el("span", "set-tag" + (mine ? " mine" : "")); tag.textContent = byLabel(mine); main.appendChild(tag);
+    main.addEventListener("click", onOpen);
+    row.appendChild(main);
+    if (extra) row.appendChild(extra);
+    return row;
+  }
+  function setsHeader(title){
+    const h = el("h3", "sets-title"); h.textContent = title; return h;
+  }
+  function backToSets(label, onBack){
+    const b = el("button", "link-btn sets-back"); b.type = "button";
+    b.innerHTML = ICONS.prev + "<span></span>"; b.querySelector("span").textContent = label;
+    b.addEventListener("click", onBack);
+    return b;
+  }
+
   function deckView(bookId){
     const deck = study.decks.get(bookId);
     let pos = study.deckPos.get(bookId);
-    if (!pos) { pos = { i: 0, flipped: false, onlyLearning: false }; study.deckPos.set(bookId, pos); }
-    const all = deck.cards.map((_, k) => k);
+    if (!pos) { pos = { i: 0, flipped: false, onlyLearning: false, set: null }; study.deckPos.set(bookId, pos); }
+    const all = deck.cards.map((_, k) => k).filter(k => deck.cards[k].set === pos.set);
     const list = pos.onlyLearning ? all.filter(k => !deck.cards[k].known) : all;
     return { deck, pos, list };
   }
@@ -7149,28 +7269,54 @@
       return;
     }
     const { deck, pos, list } = deckView(bookId);
-    if (!deck.cards.length) {
-      inner.appendChild(study.busy.has(busyKey) ? busyNote(t("makingCards")) : studySetup("cards", bookId));
-      if (!study.busy.has(busyKey)) {
+    const set = deck.sets.find(x => x.id === pos.set);
+    if (study.busy.has(busyKey) && !set) { inner.appendChild(busyNote(t("makingCards"))); return; }
+    if (!set) {
+      pos.set = null;
+      // Making a new set with Earmark (or the very first one): the setup card.
+      if (pos.creating || !deck.sets.length) {
+        if (deck.sets.length) inner.appendChild(backToSets(t("setsAllCards"), () => { pos.creating = false; renderCards(); }));
+        inner.appendChild(studySetup("cards", bookId));
         const own = el("div", "own-quiz");
         const p = el("p"); p.textContent = t("ownCardsDesc"); own.appendChild(p);
         const row = el("div", "study-row");
-        row.appendChild(iconBtn("pill-btn", ICONS.pencil, t("ownCardBtn"), () => editOwnCard(bookId)));
+        row.appendChild(iconBtn("pill-btn", ICONS.pencil, t("setsNewOwn"), () => newOwnCardSet(bookId)));
         own.appendChild(row); inner.appendChild(own);
+        return;
       }
+      renderCardSets(inner, bookId, deck, pos);
+      return;
+    }
+    const setCards = deck.cards.filter(c => c.set === set.id);
+    const head = el("div", "set-head");
+    head.appendChild(backToSets(t("setsAllCards"), () => { pauseSpeech(); pos.set = null; renderCards(); }));
+    const title = el("div", "set-head-name"); title.textContent = setName(set); head.appendChild(title);
+    const ren = el("button", "link-btn"); ren.type = "button"; ren.textContent = t("setsRename");
+    ren.addEventListener("click", () => askSetName(t("setsRename"), setName(set), (name) => { if (name) { set.name = name; saveDeck(bookId); renderCards(); } }));
+    head.appendChild(ren);
+    inner.appendChild(head);
+    if (!setCards.length) {
+      const box = el("div", "setup");
+      box.innerHTML = ICONS.cardsGlyph;
+      const p = el("p"); p.textContent = t("setsEmptyCards"); box.appendChild(p);
+      const row = el("div", "study-row");
+      row.appendChild(iconBtn("pill-btn primary", ICONS.pencil, t("ownCardBtn"), () => editOwnCard(bookId)));
+      box.appendChild(row);
+      inner.appendChild(box);
+      inner.appendChild(deckTools(bookId, deck, pos, set));
       return;
     }
 
-    const knownCount = deck.cards.filter(c => c.known).length;
+    const knownCount = setCards.filter(c => c.known).length;
     const meta = el("div", "study-meta");
     const left = el("span");
     const right = el("span");
     right.innerHTML = "<strong></strong>";
-    right.querySelector("strong").textContent = t("knownCount", { k: knownCount, n: deck.cards.length });
+    right.querySelector("strong").textContent = t("knownCount", { k: knownCount, n: setCards.length });
     meta.appendChild(left); meta.appendChild(right);
     inner.appendChild(meta);
     const meter = el("div", "meter"); meter.setAttribute("aria-hidden", "true");
-    const fill = el("div"); fill.style.width = Math.round(knownCount / deck.cards.length * 100) + "%";
+    const fill = el("div"); fill.style.width = Math.round(knownCount / setCards.length * 100) + "%";
     meter.appendChild(fill); inner.appendChild(meter);
 
     if (!list.length) {
@@ -7180,10 +7326,10 @@
       const h = el("h3"); h.textContent = t("allKnown"); done.appendChild(h);
       const row = el("div", "study-row");
       row.appendChild(iconBtn("pill-btn primary", ICONS.again, t("reviewAll"), () => { pos.onlyLearning = false; pos.i = 0; pos.flipped = false; renderCards(); }));
-      row.appendChild(iconBtn("pill-btn", ICONS.plus, t("addMore"), () => makeCards(bookId, "book", 8, true)));
+      if (!set.mine) row.appendChild(iconBtn("pill-btn", ICONS.plus, t("addMore"), () => makeCards(bookId, set.scope || "book", 8, true)));
       done.appendChild(row);
       inner.appendChild(done);
-      inner.appendChild(deckTools(bookId, deck, pos));
+      inner.appendChild(deckTools(bookId, deck, pos, set));
       return;
     }
 
@@ -7235,7 +7381,7 @@
         // In "still learning" mode a card marked known drops out of the
         // list, so the same index already points at the next card.
         if (!(pos.onlyLearning && known)) pos.i = pos.i + 1;
-        if (pos.i >= (pos.onlyLearning ? deck.cards.filter(c => !c.known).length : deck.cards.length)) pos.i = 0;
+        if (pos.i >= (pos.onlyLearning ? setCards.filter(c => !c.known).length : setCards.length)) pos.i = 0;
         renderCards();
       };
       judge.appendChild(iconBtn("pill-btn", ICONS.again, t("stillLearning"), () => mark(false)));
@@ -7256,10 +7402,43 @@
     cardOps.appendChild(edB); cardOps.appendChild(delB);
     inner.appendChild(cardOps);
 
-    inner.appendChild(deckTools(bookId, deck, pos));
+    inner.appendChild(deckTools(bookId, deck, pos, set));
   }
 
-  function deckTools(bookId, deck, pos){
+  // The home screen of the Flashcards tab: every set, Earmark's and yours.
+  function renderCardSets(inner, bookId, deck, pos){
+    inner.appendChild(setsHeader(t("setsCardsTitle")));
+    const list = el("div", "set-list");
+    deck.sets.forEach(set => {
+      const cards = deck.cards.filter(c => c.set === set.id);
+      const known = cards.filter(c => c.known).length;
+      list.appendChild(setRow(setName(set), one(t("setsCardCount", { n: cards.length, k: known })), set.mine, () => {
+        pauseSpeech();
+        study.deckPos.set(bookId, { i: 0, flipped: false, onlyLearning: false, set: set.id });
+        renderCards();
+      }));
+    });
+    inner.appendChild(list);
+    const row = el("div", "study-row center");
+    const ai = iconBtn("pill-btn primary", ICONS.plus, t("setsNewEarmark"), () => { pos.creating = true; renderCards(); });
+    ai.disabled = !sample;
+    row.appendChild(ai);
+    row.appendChild(iconBtn("pill-btn", ICONS.pencil, t("setsNewOwn"), () => newOwnCardSet(bookId)));
+    inner.appendChild(row);
+  }
+  function newOwnCardSet(bookId){
+    askSetName(t("setsNewOwn"), "", (name) => {
+      const deck = study.decks.get(bookId);
+      const set = { id: newSetId(), name: name || t("setMyCards"), mine: true, scope: "book" };
+      deck.sets.push(set);
+      saveDeck(bookId);
+      study.deckPos.set(bookId, { i: 0, flipped: false, onlyLearning: false, set: set.id });
+      renderCards();
+      editOwnCard(bookId);
+    });
+  }
+
+  function deckTools(bookId, deck, pos, set){
     const tools = el("div", "study-row deck-tools");
     tools.appendChild(iconBtn("pill-btn", ICONS.shuffle, t("shuffle"), () => {
       pauseSpeech();
@@ -7276,20 +7455,22 @@
     toggle.setAttribute("aria-pressed", pos.onlyLearning ? "true" : "false");
     tools.appendChild(toggle);
     const busy = study.busy.has("cards:" + bookId);
-    const more = iconBtn("pill-btn", busy ? "" : ICONS.plus, busy ? t("makingCards") : t("addMore"), () => makeCards(bookId, "book", 8, true));
-    more.disabled = busy || !sample || deck.cards.length >= MAX_DECK_CARDS;
-    tools.appendChild(more);
+    if (!set.mine) {
+      const more = iconBtn("pill-btn", busy ? "" : ICONS.plus, busy ? t("makingCards") : t("addMore"), () => makeCards(bookId, set.scope || "book", 8, true));
+      more.disabled = busy || !sample || deck.cards.length >= MAX_DECK_CARDS;
+      tools.appendChild(more);
+    }
     tools.appendChild(iconBtn("pill-btn", ICONS.pencil, t("ownCardBtn"), () => editOwnCard(bookId)));
     tools.appendChild(el("span", "spacer"));
-    const del = el("button", "link-danger"); del.type = "button"; del.textContent = t("deleteDeck");
+    const del = el("button", "link-danger"); del.type = "button"; del.textContent = t("setsDelete");
     del.addEventListener("click", async () => {
-      const book = state.books.find(b => b.id === bookId);
-      const ok = await showConfirm(t("deleteDeckConfirm", { title: book ? book.title : "" }));
+      const ok = await showConfirm(t("setsDeleteConfirm", { name: setName(set) }));
       if (!ok) return;
       pauseSpeech();
-      deck.cards = [];
+      deck.cards = deck.cards.filter(c => c.set !== set.id);
+      deck.sets = deck.sets.filter(x => x.id !== set.id);
       study.deckPos.delete(bookId);
-      if (isSavedBook(bookId)) db.doc("decks/" + bookId).delete().catch(() => {});
+      saveDeck(bookId);
       renderCards();
     });
     tools.appendChild(del);
@@ -7355,7 +7536,13 @@
     }, (v) => {
       if (old) { old.front = v.front; old.back = v.back; }
       else {
-        deck.cards.push({ front: v.front, back: v.back, page: null, known: false, mine: true });
+        const pos = study.deckPos.get(bookId);
+        let setId = pos && deck.sets.some(x => x.id === pos.set) ? pos.set : null;
+        if (!setId) {
+          if (!deck.sets.some(x => x.id === "mine")) deck.sets.push({ id: "mine", name: "", mine: true, scope: "book" });
+          setId = "mine";
+        }
+        deck.cards.push({ front: v.front, back: v.back, page: null, known: false, mine: true, set: setId });
         if (deck.cards.length > MAX_DECK_CARDS) deck.cards.splice(0, deck.cards.length - MAX_DECK_CARDS);
         toast(t("ownCardAdded"));
       }
@@ -7364,21 +7551,35 @@
     }, { another: !old, reset: () => { front.value = ""; backBox.value = ""; front.focus(); } });
   }
 
-  // Questions you write yourself, kept with the book.
-  const ownQuizzes = new Map();   // bookId → [{q, options, answer, explain}]
-  async function loadOwnQuiz(bookId){
-    if (ownQuizzes.has(bookId)) return ownQuizzes.get(bookId);
-    let list = [];
-    if (isSavedBook(bookId)) { try { const d = await db.doc("myquiz/" + bookId).get(); if (d.exists) list = d.data().questions || []; } catch (e) {} }
-    ownQuizzes.set(bookId, list);
-    return list;
+  // Every quiz of a book — the ones Earmark wrote and the ones you wrote —
+  // kept with the book so you can practise any of them again.
+  const quizSets = new Map();   // bookId → [{id, name, mine, scope, questions, best, last}]
+  async function loadQuizSets(bookId){
+    if (quizSets.has(bookId)) return quizSets.get(bookId);
+    let sets = [];
+    if (isSavedBook(bookId)) {
+      try { const d = await db.doc("quizsets/" + bookId).get(); if (d.exists) sets = d.data().sets || []; } catch (e) {}
+      // Questions written before sets existed.
+      try {
+        const old = await db.doc("myquiz/" + bookId).get();
+        if (old.exists && (old.data().questions || []).length && !sets.some(x => x.id === "mine")) {
+          sets.push({ id: "mine", name: "", mine: true, quiz: true, questions: old.data().questions });
+        }
+      } catch (e) {}
+    }
+    if (!quizSets.has(bookId)) quizSets.set(bookId, sets);
+    return quizSets.get(bookId);
   }
-  function saveOwnQuiz(bookId){
+  function saveQuizSets(bookId){
     if (!isSavedBook(bookId)) return;
-    db.doc("myquiz/" + bookId).set({ bookId, questions: ownQuizzes.get(bookId) || [], updatedAt: new Date().toISOString() }).catch(() => toast(t("saveError")));
+    const sets = (quizSets.get(bookId) || []).slice(-40);
+    db.doc("quizsets/" + bookId).set({ bookId, sets, updatedAt: new Date().toISOString() }).catch(() => toast(t("saveError")));
   }
-  async function editOwnQuestion(bookId, index){
-    const list = await loadOwnQuiz(bookId);
+  async function editOwnQuestion(bookId, setId, index){
+    const sets = await loadQuizSets(bookId);
+    const set = sets.find(x => x.id === setId);
+    if (!set) return;
+    const list = set.questions;
     const old = index != null ? list[index] : null;
     let qBox, optBoxes = [], radios = [], explainBox;
     const group = "own-correct-" + Date.now();
@@ -7409,48 +7610,111 @@
       };
     }, (v) => {
       if (old) list[index] = v; else { list.push(v); toast(t("ownQuestionAdded")); }
-      saveOwnQuiz(bookId);
+      saveQuizSets(bookId);
       if (isShowing("quiz", bookId)) renderQuiz();
     }, { another: !old, reset: () => { qBox.value = ""; optBoxes.forEach(b => { b.value = ""; }); radios[0].checked = true; explainBox.value = ""; qBox.focus(); } });
   }
-  function startOwnQuiz(bookId){
-    const list = ownQuizzes.get(bookId) || [];
-    if (!list.length) return;
-    const questions = shuffled(list.slice()).map(q => {
+  function startQuizSet(bookId, set){
+    if (!set.questions.length) return;
+    const questions = shuffled(set.questions.slice()).map(q => {
       const order = shuffled(q.options.map((_, k) => k));
       return Object.assign({}, q, { options: order.map(k => q.options[k]), answer: order.indexOf(q.answer) });
     });
-    study.quizzes.set(bookId, { questions, i: 0, picks: [], savedMissed: false, scope: "mine", count: questions.length, target: questions.length, loadingMore: false });
+    study.quizManage = null; study.quizCreate = false;
+    study.quizzes.set(bookId, { questions, i: 0, picks: [], savedMissed: false, scope: "set", setId: set.id, count: questions.length, target: questions.length, loadingMore: false });
     renderQuiz();
   }
-  // The "Your own quiz" box under the quiz setup.
-  function ownQuizSection(bookId){
-    const box = el("div", "own-quiz");
-    const list = ownQuizzes.get(bookId);
-    if (!list) {
-      loadOwnQuiz(bookId).then(() => { if (isShowing("quiz", bookId) && !study.quizzes.get(bookId)) renderQuiz(); });
-      return box;
+  function newOwnQuizSet(bookId){
+    askSetName(t("setsNewOwnQuiz"), "", async (name) => {
+      const sets = await loadQuizSets(bookId);
+      const set = { id: newSetId(), name: name || t("setMyQuiz"), mine: true, quiz: true, questions: [] };
+      sets.push(set);
+      saveQuizSets(bookId);
+      study.quizManage = set.id; study.quizCreate = false;
+      renderQuiz();
+      editOwnQuestion(bookId, set.id);
+    });
+  }
+  // The home screen of the Quiz tab (and the page for one of your own quizzes).
+  function renderQuizHome(inner, bookId){
+    const sets = quizSets.get(bookId);
+    if (!sets) {
+      inner.appendChild(busyNote(t("pdfLoading")));
+      loadQuizSets(bookId).then(() => { if (isShowing("quiz", bookId)) renderQuiz(); });
+      return;
     }
-    const h = el("h4"); h.textContent = t("ownQuizTitle"); box.appendChild(h);
-    const p = el("p"); p.textContent = t("ownQuizDesc"); box.appendChild(p);
+    const managing = sets.find(x => x.id === study.quizManage);
+    if (managing) { renderOwnQuizSet(inner, bookId, managing); return; }
+    if (study.quizCreate || !sets.length) {
+      if (sets.length) inner.appendChild(backToSets(t("setsAllQuizzes"), () => { study.quizCreate = false; renderQuiz(); }));
+      inner.appendChild(studySetup("quiz", bookId));
+      const own = el("div", "own-quiz");
+      const h = el("h4"); h.textContent = t("ownQuizTitle"); own.appendChild(h);
+      const p = el("p"); p.textContent = t("ownQuizDesc"); own.appendChild(p);
+      const row = el("div", "study-row");
+      row.appendChild(iconBtn("pill-btn", ICONS.pencil, t("setsNewOwnQuiz"), () => newOwnQuizSet(bookId)));
+      own.appendChild(row); inner.appendChild(own);
+      return;
+    }
+    inner.appendChild(setsHeader(t("setsQuizTitle")));
+    const list = el("div", "set-list");
+    sets.slice().reverse().forEach(set => {
+      const n = set.questions.length;
+      const meta = one(t("setsQuestionCount", { n })) + (set.best != null && set.total ? " · " + t("setsBest", { s: set.best, n: set.total }) : "");
+      let extra = null;
+      if (set.mine) {
+        extra = el("button", "link-btn set-edit"); extra.type = "button"; extra.textContent = t("chatEdit");
+        extra.addEventListener("click", () => { study.quizManage = set.id; renderQuiz(); });
+      }
+      list.appendChild(setRow(setName(set), meta, set.mine, () => {
+        if (set.mine && !n) { study.quizManage = set.id; renderQuiz(); }
+        else startQuizSet(bookId, set);
+      }, extra));
+    });
+    inner.appendChild(list);
+    const row = el("div", "study-row center");
+    const ai = iconBtn("pill-btn primary", ICONS.plus, t("setsNewEarmarkQuiz"), () => { study.quizCreate = true; renderQuiz(); });
+    ai.disabled = !sample;
+    row.appendChild(ai);
+    row.appendChild(iconBtn("pill-btn", ICONS.pencil, t("setsNewOwnQuiz"), () => newOwnQuizSet(bookId)));
+    inner.appendChild(row);
+  }
+  function renderOwnQuizSet(inner, bookId, set){
+    const sets = quizSets.get(bookId);
+    const head = el("div", "set-head");
+    head.appendChild(backToSets(t("setsAllQuizzes"), () => { study.quizManage = null; renderQuiz(); }));
+    const title = el("div", "set-head-name"); title.textContent = setName(set); head.appendChild(title);
+    const ren = el("button", "link-btn"); ren.type = "button"; ren.textContent = t("setsRename");
+    ren.addEventListener("click", () => askSetName(t("setsRename"), setName(set), (name) => { if (name) { set.name = name; saveQuizSets(bookId); renderQuiz(); } }));
+    head.appendChild(ren);
+    inner.appendChild(head);
+    const box = el("div", "own-quiz own-quiz-manage");
     const row = el("div", "study-row");
-    row.appendChild(iconBtn("pill-btn", ICONS.pencil, t("ownWriteQuestion"), () => editOwnQuestion(bookId)));
-    if (list.length) row.appendChild(iconBtn("pill-btn primary", ICONS.quizGlyph.replace(' class="glyph"', ""), t("ownTakeQuiz", { n: list.length }), () => startOwnQuiz(bookId)));
+    if (set.questions.length) row.appendChild(iconBtn("pill-btn primary", ICONS.check, t("ownTakeQuiz", { n: set.questions.length }), () => startQuizSet(bookId, set)));
+    row.appendChild(iconBtn("pill-btn", ICONS.pencil, t("ownWriteQuestion"), () => editOwnQuestion(bookId, set.id)));
     box.appendChild(row);
-    if (list.length) {
+    if (!set.questions.length) { const p = el("p"); p.textContent = t("setsEmptyQuiz"); box.appendChild(p); }
+    else {
       const ul = el("ol", "own-list");
-      list.forEach((q, k) => {
+      set.questions.forEach((q, k) => {
         const li = el("li");
         const txt = el("span", "own-q"); txt.textContent = q.q; li.appendChild(txt);
         const ed = el("button", "link-btn"); ed.type = "button"; ed.textContent = t("chatEdit");
-        ed.addEventListener("click", () => editOwnQuestion(bookId, k));
+        ed.addEventListener("click", () => editOwnQuestion(bookId, set.id, k));
         const del = el("button", "link-danger"); del.type = "button"; del.textContent = t("ownDelete");
-        del.addEventListener("click", () => { list.splice(k, 1); saveOwnQuiz(bookId); renderQuiz(); });
+        del.addEventListener("click", () => { set.questions.splice(k, 1); saveQuizSets(bookId); renderQuiz(); });
         li.appendChild(ed); li.appendChild(del); ul.appendChild(li);
       });
       box.appendChild(ul);
     }
-    return box;
+    const delSet = el("button", "link-danger"); delSet.type = "button"; delSet.textContent = t("setsDelete");
+    delSet.addEventListener("click", async () => {
+      if (!(await showConfirm(t("setsDeleteConfirm", { name: setName(set) })))) return;
+      sets.splice(sets.indexOf(set), 1); saveQuizSets(bookId);
+      study.quizManage = null; renderQuiz();
+    });
+    box.appendChild(delSet);
+    inner.appendChild(box);
   }
 
   /* ---- quiz ---- */
@@ -7471,7 +7735,12 @@
       const questions = cleanQuiz(raw).slice(0, first);
       if (!questions.length) throw { code: "invalid_json" };
       if (scope === "book") addToBank(bookId, questions);
-      const quiz = { questions, i: 0, picks: [], savedMissed: false, scope, count, target: count, loadingMore: false };
+      const sets = await loadQuizSets(bookId);
+      const qset = { id: newSetId(), name: scopeName(bookId, scope), mine: false, quiz: true, scope, questions: questions.map(q => Object.assign({}, q)) };
+      sets.push(qset);
+      saveQuizSets(bookId);
+      study.quizCreate = false;
+      const quiz = { questions, i: 0, picks: [], savedMissed: false, scope, setId: qset.id, count, target: count, loadingMore: false };
       study.quizzes.set(bookId, quiz);
       if (count > questions.length) loadMoreQuiz(bookId, quiz, book, loaded);
     } catch (e) {
@@ -7497,6 +7766,8 @@
         const more = cleanQuiz(raw).filter(q => !seen.has(q.q.trim().toLowerCase())).slice(0, need);
         quiz.questions.push(...more);
         if (quiz.scope === "book" && more.length) addToBank(bookId, more);
+        const qset = (quizSets.get(bookId) || []).find(x => x.id === quiz.setId);
+        if (qset && more.length) { qset.questions.push(...more.map(q => Object.assign({}, q))); saveQuizSets(bookId); }
       } catch (e) { /* try again; if it keeps failing the quiz just ends early */ }
       if (isShowing("quiz", bookId)) renderQuiz();
     }
@@ -7520,7 +7791,7 @@
     }
     if (study.busy.has("quiz:" + bookId)) { inner.appendChild(busyNote(t("makingQuiz"))); return; }
     const quiz = study.quizzes.get(bookId);
-    if (!quiz) { inner.appendChild(studySetup("quiz", bookId)); inner.appendChild(ownQuizSection(bookId)); return; }
+    if (!quiz) { renderQuizHome(inner, bookId); return; }
     if (quiz.target == null) quiz.target = quiz.questions.length;
     if (quizDone(quiz)) { renderQuizResults(inner, bookId, quiz); return; }
     if (quiz.i >= quiz.questions.length) { inner.appendChild(busyNote(t("makingQuiz"))); return; }  // next batch still coming
@@ -7633,6 +7904,12 @@
     const stats = { last: score, total: quiz.questions.length, best: Math.max(prev.total === quiz.questions.length ? prev.best : 0, score), attempts: (prev.attempts || 0) + 1 };
     study.quizStats.set(bookId, stats);
     saveQuizStats(bookId);
+    const qset = (quizSets.get(bookId) || []).find(x => x.id === quiz.setId);
+    if (qset) {
+      qset.total = quiz.questions.length; qset.last = score;
+      qset.best = Math.max(qset.best || 0, score);
+      saveQuizSets(bookId);
+    }
   }
 
   function renderQuizResults(inner, bookId, quiz){
@@ -7664,7 +7941,9 @@
           back: q.options[q.answer] + (q.explain ? ". " + q.explain : ""),
           page: q.page, known: false
         }));
-        deck.cards = deck.cards.concat(cards).slice(0, MAX_DECK_CARDS);
+        if (!deck.sets.some(x => x.id === "missed")) deck.sets.push({ id: "missed", name: "", mine: false, scope: "book" });
+        cards.forEach(c => { c.set = "missed"; });
+        deck.cards = deck.cards.concat(cards).slice(-MAX_DECK_CARDS);
         saveDeck(bookId);
         quiz.savedMissed = true;
         toast(t("addedCards", { n: cards.length }));
@@ -7681,9 +7960,8 @@
       quiz.i = 0; quiz.picks = []; quiz.savedMissed = false; quiz.target = quiz.questions.length;
       renderQuiz();
     }));
-    actions.appendChild(iconBtn("pill-btn", ICONS.plus, t("newQuiz"), () => {
-      if (quiz.scope === "mine") { study.quizzes.delete(bookId); renderQuiz(); }
-      else makeQuiz(bookId, quiz.scope || "book", quiz.count || total);
+    actions.appendChild(iconBtn("pill-btn", ICONS.prev, t("setsAllQuizzes"), () => {
+      study.quizzes.delete(bookId); study.quizCreate = false; renderQuiz();
     }));
     inner.appendChild(actions);
 

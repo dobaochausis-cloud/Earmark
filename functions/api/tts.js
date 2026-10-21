@@ -81,6 +81,32 @@ function azureVoice(env, lang, voice) {
   } catch (e) { /* ignore a broken AZURE_VOICES */ }
   return { tag: row[0], name };
 }
+// Azure's own list of voices, fetched once and kept for a day, so every
+// language gets a real voice of the chosen gender even if a name above is
+// missing or renamed.
+let azureList = null, azureListAt = 0;
+async function azureVoices(env) {
+  if (azureList && Date.now() - azureListAt < 86400000) return azureList;
+  try {
+    const res = await fetch("https://" + String(env.AZURE_SPEECH_REGION).trim() + ".tts.speech.microsoft.com/cognitiveservices/voices/list", {
+      headers: { "Ocp-Apim-Subscription-Key": String(env.AZURE_SPEECH_KEY).trim() },
+    });
+    if (res.ok) { azureList = await res.json(); azureListAt = Date.now(); }
+  } catch (e) { /* use the names above */ }
+  return azureList || [];
+}
+async function pickAzureVoice(env, lang, voice) {
+  const want = azureVoice(env, lang, voice);
+  if (!want) return null;
+  const list = await azureVoices(env);
+  if (!list.length) return want;
+  if (list.some((v) => v.ShortName === want.name)) return want;
+  const gender = voice === "male" ? "Male" : "Female";
+  const inLang = list.filter((v) => String(v.Locale || "").toLowerCase() === want.tag.toLowerCase());
+  const best = inLang.find((v) => v.Gender === gender && /Neural/i.test(v.VoiceType || v.ShortName)) || inLang.find((v) => v.Gender === gender);
+  return best ? { tag: want.tag, name: best.ShortName } : want;
+}
+
 const xmlEscape = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 async function azureSpeak(env, v, text, voice) {
   // A touch slower and calmer than the default: easier to follow while reading.
@@ -173,7 +199,7 @@ async function toBytes(out) {
 
 async function speak(env, lang, text, voice) {
   let lastError = "";
-  const az = azureOn(env) && azureVoice(env, LANG_ALIAS[lang] || lang, voice);
+  const az = azureOn(env) && await pickAzureVoice(env, LANG_ALIAS[lang] || lang, voice);
   if (az) {
     try {
       const bytes = await azureSpeak(env, az, text, voice);
@@ -210,10 +236,11 @@ export async function onRequestGet({ request, env }) {
     if (env.ACCESS_CODE && url.searchParams.get("code") !== env.ACCESS_CODE) return json(401, { error: "Add &code=YOUR_CLASS_CODE to the address." });
     if (!env.AI) return json(200, { ok: false, error: "No AI binding. Check wrangler.toml has [ai] binding = \"AI\"." });
     const tries = [];
-    for (const [lang, voice] of [["en", "female"], ["en", "male"], ["vi", "female"], ["vi", "male"], ["es", "female"]]) {
+    const all = azureOn(env) ? Object.keys(AZURE).flatMap((l) => [[l, "female"], [l, "male"]]) : [["en", "female"], ["en", "male"], ["vi", "female"], ["vi", "male"], ["es", "female"]];
+    for (const [lang, voice] of all) {
       if (!langsFor(env, voice).includes(lang)) { tries.push({ lang, voice, ok: false, error: "not turned on" }); continue; }
       try {
-        const r = await speak(env, lang, lang === "en" ? "Hello! This is Earmark's reading voice." : "¡Hola! Esta es la voz de Earmark.", voice);
+        const r = await speak(env, lang, lang === "en" ? "Hello! This is Earmark's reading voice." : lang === "es" ? "¡Hola! Esta es la voz de Earmark." : "Earmark.", voice);
         tries.push({ lang, voice, ok: true, model: r.model, bytes: r.bytes.length });
       } catch (e) {
         tries.push({ lang, voice, ok: false, error: String(e.message || e).slice(0, 300) });
@@ -240,7 +267,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (!langsFor(env, voice).includes(lang)) return json(400, { code: "unsupported_lang", message: "No reading voice for that language yet." });
 
   const cache = typeof caches !== "undefined" ? caches.default : null;
-  const az = azureOn(env) && azureVoice(env, LANG_ALIAS[lang] || lang, voice);
+  const az = azureOn(env) && await pickAzureVoice(env, LANG_ALIAS[lang] || lang, voice);
   const key = await cacheKey(az ? "azure:" + az.name : voice === "male" ? "male:" + maleChoice(env) + ":" + (env.TTS_MALE_VOICE || "") : choice(env) + ":" + (env.TTS_VOICE || ""), lang, text);
   if (cache) {
     const hit = await cache.match(key).catch(() => null);
