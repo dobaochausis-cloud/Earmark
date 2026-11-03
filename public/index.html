@@ -8984,7 +8984,7 @@
         await fetchQuestionBatch(bookId);
       } catch (e) {
         fails++;
-        game.prep.error = sampleErrorText(e);
+        if (game.prep) game.prep.error = sampleErrorText(e);   // the game may have started meanwhile ("Start with…")
         if (e && ["rate_limited", "daily_limit", "not_granted", "refused"].includes(e.code)) break;
       } finally {
         game.fetching = false;
@@ -9531,7 +9531,7 @@
         pool.push(...got);
       } catch (e) {
         fails++;
-        game.prep.error = sampleErrorText(e);
+        if (game.prep) game.prep.error = sampleErrorText(e);   // the game may have started meanwhile ("Start with…")
         if (e && ["rate_limited", "daily_limit", "not_granted", "refused"].includes(e.code)) break;
       } finally { game.fetching = false; }
       if (stillHere()) renderGameOverlay();
