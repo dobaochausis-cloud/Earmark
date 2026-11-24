@@ -1147,7 +1147,10 @@
   #panelAsk.strip-full .pet-corner{ display:none; }
   .pet-corner{ position:absolute; right:18px; bottom:76px; width:25%; min-width:220px; max-width:360px; height:132px; pointer-events:none; z-index:1; }
   .pet-corner-name{ position:absolute; right:0; top:0; font:700 12px var(--font-body); color:var(--ink-soft); background:var(--paper-raised); border-radius:999px; padding:3px 10px; box-shadow:var(--shadow); }
-  .pet-mover{ position:absolute; bottom:0; left:0; width:124px; height:112px; padding:0; border:none; background:none; cursor:pointer; pointer-events:auto; }
+  .pet-mover{ position:absolute; bottom:0; left:0; width:124px; height:112px; padding:0; border:none; background:none; cursor:grab; pointer-events:auto; touch-action:none; user-select:none; -webkit-user-select:none; }
+  .pet-drag-ball{ position:absolute; width:30px; height:30px; pointer-events:none; z-index:3; filter:drop-shadow(0 3px 2px rgba(0,0,0,.18)); }
+  .pet-drag-ball svg{ width:100%; height:100%; display:block; }
+  .pet-drag-ball.drop{ transition:left .2s ease-out, bottom .38s cubic-bezier(.5,0,1,1); }
   .pet-face{ display:block; width:100%; height:100%; transform-origin:50% 100%; }
   .pet-face.flip{ transform:scaleX(-1); }
   .pet-face svg{ width:100%; height:100%; display:block; overflow:visible; }
@@ -7513,8 +7516,8 @@
     const mood = petC.loving ? "play" : petC.doing === "sleep" ? "sleep" : petC.doing === "play" ? "play" : "walk";
     const face = $("petFace");
     face.innerHTML = ballSVG(pet.animal, petStage(), mood);
-    face.classList.toggle("flip", petC.doing === "walk" && petC.dir < 0);
-    face.classList.toggle("pet-walking", !petC.loving && petC.doing === "walk");
+    face.classList.toggle("flip", (petC.doing === "walk" || petC.doing === "fetch" || petC.doing === "play") && petC.dir < 0);
+    face.classList.toggle("pet-walking", !petC.loving && (petC.doing === "walk" || petC.doing === "fetch"));
     face.classList.toggle("pet-playing", !petC.loving && petC.doing === "play");
     $("petToy").innerHTML = PET_TOYS[pet.animal] || "";
   }
@@ -7523,7 +7526,7 @@
     clearInterval(petC.zzzTimer);
     $("petCorner").querySelectorAll(".pet-zzz").forEach(z => z.remove());
     const w = $("petCorner").clientWidth, toy = $("petToy");
-    if (d === "play") { petC.x = Math.max(0, Math.min(petC.x, w - petCornerW() - 34)); toy.style.left = (petC.x + petCornerW() - 2) + "px"; toy.className = "pet-toy bounce"; petC.dir = 1; }   // plays right where it is
+    if (d === "play") { const bx = petC.ballX != null ? petC.ballX : Math.max(0, Math.min(petC.x, w - petCornerW() - 34)) + petCornerW() - 2; toy.style.left = bx + "px"; toy.className = "pet-toy bounce"; }   // plays with the ball where it landed
     else if (d === "sleep") { petC.x = Math.max(0, w - petCornerW() - 30); toy.style.left = (petC.x + petCornerW() - 4) + "px"; toy.className = "pet-toy"; }
     else toy.className = "pet-toy";
     toy.hidden = d === "walk";
@@ -7555,6 +7558,9 @@
       if (petC.x > max) { petC.x = max; petC.dir = -1; $("petFace").classList.add("flip"); }
       if (petC.x < 0) { petC.x = 0; petC.dir = 1; $("petFace").classList.remove("flip"); }
       $("petMover").style.left = petC.x + "px";
+    } else if (petC.doing === "fetch") {   // trot over to the ball
+      const d = petC.goX - petC.x, step = dt * 0.12;
+      if (Math.abs(d) <= step) petStartPlay(); else { petC.x += Math.sign(d) * step; $("petMover").style.left = petC.x + "px"; }
     }
     petC.raf = requestAnimationFrame(petCornerTick);
   }
@@ -7576,25 +7582,69 @@
       clearTimeout(petC.autoTimer); clearInterval(petC.zzzTimer); cancelAnimationFrame(petC.raf);
     }
   }
-  // Tap in the daytime: here's the ball! It plays for about 4–5 seconds, then walks around again.
-  // Tap at night: a little love (hearts), then back to sleep.
-  $("petMover").addEventListener("click", () => {
-    if (!petIsNight()) {
-      clearTimeout(petC.autoTimer); clearTimeout(petC.loveTimer); petC.loving = false;
-      petCornerSet("play");
-      petHearts(2);
-      petC.autoTimer = setTimeout(petCornerAuto, 4500);
-      return;
-    }
-    const wasAsleep = petC.doing === "sleep";
-    petC.loving = true; petCornerDraw();
+  // Press on the pet and drag: you pull out its ball. Let go, and it runs to the ball and plays
+  // for about 4–5 seconds, then goes back to walking (or to sleep at night).
+  // Tap it (as many times as you like): that's love — a happy face and hearts.
+  var petPtr = null;
+  function petLove(){
     petHearts(3);
+    if (petC.doing === "fetch" || petC.doing === "play") return;   // already happy with its ball
+    petC.loving = true; petCornerDraw();
     clearTimeout(petC.loveTimer);
-    petC.loveTimer = setTimeout(() => {
-      petC.loving = false;
-      if (wasAsleep) { petC.doing = ""; petCornerAuto(); } else petCornerDraw();   // at night it goes back to sleep
-    }, 1800);
+    petC.loveTimer = setTimeout(() => { petC.loving = false; petCornerDraw(); }, 1500);
+  }
+  function petPlaceBall(b, cx, cy){
+    const r = $("petCorner").getBoundingClientRect();
+    b.style.left = (cx - r.left - 15) + "px"; b.style.bottom = (r.bottom - cy - 15) + "px";
+  }
+  function petDropBall(b){
+    const w = $("petCorner").clientWidth, W = petCornerW();
+    const bx = Math.max(0, Math.min(w - 30, parseFloat(b.style.left) || 0));
+    b.classList.add("drop"); b.style.left = bx + "px"; b.style.bottom = "2px";
+    petC.loving = false; clearTimeout(petC.autoTimer); clearTimeout(petC.loveTimer);
+    setTimeout(() => {
+      b.remove();
+      clearInterval(petC.zzzTimer); $("petCorner").querySelectorAll(".pet-zzz").forEach(z => z.remove());
+      petC.ballX = bx;
+      const right = bx + 15 >= petC.x + W / 2;
+      petC.goX = Math.max(0, Math.min(w - W, right ? bx - W + 24 : bx + 4));
+      petC.dir = petC.goX >= petC.x ? 1 : -1;
+      const toy = $("petToy"); toy.className = "pet-toy"; toy.style.left = bx + "px"; toy.hidden = false;
+      petC.doing = "fetch"; petCornerDraw();
+      if (petReduced) petStartPlay();
+    }, petReduced ? 0 : 380);
+  }
+  function petStartPlay(){
+    petC.x = petC.goX; $("petMover").style.left = petC.x + "px";
+    petC.dir = petC.ballX + 15 >= petC.x + petCornerW() / 2 ? 1 : -1;
+    petCornerSet("play");
+    clearTimeout(petC.autoTimer);
+    petC.autoTimer = setTimeout(() => { petC.ballX = null; petC.doing = ""; petCornerAuto(); }, 4500);
+  }
+  $("petMover").addEventListener("pointerdown", e => {
+    if (e.button > 0) return;
+    petPtr = { id: e.pointerId, x0: e.clientX, y0: e.clientY, drag: false, ball: null };
+    try { $("petMover").setPointerCapture(e.pointerId); } catch (err) {}
   });
+  $("petMover").addEventListener("pointermove", e => {
+    if (!petPtr || e.pointerId !== petPtr.id) return;
+    if (!petPtr.drag && Math.hypot(e.clientX - petPtr.x0, e.clientY - petPtr.y0) > 10) {
+      if (petC.doing === "fetch" || petC.doing === "play") { petPtr = null; return; }   // it already has its ball
+      petPtr.drag = true;
+      clearTimeout(petC.autoTimer); clearTimeout(petC.loveTimer);
+      petC.loving = true; petCornerDraw();   // so excited while you hold the ball
+      const b = el("div", "pet-drag-ball"); b.innerHTML = PET_TOYS[pet.animal] || ""; $("petCorner").appendChild(b); petPtr.ball = b;
+    }
+    if (petPtr.drag) petPlaceBall(petPtr.ball, e.clientX, e.clientY);
+  });
+  function petPtrEnd(e){
+    if (!petPtr || e.pointerId !== petPtr.id) return;
+    const p = petPtr; petPtr = null;
+    if (p.drag) petDropBall(p.ball); else if (e.type === "pointerup") petLove();
+  }
+  $("petMover").addEventListener("pointerup", petPtrEnd);
+  $("petMover").addEventListener("pointercancel", petPtrEnd);
+  $("petMover").addEventListener("click", e => { if (e.detail === 0) petLove(); });   // Enter / Space on the keyboard
   function petHearts(n){
     [-14, 4, 18].slice(0, n).forEach((dx, i) => setTimeout(() => {
       const h = el("div", "pet-heart"); h.innerHTML = PET_HEART; h.style.setProperty("--dx", dx + "px");
@@ -7665,32 +7715,32 @@
   });
 
   addStrings({
-    en: {"petTapBall": "Tap it on the Ask tab to give it a ball to play with."},
-    vi: {"petTapBall": "Chạm vào nó ở thẻ Hỏi & nghe để đưa bóng cho nó chơi."},
-    es: {"petTapBall": "Tócala en la pestaña Preguntar para darle una pelota y que juegue."},
-    fr: {"petTapBall": "Touche-le dans l'onglet Questions pour lui donner une balle."},
-    de: {"petTapBall": "Tippe es im Fragen-Tab an, um ihm einen Ball zum Spielen zu geben."},
-    pt: {"petTapBall": "Toque nele na aba Perguntar para dar uma bola para ele brincar."},
-    it: {"petTapBall": "Toccalo nella scheda Domande per dargli una palla con cui giocare."},
-    nl: {"petTapBall": "Tik erop in het Vragen-tabblad om het een bal te geven."},
-    ru: {"petTapBall": "Нажми на него во вкладке вопросов, чтобы дать ему мячик."},
-    pl: {"petTapBall": "Dotknij go w karcie pytań, aby dać mu piłkę do zabawy."},
-    tr: {"petTapBall": "Oynaması için Sor sekmesinde ona dokunup top ver."},
-    ar: {"petTapBall": "المسه في تبويب الأسئلة لتعطيه كرة يلعب بها."},
-    hi: {"petTapBall": "सवाल वाले टैब में इसे छुओ और खेलने के लिए गेंद दो।"},
-    id: {"petTapBall": "Ketuk di tab Tanya untuk memberinya bola untuk bermain."},
-    th: {"petTapBall": "แตะมันที่แท็บถามคำถามเพื่อให้ลูกบอลไปเล่น"},
-    ja: {"petTapBall": "質問タブでタップすると、ボールで遊べるよ。"},
-    ko: {"petTapBall": "질문 탭에서 눌러서 공을 주면 놀아요."},
-    zh: {"petTapBall": "在提问页点一下它，给它一个球玩。"},
-    tl: {"petTapBall": "I-tap ito sa tab na Magtanong para bigyan ng bolang paglalaruan."},
-    he: {"petTapBall": "הקש עליה בלשונית השאלות כדי לתת לה כדור לשחק בו."},
-    el: {"petTapBall": "Πάτησέ το στην καρτέλα ερωτήσεων για να του δώσεις μπάλα να παίξει."},
-    sv: {"petTapBall": "Tryck på den under Fråga-fliken för att ge den en boll att leka med."},
-    uk: {"petTapBall": "Натисни на нього у вкладці запитань, щоб дати йому м'ячик."},
-    ro: {"petTapBall": "Atinge-l în fila Întrebări ca să-i dai o minge de joacă."},
-    fa: {"petTapBall": "در زبانه پرسش رویش بزن تا یک توپ برای بازی به او بدهی."},
-    ur: {"petTapBall": "سوال والے ٹیب میں اسے چھوؤ اور کھیلنے کے لیے گیند دو۔"}
+    en: {"petTapBall": "On the Ask tab, drag from your pet to give it a ball, or tap it to give it love."},
+    vi: {"petTapBall": "Ở thẻ Hỏi & nghe, kéo từ thú cưng ra để đưa bóng cho nó, hoặc chạm để thương nó."},
+    es: {"petTapBall": "En la pestaña Preguntar, arrastra desde tu mascota para darle una pelota, o tócala para darle cariño."},
+    fr: {"petTapBall": "Dans l'onglet Questions, fais glisser depuis ton animal pour lui donner une balle, ou touche-le pour lui faire un câlin."},
+    de: {"petTapBall": "Ziehe im Fragen-Tab von deinem Haustier weg, um ihm einen Ball zu geben, oder tippe es an, um es zu knuddeln."},
+    pt: {"petTapBall": "Na aba Perguntar, arraste a partir do bichinho para dar uma bola, ou toque nele para dar carinho."},
+    it: {"petTapBall": "Nella scheda Domande, trascina dal cucciolo per dargli una palla, oppure toccalo per fargli le coccole."},
+    nl: {"petTapBall": "Sleep in het Vragen-tabblad vanaf je huisdier om het een bal te geven, of tik erop om het te knuffelen."},
+    ru: {"petTapBall": "Во вкладке вопросов потяни от питомца, чтобы дать ему мячик, или нажми на него, чтобы приласкать."},
+    pl: {"petTapBall": "W karcie pytań przeciągnij od zwierzaka, aby dać mu piłkę, albo dotknij go, aby go przytulić."},
+    tr: {"petTapBall": "Sor sekmesinde top vermek için evcil hayvanından sürükle, sevgi göstermek için ona dokun."},
+    ar: {"petTapBall": "في تبويب الأسئلة، اسحب من حيوانك لتعطيه كرة، أو المسه لتمنحه الحب."},
+    hi: {"petTapBall": "सवाल वाले टैब में गेंद देने के लिए पालतू से खींचो, या प्यार देने के लिए उसे छुओ।"},
+    id: {"petTapBall": "Di tab Tanya, seret dari peliharaanmu untuk memberinya bola, atau ketuk untuk memberi kasih sayang."},
+    th: {"petTapBall": "ที่แท็บถามคำถาม ลากออกจากสัตว์เลี้ยงเพื่อให้ลูกบอล หรือแตะเพื่อมอบความรัก"},
+    ja: {"petTapBall": "質問タブでペットからドラッグするとボールをあげられるよ。タップすると、なでなでできるよ。"},
+    ko: {"petTapBall": "질문 탭에서 펫을 끌어서 공을 주거나, 눌러서 사랑을 주세요."},
+    zh: {"petTapBall": "在提问页，从宠物身上拖出一个球给它玩，或者点一下给它爱。"},
+    tl: {"petTapBall": "Sa tab na Magtanong, i-drag mula sa alaga mo para bigyan ng bola, o i-tap para bigyan ng pagmamahal."},
+    he: {"petTapBall": "בלשונית השאלות, גרור מחיית המחמד כדי לתת לה כדור, או הקש עליה כדי לתת לה אהבה."},
+    el: {"petTapBall": "Στην καρτέλα ερωτήσεων, σύρε από το κατοικίδιο για να του δώσεις μπάλα ή πάτησέ το για να του δώσεις αγάπη."},
+    sv: {"petTapBall": "Dra från ditt husdjur under Fråga-fliken för att ge det en boll, eller tryck på det för att ge det kärlek."},
+    uk: {"petTapBall": "У вкладці запитань потягни від улюбленця, щоб дати йому м'ячик, або натисни, щоб приголубити."},
+    ro: {"petTapBall": "În fila Întrebări, trage de la animăluț ca să-i dai o minge, sau atinge-l ca să-i dai drag."},
+    fa: {"petTapBall": "در زبانه پرسش، از حیوانت بکش تا یک توپ به او بدهی، یا رویش بزن تا محبت کنی."},
+    ur: {"petTapBall": "سوال والے ٹیب میں گیند دینے کے لیے پالتو سے کھینچو، یا پیار دینے کے لیے اسے چھوؤ۔"}
   });
 
   /* ---- tabs ---- */
