@@ -1098,6 +1098,87 @@
   @keyframes helloWave{ 0%,60%,100%{ transform:rotate(0); } 70%{ transform:rotate(-14deg); } 80%{ transform:rotate(8deg); } 90%{ transform:rotate(-8deg); } }
   .chat-hello::after{ content:" \2726"; color:var(--accent); }
   @media (prefers-reduced-motion: reduce){ .hello-buddy .wave{ animation:none; } }
+  /* ================= Study pet ================= */
+  .pet-room{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; align-items:start; }
+  @media (max-width:720px){ .pet-room{ grid-template-columns:1fr; } }
+  .pet-stage{ position:relative; border-radius:var(--radius); min-height:320px; display:flex; flex-direction:column; align-items:center; padding:16px 12px 10px; overflow:hidden;
+    background:linear-gradient(180deg, var(--accent-tint) 0%, var(--paper-raised) 64%, var(--listen-tint) 64%, var(--listen-tint) 100%); }
+  .pet-art{ margin-top:auto; width:min(280px, 82%); }
+  .pet-art svg{ width:100%; height:auto; display:block; overflow:visible; }
+  .pet-pop{ animation:petPop .6s cubic-bezier(.3,1.5,.5,1); }
+  .pet-bubble{ background:var(--paper-raised); color:var(--ink); border-radius:18px; padding:9px 16px; font-weight:700; font-size:15px; box-shadow:var(--shadow); text-align:center; max-width:92%; position:relative; margin-bottom:10px; }
+  .pet-bubble::after{ content:""; position:absolute; left:50%; bottom:-8px; margin-left:-8px; border:8px solid transparent; border-bottom:0; border-top-color:var(--paper-raised); }
+  .pet-side{ display:flex; flex-direction:column; gap:12px; }
+  .pet-title{ margin:0; font:700 24px var(--font-display); color:var(--ink); display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; }
+  .pet-kind{ font:600 14px var(--font-body); color:var(--ink-soft); }
+  .pet-note{ margin:0; color:var(--ink-soft); font-size:14px; line-height:1.55; }
+  .pet-name-input{ border:none; border-radius:999px; background:var(--paper-raised); color:var(--ink); box-shadow:inset 0 0 0 2px var(--line); padding:12px 18px; font:600 16px var(--font-body); }
+  .pet-name-input:focus{ outline:none; box-shadow:inset 0 0 0 2px var(--accent); }
+  .pet-meter{ display:flex; flex-direction:column; gap:5px; font-size:13.5px; font-weight:600; }
+  .pet-meter-row{ display:flex; justify-content:space-between; color:var(--ink-soft); }
+  .pet-bar{ height:12px; border-radius:99px; background:var(--paper-sunken); overflow:hidden; }
+  .pet-bar i{ display:block; height:100%; border-radius:99px; transition:width .5s; }
+  .pet-steps{ display:flex; justify-content:space-between; font-size:11.5px; font-weight:700; color:var(--ink-faint); }
+  .pet-steps b{ color:var(--listen); }
+  .pet-snacks{ display:flex; align-items:center; gap:10px; background:var(--paper-raised); border-radius:16px; padding:10px 14px; font-weight:700; color:var(--ink); }
+  .pet-snack-n{ font:700 24px var(--font-body); color:#B5602F; }
+  .pet-btn{ border:none; border-radius:999px; padding:12px 18px; font:700 15px var(--font-body); cursor:pointer; background:var(--paper-sunken); color:var(--ink); transition:transform .08s, box-shadow .08s; }
+  .pet-btn.primary{ background:var(--accent); color:#fff; box-shadow:0 4px 0 var(--accent-strong); }
+  .pet-btn.food{ background:#E8743B; color:#fff; box-shadow:0 4px 0 #B5501F; }
+  .pet-btn.small{ align-self:center; padding:8px 14px; font-size:13.5px; background:none; color:var(--ink-soft); }
+  .pet-btn:active:not(:disabled){ transform:translateY(3px); box-shadow:none; }
+  .pet-btn:disabled{ opacity:.45; cursor:default; box-shadow:none; }
+  .pet-btn:focus-visible, .pet-opt:focus-visible, .pet-mover:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .pet-quiz{ background:var(--paper-raised); border-radius:var(--radius); padding:18px; display:flex; flex-direction:column; gap:12px; box-shadow:var(--shadow); }
+  .pet-qcount{ font-size:13px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; }
+  .pet-dots{ display:flex; gap:6px; }
+  .pet-dots i{ width:12px; height:12px; border-radius:50%; background:var(--paper-sunken); }
+  .pet-dots i.r{ background:#4CAF7A; } .pet-dots i.w{ background:#D9604C; }
+  .pet-q{ font-size:17px; font-weight:600; line-height:1.45; color:var(--ink); }
+  .pet-opts{ display:flex; flex-direction:column; gap:8px; }
+  .pet-opt{ text-align:start; border:none; border-radius:14px; background:var(--paper); color:var(--ink); padding:12px 14px; font:600 15px var(--font-body); cursor:pointer; }
+  .pet-opt:hover:not(:disabled){ background:var(--accent-tint); }
+  .pet-opt.right{ background:#D7F0E0; color:#1F6B42; } .pet-opt.wrong{ background:#F6D9D5; color:#8E2F26; }
+  .pet-egg-wobble{ transform-origin:150px 280px; animation:petWobble 2.6s ease-in-out infinite; }
+  /* the pet in the corner of the Ask tab */
+  #panelAsk{ position:relative; }
+  #panelAsk.has-pet .chat{ padding-bottom:144px; }
+  #panelAsk.strip-full .pet-corner{ display:none; }
+  .pet-corner{ position:absolute; right:18px; bottom:76px; width:25%; min-width:220px; max-width:360px; height:132px; pointer-events:none; z-index:1; }
+  .pet-corner-name{ position:absolute; right:0; top:0; font:700 12px var(--font-body); color:var(--ink-soft); background:var(--paper-raised); border-radius:999px; padding:3px 10px; box-shadow:var(--shadow); }
+  .pet-mover{ position:absolute; bottom:0; left:0; width:124px; height:112px; padding:0; border:none; background:none; cursor:pointer; pointer-events:auto; }
+  .pet-face{ display:block; width:100%; height:100%; transform-origin:50% 100%; }
+  .pet-face.flip{ transform:scaleX(-1); }
+  .pet-face svg{ width:100%; height:100%; display:block; overflow:visible; }
+  .pet-toy{ position:absolute; bottom:2px; width:26px; height:26px; pointer-events:none; }
+  .pet-toy svg{ width:100%; height:100%; display:block; }
+  .pet-toy.bounce{ animation:petToy .9s cubic-bezier(.4,0,.6,1) infinite; }
+  .pet-zzz{ position:absolute; font:700 16px var(--font-display); color:#7FA6E0; opacity:0; pointer-events:none; animation:petZzz 3s ease-in infinite; }
+  .pet-heart{ position:absolute; width:20px; height:18px; pointer-events:none; opacity:0; animation:petHeart 1.3s ease-out forwards; }
+  .pet-heart svg{ width:100%; height:100%; display:block; }
+  .pet-leg-a, .pet-leg-b{ transform-box:fill-box; transform-origin:50% 0; }
+  .pet-walking .pet-leg-a{ animation:petStep .44s ease-in-out infinite; }
+  .pet-walking .pet-leg-b{ animation:petStep .44s ease-in-out infinite; animation-delay:-.22s; }
+  .pet-playing .pet-leg-a, .pet-playing .pet-leg-b{ animation:petStep .25s ease-in-out infinite; }
+  .pet-playing .pet-leg-b{ animation-delay:-.12s; }
+  .pet-bob{ animation:petBob 2.4s ease-in-out infinite; }
+  .pet-breathe{ animation:petBreathe 3s ease-in-out infinite; }
+  .pet-crawl{ animation:petCrawl .22s ease-in-out infinite; }
+  .pet-hop{ animation:petHop .9s cubic-bezier(.4,0,.6,1) infinite; }
+  .pet-munch{ animation:petMunch .25s ease-in-out 5; }
+  @keyframes petBob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-5px); } }
+  @keyframes petBreathe{ 0%,100%{ transform:scale(1,1); } 50%{ transform:scale(1.03,.96); } }
+  @keyframes petCrawl{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-2px); } }
+  @keyframes petHop{ 0%,100%{ transform:translateY(0) rotate(0); } 50%{ transform:translateY(-4px) rotate(-4deg); } }
+  @keyframes petMunch{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.05,.95); } }
+  @keyframes petStep{ 0%,100%{ transform:translate(0,0); } 30%{ transform:translate(2px,-5px); } 60%{ transform:translate(0,0); } }
+  @keyframes petToy{ 0%,100%{ transform:translateY(0) rotate(0); } 50%{ transform:translateY(-26px) rotate(180deg); } }
+  @keyframes petZzz{ 0%{ opacity:0; transform:translate(0,0) scale(.7); } 20%{ opacity:1; } 100%{ opacity:0; transform:translate(16px,-40px) scale(1.2); } }
+  @keyframes petHeart{ 0%{ opacity:0; transform:translate(0,0) scale(.5); } 20%{ opacity:1; transform:translate(calc(var(--dx) * .3),-12px) scale(1.05); } 100%{ opacity:0; transform:translate(var(--dx),-58px) scale(.9); } }
+  @keyframes petWobble{ 0%,70%,100%{ transform:rotate(0); } 77%{ transform:rotate(-6deg); } 84%{ transform:rotate(6deg); } 91%{ transform:rotate(-4deg); } }
+  @keyframes petPop{ 0%{ transform:scale(.3); opacity:0; } 100%{ transform:scale(1); opacity:1; } }
+  @media (max-width:600px){ .pet-corner{ width:50%; min-width:0; right:10px; height:116px; } .pet-mover{ width:102px; height:92px; } #panelAsk.has-pet .chat{ padding-bottom:128px; } }
+  @media (prefers-reduced-motion: reduce){ .pet-bob, .pet-breathe, .pet-crawl, .pet-hop, .pet-munch, .pet-toy.bounce, .pet-egg-wobble, .pet-pop, .pet-walking .pet-leg-a, .pet-walking .pet-leg-b, .pet-playing .pet-leg-a, .pet-playing .pet-leg-b{ animation:none; } }
 </style>
 <style>
   /* OpenDyslexic by Abbie Gonzalez (https://opendyslexic.org), SIL Open Font
@@ -1243,6 +1324,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1v5M12 18v5M1 12h5M18 12h5" stroke-linecap="round"/></svg>
           <span data-i18n="tabGame">Game</span>
         </button>
+        <button class="tab" type="button" role="tab" id="tabPet" data-tab="pet" aria-selected="false" aria-controls="panelPet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="14" r="7"/><path d="M7.5 9.5L7 4l4 3.2M16.5 9.5L17 4l-4 3.2" stroke-linejoin="round"/><circle cx="9.5" cy="13.5" r=".9" fill="currentColor"/><circle cx="14.5" cy="13.5" r=".9" fill="currentColor"/></svg>
+          <span data-i18n="tabPet">Pet</span>
+        </button>
       </div>
 
       <div class="tab-panel" id="panelAsk" role="tabpanel" aria-labelledby="tabAsk">
@@ -1314,6 +1399,11 @@
         <div class="empty-chat-hint" id="chatHint"><svg class="hello-buddy" viewBox="0 0 80 80" aria-hidden="true"><g stroke="#3A2E2A" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="40" cy="75" rx="26" ry="4" fill="rgba(0,0,0,.12)" stroke="none"/><rect x="19" y="12" width="46" height="60" rx="6" fill="#FFF6E6"/><rect x="16" y="10" width="46" height="60" rx="7" fill="#E8743B"/><rect x="16" y="10" width="9" height="60" rx="4" fill="#C95A27"/><ellipse cx="35" cy="36" rx="6" ry="5.5" fill="#fff"/><ellipse cx="51" cy="36" rx="6" ry="5.5" fill="#fff"/><circle cx="36" cy="37" r="2.6" fill="#3A2E2A" stroke="none"/><circle cx="52" cy="37" r="2.6" fill="#3A2E2A" stroke="none"/><path d="M37 47 Q43 52 49 47" fill="none"/><path class="wave" d="M62 32 Q74 24 72 12" fill="none"/></g></svg><div class="chat-hello" data-i18n="askHello">We are here to help!</div><div data-i18n="askHint">Ask something about this book — a concept, a definition, anything in the text.</div></div>
       </div>
 
+      <div class="pet-corner" id="petCorner" hidden>
+        <div class="pet-corner-name" id="petCornerName"></div>
+        <div class="pet-toy" id="petToy" hidden></div>
+        <button type="button" class="pet-mover" id="petMover"><span class="pet-face" id="petFace"></span></button>
+      </div>
       <div class="resize-handle ask-resize" id="askResize" role="separator" aria-orientation="horizontal" tabindex="0" data-i18n-title="resizeHint" title="Drag to make this taller or shorter"><span></span></div>
       <div class="composer">
         <div class="buddy" id="studyBuddy" aria-hidden="true">
@@ -1359,6 +1449,7 @@
       <div class="tab-panel study" id="panelVocab" role="tabpanel" aria-labelledby="tabVocab" hidden></div>
       <div class="tab-panel study" id="panelQuiz" role="tabpanel" aria-labelledby="tabQuiz" hidden></div>
       <div class="tab-panel game-panel" id="panelGame" role="tabpanel" aria-labelledby="tabGame" hidden></div>
+      <div class="tab-panel study" id="panelPet" role="tabpanel" aria-labelledby="tabPet" hidden></div>
     </div>
   </main>
 </div>
@@ -6520,6 +6611,7 @@
     const input = $("questionInput");
     const question = typeof edited === "string" ? edited : input.value.trim();
     if (!question) return;
+    petStudied();   // a study day helps the study pet grow
     if (typeof edited !== "string") { input.value = ""; autoGrow(input); }
     await loadChat(bookId);
 
@@ -7111,6 +7203,416 @@
     }
   }
 
+  /* Fluff-ball pets: one round fluffy ball + ears + two eyes + a mouth + little legs.
+     ballSVG(animal, stage 0-3, mood "happy"|"walk"|"play"|"sleep"|"eat"|"hungry") */
+  var BOL = "#4A3A33";
+  var BPAL = {
+    corgi:  { body: "#EDBB84", belly: "#FFF4E4", inner: "#F7CDB7", far: "#D9A46E" },
+    kitten: { body: "#CED1DC", belly: "#F6F6FA", inner: "#F7C6D2", far: "#B5B9C8", stripe: "#A6ABBD" },
+    bunny:  { body: "#FFFDF8", belly: "#FFFFFF", inner: "#F9CBD6", far: "#ECE4DA" },
+    bird:   { body: "#FFDF78", belly: "#FFF2BF", inner: "#FFDF78", far: "#F0C24C" },
+    gecko:  { body: "#A8DCE7", belly: "#E3F5F9", inner: "#A8DCE7", far: "#8BC6D3", spot: "#68B3C5" },
+  };
+  function ballFluff(cx, cy, rx, ry, n, amp){
+    let d = ""; const step = Math.PI * 2 / n, k = 1 / Math.cos(step / 2);
+    for (let i = 0; i <= n; i++) {
+      const a = i * step - Math.PI / 2, x = cx + rx * Math.cos(a), y = cy + ry * Math.sin(a);
+      if (i === 0) { d += `M${x.toFixed(1)} ${y.toFixed(1)} `; continue; }
+      const m = a - step / 2;
+      d += `Q${(cx + (rx * k + amp) * Math.cos(m)).toFixed(1)} ${(cy + (ry * k + amp) * Math.sin(m)).toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)} `;
+    }
+    return d + "Z";
+  }
+  function ballSVG(animal, stage, mood){
+    const P = BPAL[animal], sc = [0.72, 0.82, 0.92, 1][stage];
+    const st = `stroke="${BOL}" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round"`;
+    const bird = animal === "bird", gecko = animal === "gecko", sleep = mood === "sleep";
+    const cx = 100, cy = sleep ? 106 : 92, rx = sleep ? 50 : 44, ry = sleep ? 36 : 42;
+    const fx = mood === "walk" || mood === "play" ? 7 : 0;        // face turns a little toward where it's going
+    const amp = gecko ? 0 : bird ? 1.6 : 2.8;
+    // ---- legs: 2 front + 2 back (back ones peek out behind, a shade darker)
+    let legs = "";
+    if (!sleep) {
+      if (bird) legs = [[92, "pet-leg-b"], [108, "pet-leg-a"]].map(([x, c]) => `<g class="${c}"><path d="M${x} 130 V142 M${x} 142 l-6 3 M${x} 142 l2 4 M${x} 142 l7 1" stroke="#EE8F3E" stroke-width="4" stroke-linecap="round" fill="none"/></g>`).join("");
+      else {
+        const L = (x, c, fill) => `<g class="${c}"><rect x="${x - 6.5}" y="122" width="13" height="20" rx="6.2" fill="${fill}" ${st}/></g>`;
+        legs = L(76, "pet-leg-a", P.far) + L(124, "pet-leg-b", P.far) + L(90, "pet-leg-b", P.body) + L(110, "pet-leg-a", P.body);
+      }
+    }
+    // ---- tail (little puff at the back, on the left)
+    let tail = "";
+    if (animal === "corgi" || animal === "bunny") tail = `<path d="${ballFluff(56, cy + 14, 11, 10, 9, 2)}" fill="${animal === "bunny" ? "#fff" : P.body}" ${st}/>`;
+    if (animal === "kitten") tail = `<path d="M62 ${cy + 18} C40 ${cy + 14} 34 ${cy - 10} 44 ${cy - 24}" fill="none" stroke="${BOL}" stroke-width="15" stroke-linecap="round"/><path d="M62 ${cy + 18} C40 ${cy + 14} 34 ${cy - 10} 44 ${cy - 24}" fill="none" stroke="${P.body}" stroke-width="8" stroke-linecap="round"/>`;
+    if (bird) tail = `<path d="M60 ${cy + 4} l-16 -8 l4 12 l-8 6 l22 2 Z" fill="${P.far}" ${st}/>`;
+    if (gecko) tail = `<path d="M62 ${cy + 22} C38 ${cy + 26} 30 ${cy + 6} 42 ${cy} C50 ${cy - 4} 54 ${cy + 6} 48 ${cy + 8}" fill="none" stroke="${BOL}" stroke-width="15" stroke-linecap="round"/><path d="M62 ${cy + 22} C38 ${cy + 26} 30 ${cy + 6} 42 ${cy} C50 ${cy - 4} 54 ${cy + 6} 48 ${cy + 8}" fill="none" stroke="${P.body}" stroke-width="8" stroke-linecap="round"/>`;
+    // ---- ears
+    const ear = (x, y, ang, w, h, fill, inner) => `<g transform="translate(${x} ${y}) rotate(${ang})"><path d="M${-w / 2} 0 Q${-w / 2.6} ${-h * 0.8} 0 ${-h} Q${w / 2.6} ${-h * 0.8} ${w / 2} 0 Z" fill="${fill}" ${st}/><path d="M${-w / 3.4} -2 Q${-w / 4} ${-h * 0.62} 0 ${-h * 0.76} Q${w / 4} ${-h * 0.62} ${w / 3.4} -2 Z" fill="${inner}"/></g>`;
+    const ey0 = cy - ry * 0.72;
+    let ears = "";
+    if (animal === "corgi") ears = ear(cx - 21, ey0, -14, 27, 31, P.body, P.inner) + ear(cx + 21, ey0, 14, 27, 31, P.body, P.inner);
+    if (animal === "kitten") ears = ear(cx - 21, ey0 + 2, -13, 25, 24, P.body, P.inner) + ear(cx + 21, ey0 + 2, 13, 25, 24, P.body, P.inner);
+    if (animal === "bunny") ears = ear(cx - 12, ey0 + 2, -6, 17, 48, P.body, P.inner) + ear(cx + 12, ey0 + 2, 6, 17, 48, P.body, P.inner);
+    if (bird) ears = `<path d="M${cx - 4} ${cy - ry + 4} q-6 -14 2 -18 q0 8 6 12 q4 -10 12 -8 q-8 4 -8 14 Z" fill="${P.far}" ${st}/>`;
+    // ---- the ball
+    const ball = `<path d="${ballFluff(cx, cy, rx, ry, 24, amp)}" fill="${P.body}" ${st}/>`
+      + `<ellipse cx="${cx + fx * 0.6}" cy="${cy + ry * 0.45}" rx="${rx * 0.55}" ry="${ry * 0.38}" fill="${P.belly}"/>`
+      + (animal === "kitten" ? `<path d="M${cx + fx} ${cy - ry + 6} v10 M${cx + fx - 12} ${cy - ry + 8} l2 9 M${cx + fx + 12} ${cy - ry + 8} l-2 9" stroke="${P.stripe}" stroke-width="4" stroke-linecap="round"/>` : "")
+      + (gecko ? `<circle cx="${cx - 26}" cy="${cy - 16}" r="4" fill="${P.spot}"/><circle cx="${cx + 28}" cy="${cy - 22}" r="3.5" fill="${P.spot}"/><circle cx="${cx - 30}" cy="${cy + 14}" r="3.5" fill="${P.spot}"/>` : "");
+    // ---- face
+    const ex1 = cx - 16 + fx, ex2 = cx + 16 + fx, ey = cy - 2;
+    let face = "";
+    if (sleep) face += `<path d="M${ex1 - 6} ${ey} q6 5 12 0 M${ex2 - 6} ${ey} q6 5 12 0" fill="none" stroke="${BOL}" stroke-width="3.4" stroke-linecap="round"/>`;
+    else if (mood === "play" || mood === "eat") face += `<path d="M${ex1 - 6} ${ey + 2} q6 -7 12 0 M${ex2 - 6} ${ey + 2} q6 -7 12 0" fill="none" stroke="${BOL}" stroke-width="3.4" stroke-linecap="round"/>`;
+    else face += `<ellipse cx="${ex1}" cy="${ey}" rx="4" ry="5" fill="#2A1F1C"/><ellipse cx="${ex2}" cy="${ey}" rx="4" ry="5" fill="#2A1F1C"/><circle cx="${ex1 + 1.2}" cy="${ey - 1.8}" r="1.5" fill="#fff"/><circle cx="${ex2 + 1.2}" cy="${ey - 1.8}" r="1.5" fill="#fff"/>`;
+    if (mood === "hungry") face += `<path d="M${ex1 - 8} ${ey - 12} l10 3 M${ex2 + 8} ${ey - 12} l-10 3" stroke="${BOL}" stroke-width="3" stroke-linecap="round"/>`;
+    face += `<ellipse cx="${ex1 - 9}" cy="${ey + 11}" rx="6.5" ry="4" fill="#FFA9B6" opacity=".55"/><ellipse cx="${ex2 + 9}" cy="${ey + 11}" rx="6.5" ry="4" fill="#FFA9B6" opacity=".55"/>`;
+    const mx = cx + fx, my = ey + (animal === "corgi" ? 8 : 14);
+    if (!bird) face += gecko ? `<circle cx="${mx - 3.5}" cy="${my - 6}" r="1.5" fill="${BOL}"/><circle cx="${mx + 3.5}" cy="${my - 6}" r="1.5" fill="${BOL}"/>`
+      : animal === "corgi" ? ""
+      : `<path d="M${mx - 3.6} ${my - 7.5} Q${mx} ${my - 9} ${mx + 3.6} ${my - 7.5} Q${mx + 2} ${my - 3.5} ${mx} ${my - 3} Q${mx - 2} ${my - 3.5} ${mx - 3.6} ${my - 7.5} Z" fill="#F48FA6" stroke="${BOL}" stroke-width="1.6" stroke-linejoin="round"/>`;
+    if (bird) face += `<path d="M${mx - 6} ${my - 7} Q${mx} ${my - 11} ${mx + 6} ${my - 7} Q${mx + 3} ${my + 1} ${mx} ${my + 2} Q${mx - 3} ${my + 1} ${mx - 6} ${my - 7} Z" fill="#FF9F45" ${st} stroke-width="2.6"/>`;
+    else if (mood === "play") face += `<path d="M${mx - 5} ${my - 1} q5 9 10 0 z" fill="#E8556B" stroke="${BOL}" stroke-width="2.2" stroke-linejoin="round"/>`;
+    else if (mood === "eat") face += `<ellipse cx="${mx}" cy="${my + 2}" rx="4.5" ry="4" fill="#C2414E" stroke="${BOL}" stroke-width="2"/>`;
+    else if (sleep) face += `<ellipse cx="${mx}" cy="${my}" rx="2.4" ry="2" fill="#C2414E"/>`;
+    else face += `<path d="M${mx - 5} ${my - 2} q2.5 3.5 5 0 q2.5 3.5 5 0" fill="none" stroke="${BOL}" stroke-width="2.4" stroke-linecap="round"/>`;
+    // ---- outfits by age
+    let acc = "";
+    if (stage === 0) acc = `<path d="M${cx - 34} ${cy - ry * 0.55} l7 -7 l7 7 l8 -9 l8 8 l8 -9 l8 8 l8 -8 l8 8 l6 -6 C${cx + 30 + fx} ${cy - ry - 16} ${cx - 30 + fx} ${cy - ry - 16} ${cx - 34} ${cy - ry * 0.55} Z" fill="#FFF9EE" ${st}/><circle cx="${cx - 10}" cy="${cy - ry - 2}" r="3.5" fill="#F7C9A6"/><circle cx="${cx + 12}" cy="${cy - ry - 3}" r="3" fill="#BFE3F2"/>`;
+    if (stage === 2) {
+      const c = { corgi: "#7BB8E8", kitten: "#E8697F", bunny: "#FF9CC0", bird: "#86C98A", gecko: "#FFB95A" }[animal];
+      acc = `<path d="M${cx - 30} ${cy + 22} Q${cx} ${cy + 36} ${cx + 30} ${cy + 22}" fill="none" stroke="${c}" stroke-width="9" stroke-linecap="round"/><path d="M${cx + 14} ${cy + 28} l5 15 l9 -3 l-5 -14" fill="${c}" ${st}/>`;
+    }
+    if (stage === 3) acc = `<circle cx="${ex1}" cy="${ey}" r="10" fill="rgba(255,255,255,.2)" stroke="${BOL}" stroke-width="3"/><circle cx="${ex2}" cy="${ey}" r="10" fill="rgba(255,255,255,.2)" stroke="${BOL}" stroke-width="3"/><path d="M${ex1 + 10} ${ey} H${ex2 - 10}" stroke="${BOL}" stroke-width="3"/>
+      <path d="M${cx - 30} ${cy - ry + 2} L${cx} ${cy - ry - 12} L${cx + 30} ${cy - ry + 2} L${cx} ${cy - ry + 14} Z" fill="#2B2B38" ${st}/><path d="M${cx + 28} ${cy - ry + 2} v16" stroke="#FFC93C" stroke-width="3.5" stroke-linecap="round"/><circle cx="${cx + 28}" cy="${cy - ry + 20}" r="3.5" fill="#FFC93C"/>`;
+    const cls = sleep ? "pet-breathe" : mood === "play" ? "pet-hop" : mood === "eat" ? "pet-munch" : mood === "walk" ? "pet-crawl" : "pet-bob";
+    return `<svg class="pet ball" viewBox="20 6 160 144"><ellipse cx="100" cy="144" rx="${50 * sc}" ry="4.5" fill="rgba(0,0,0,.14)"/>
+      <g transform="translate(100 144) scale(${sc}) translate(-100 -144)"><g class="${cls}" style="transform-origin:100px 144px">
+      ${legs}${tail}${ears}${ball}${face}${acc}</g></g></svg>`;
+  }
+
+  /* ---------------- Study pet ----------------
+     Pass a 5-question quiz from the open book (3 or more right) to hatch a
+     surprise egg: corgi, kitten, bunny, chick or gecko. The student names
+     it. It grows over 28 study days (Baby → Kid at 7 → Teen at 14 →
+     Grown-up at 28). Another 5-question quiz earns 3 snacks; each snack
+     fills its tummy. It never runs away or dies — it just gets hungry.
+     While the student studies on the Ask tab it walks, plays and naps in
+     the petC above the ask box; tapping it gives it love.
+     Kept in this browser on this device. */
+  var PET_ANIMALS = ["corgi", "kitten", "bunny", "bird", "gecko"];
+  var PET_STAGE_DAYS = [0, 7, 14, 28];
+  var PET_DAY = 86400000;
+  var PET_COOKIE = '<svg width="30" height="30" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="#E0A35B" stroke="#3A2E2A" stroke-width="3"/><circle cx="14" cy="15" r="2.6" fill="#5A3520"/><circle cx="24" cy="13" r="2.2" fill="#5A3520"/><circle cx="25" cy="24" r="2.8" fill="#5A3520"/><circle cx="14" cy="26" r="2.2" fill="#5A3520"/></svg>';
+  var PET_HEART = '<svg viewBox="0 0 24 22" aria-hidden="true"><path d="M12 20.5 C5 15.5 1.5 12 1.5 7.4 C1.5 4.2 4 2 6.9 2 C9 2 10.8 3.2 12 5 C13.2 3.2 15 2 17.1 2 C20 2 22.5 4.2 22.5 7.4 C22.5 12 19 15.5 12 20.5 Z" fill="#FF7E9A" stroke="#D94F72" stroke-width="1.8" stroke-linejoin="round"/><ellipse cx="7.4" cy="6.6" rx="2.2" ry="1.4" fill="#fff" opacity=".6"/></svg>';
+  var PET_TOYS = {
+    corgi:  '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="#FF6B6B" stroke="#4A3530" stroke-width="3"/><path d="M6 17 q14 8 28 0" fill="none" stroke="#fff" stroke-width="4"/></svg>',
+    kitten: '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="#B89CF0" stroke="#4A3530" stroke-width="3"/><path d="M9 14 q11 6 22 0 M8 22 q12 7 24 0 M13 30 q8 -14 3 -24" fill="none" stroke="#7E5FCB" stroke-width="2.5"/></svg>',
+    bunny:  '<svg viewBox="0 0 40 40"><path d="M20 4 l5 10 l11 2 l-8 8 l2 11 l-10 -5 l-10 5 l2 -11 l-8 -8 l11 -2 z" fill="#FFD25A" stroke="#4A3530" stroke-width="3" stroke-linejoin="round"/><circle cx="16" cy="20" r="1.8" fill="#4A3530"/><circle cx="24" cy="20" r="1.8" fill="#4A3530"/></svg>',
+    bird:   '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="#6FB3E8" stroke="#4A3530" stroke-width="3"/><circle cx="14" cy="14" r="4" fill="#fff" opacity=".7"/></svg>',
+    gecko:  '<svg viewBox="0 0 40 40"><ellipse cx="20" cy="24" rx="11" ry="9" fill="#7BC67E" stroke="#4A3530" stroke-width="3"/><ellipse cx="13" cy="13" rx="7" ry="5" fill="#E7F6FF" stroke="#4A3530" stroke-width="2.5"/><ellipse cx="27" cy="13" rx="7" ry="5" fill="#E7F6FF" stroke="#4A3530" stroke-width="2.5"/><circle cx="16" cy="23" r="2" fill="#4A3530"/><circle cx="24" cy="23" r="2" fill="#4A3530"/></svg>'
+  };
+  function petEggSVG(cracks){
+    const crack = cracks > 0 ? '<path d="M110 ' + (170 - cracks * 4) + ' l18 14 l14 -12 l16 14 l16 -12 l18 12" fill="none" stroke="#3A2E2A" stroke-width="5" stroke-linejoin="round"/>' : "";
+    return '<svg class="pet-egg" viewBox="0 0 300 300" aria-hidden="true"><g class="pet-egg-wobble"><ellipse cx="150" cy="285" rx="80" ry="10" fill="rgba(0,0,0,.12)"/>' +
+      '<path d="M150 40 C210 40 245 140 245 195 C245 250 205 280 150 280 C95 280 55 250 55 195 C55 140 90 40 150 40 Z" fill="#FFF6E6" stroke="#3A2E2A" stroke-width="6"/>' +
+      '<circle cx="115" cy="130" r="14" fill="#F7C9A6"/><circle cx="185" cy="185" r="18" fill="#BFE3F2"/><circle cx="125" cy="225" r="11" fill="#CFE7C9"/><circle cx="190" cy="105" r="9" fill="#F6E3EA"/>' + crack + '</g></svg>';
+  }
+
+  function petFresh(){ return { phase: "egg", animal: null, name: "", studyDays: 0, lastStudy: -1, fullness: 70, fedAt: Date.now(), snacks: 0 }; }
+  function petLoad(){
+    try { const p = JSON.parse(safeStorage("get", "earmark_pet") || "null"); if (p && p.phase) return Object.assign(petFresh(), p); } catch (e) {}
+    return petFresh();
+  }
+  var pet = petLoad();
+  function petSave(){ safeStorage("set", "earmark_pet", JSON.stringify(pet)); }
+  function petToday(){ return Math.floor((Date.now() - new Date().getTimezoneOffset() * 60000) / PET_DAY); }
+  function petStage(){ let k = 0; PET_STAGE_DAYS.forEach((d, i) => { if (pet.studyDays >= d) k = i; }); return k; }
+  function petFull(){ return Math.max(5, Math.round(pet.fullness - (Date.now() - pet.fedAt) / PET_DAY * 25)); }   // hungrier each day, never zero
+  function petAnimalName(a){ return t({ corgi: "petCorgi", kitten: "petKitten", bunny: "petBunny", bird: "petChick", gecko: "petGecko" }[a]); }
+  function petStageName(k){ return t(["petBaby", "petKid", "petTeen", "petGrown"][k]); }
+  // A day the student studies (asks a question or takes a pet quiz) helps the pet grow — once per day.
+  function petStudied(){
+    if (pet.phase !== "pet") return;
+    const day = petToday();
+    if (day !== pet.lastStudy) { pet.studyDays++; pet.lastStudy = day; petSave(); }
+  }
+
+  // Five questions from the open book: reuse the book's saved question bank, ask the AI only if it's nearly empty.
+  async function petQuestions(bookId){
+    const bank = await loadBank(bookId);
+    if (bank.items.length < 5) {
+      if (!sample) throw { code: "not_granted" };
+      const loaded = await ensureBookLoaded(bookId);
+      const book = state.books.find(b => b.id === bookId) || { title: "" };
+      const raw = await sample.json(quizPrompt(book, studyExcerpts(bookId, loaded, "book"), 10), { modelTier: "default", cache: false });
+      const qs = cleanQuiz(raw);
+      if (!qs.length) throw { code: "invalid_json" };
+      await addToBank(bookId, qs.map(q => Object.assign({}, q)));
+    }
+    return shuffled(bank.items).slice(0, 5).map(q => ({ q: q.q, options: q.options.slice(), answer: q.answer }));
+  }
+
+  /* ---- the Pet tab ---- */
+  var petView = { quiz: null, say: "", eatingUntil: 0, hatching: 0 };
+  function petBubble(text){ const b = el("div", "pet-bubble"); b.textContent = text; return b; }
+  function petBtn(text, cls, onClick){ const b = el("button", "pet-btn " + (cls || "")); b.type = "button"; b.textContent = text; b.addEventListener("click", onClick); return b; }
+  function petNote(text){ const n = el("p", "pet-note"); n.textContent = text; return n; }
+  function renderPet(){
+    const bookId = state.currentBookId;
+    if (!bookId) return;
+    const inner = panelShell("panelPet");
+    const room = el("div", "pet-room"), stage = el("div", "pet-stage"), side = el("div", "pet-side");
+    room.append(stage, side); inner.appendChild(room);
+    const art = el("div", "pet-art");
+
+    if (petView.hatching) {
+      stage.appendChild(petBubble(petView.hatching < 3 ? t("petCrack") : t("petHereICome")));
+      art.innerHTML = petEggSVG(petView.hatching); stage.appendChild(art);
+      return;
+    }
+    if (petView.quiz) { renderPetQuiz(stage, side, art); return; }
+
+    if (pet.phase === "egg") {
+      stage.appendChild(petBubble(t("petMoving")));
+      art.innerHTML = petEggSVG(0); stage.appendChild(art);
+      const h = el("h2", "pet-title"); h.textContent = t("petEggTitle"); side.appendChild(h);
+      side.appendChild(petNote(t("petEggNote")));
+      side.appendChild(petBtn(t("petStartHatch"), "primary", () => startPetQuiz("hatch")));
+      side.appendChild(petNote(t("petDevice")));
+      return;
+    }
+    if (pet.phase === "name") {
+      stage.appendChild(petBubble(t("petHi")));
+      art.innerHTML = ballSVG(pet.animal, 0, "happy"); art.classList.add("pet-pop"); stage.appendChild(art);
+      const h = el("h2", "pet-title"); h.textContent = t("petItsA", { animal: petAnimalName(pet.animal) }); side.appendChild(h);
+      const lab = el("label", "pet-note"); lab.setAttribute("for", "petNameInput"); lab.textContent = t("petNameAsk"); side.appendChild(lab);
+      const inp = el("input", "pet-name-input"); inp.id = "petNameInput"; inp.maxLength = 16; inp.autocomplete = "off"; inp.placeholder = t("petNamePh"); side.appendChild(inp);
+      const ok = petBtn(t("petNameOk"), "primary", () => {
+        const v = inp.value.trim(); if (!v) { inp.focus(); return; }
+        pet.name = v; pet.phase = "pet"; petSave(); petView.say = t("petSayYay", { name: v }); renderPet(); petCornerUpdate();
+      });
+      inp.addEventListener("keydown", e => { if (e.key === "Enter") ok.click(); });
+      side.appendChild(ok);
+      setTimeout(() => inp.focus(), 50);
+      return;
+    }
+    const st = petStage(), full = petFull(), hungry = full < 35, eating = Date.now() < petView.eatingUntil;
+    const say = eating ? t("petSayYum") : petView.say || (hungry ? t("petSayHungry") : st === 3 ? t("petSayGrown") : t("petSayGrow"));
+    stage.appendChild(petBubble(say));
+    art.innerHTML = ballSVG(pet.animal, st, eating ? "eat" : hungry ? "hungry" : "happy"); stage.appendChild(art);
+
+    const h = el("h2", "pet-title"); h.textContent = pet.name;
+    const kind = el("span", "pet-kind"); kind.textContent = petStageName(st) + " " + petAnimalName(pet.animal); h.appendChild(kind); side.appendChild(h);
+    const meter = (label, value, pct, color) => {
+      const m = el("div", "pet-meter"), row = el("div", "pet-meter-row"), a = el("span"), b = el("span"), bar = el("div", "pet-bar"), fill = el("i");
+      a.textContent = label; b.textContent = value; row.append(a, b);
+      fill.style.width = pct + "%"; fill.style.background = color; bar.appendChild(fill); m.append(row, bar); return m;
+    };
+    side.appendChild(meter(t("petTummy"), hungry ? t("petHungry") : full > 80 ? t("petFullW") : t("petOkay"), full, full > 60 ? "#4CAF7A" : full > 35 ? "#E8A93B" : "#D9604C"));
+    const grow = meter(t("petGrowing"), t("petDaysOf", { n: pet.studyDays }), Math.min(100, pet.studyDays / 28 * 100), "var(--listen)");
+    const steps = el("div", "pet-steps");
+    [0, 1, 2, 3].forEach(i => { const s = el(i <= st ? "b" : "span"); s.textContent = petStageName(i); steps.appendChild(s); });
+    grow.appendChild(steps); side.appendChild(grow);
+    const snacks = el("div", "pet-snacks"); snacks.innerHTML = PET_COOKIE;
+    const n = el("span", "pet-snack-n"); n.textContent = pet.snacks; const w = el("span"); w.textContent = t("petSnacks"); snacks.append(n, w); side.appendChild(snacks);
+    const feed = petBtn(t("petFeed", { name: pet.name }), "food", () => {
+      if (!pet.snacks) return;
+      pet.snacks--; pet.fullness = Math.min(100, petFull() + 30); pet.fedAt = Date.now(); petSave();
+      petView.eatingUntil = Date.now() + 1300; petView.say = ""; renderPet();
+      setTimeout(() => { if (study.tab === "pet") renderPet(); }, 1350);
+    });
+    feed.disabled = !pet.snacks; side.appendChild(feed);
+    side.appendChild(petBtn(t("petEarn"), "primary", () => startPetQuiz("snacks")));
+    const next = PET_STAGE_DAYS[st + 1], left = next ? next - pet.studyDays : 0;
+    side.appendChild(petNote((next ? t(left === 1 ? "petNext1" : "petNext", { stage: petStageName(st + 1), n: left }) : t("petGrownUp", { name: pet.name })) + " " + t("petHowGrow") + " " + t("petNever")));
+  }
+
+  function startPetQuiz(kind){
+    const bookId = state.currentBookId;
+    const quiz = { kind, bookId, qs: null, i: 0, right: 0, marks: [], error: "", done: false, locked: false };
+    petView.quiz = quiz; petView.say = "";
+    renderPet();
+    petQuestions(bookId).then(qs => { quiz.qs = qs; }).catch(e => { quiz.error = sampleErrorText(e); })
+      .then(() => { if (petView.quiz === quiz && study.tab === "pet") renderPet(); });
+  }
+  function renderPetQuiz(stage, side, art){
+    const quiz = petView.quiz;
+    stage.appendChild(petBubble(quiz.kind === "hatch" ? t("petMoving") : t("petSayStudy")));
+    art.innerHTML = quiz.kind === "hatch" ? petEggSVG(0) : ballSVG(pet.animal, petStage(), "happy"); stage.appendChild(art);
+    const card = el("div", "pet-quiz"); side.appendChild(card);
+    const head = el("div", "pet-qcount"); card.appendChild(head);
+    head.textContent = (quiz.kind === "hatch" ? t("petQuizHatch") : t("petQuizSnack")) + (quiz.qs && !quiz.done ? " · " + t("petQOf", { i: quiz.i + 1 }) : "");
+    const close = () => { petView.quiz = null; renderPet(); };
+    if (quiz.error) {
+      card.appendChild(petNote(quiz.error));
+      card.appendChild(petBtn(t("petTryAgain"), "primary", () => startPetQuiz(quiz.kind)));
+      card.appendChild(petBtn(t("petNotNow"), "", close));
+      return;
+    }
+    if (!quiz.qs) { card.appendChild(busyNote(t("petLoadingQ"))); return; }
+    const dots = el("div", "pet-dots");
+    for (let k = 0; k < 5; k++) { const d = el("i"); if (quiz.marks[k] === true) d.className = "r"; if (quiz.marks[k] === false) d.className = "w"; dots.appendChild(d); }
+    card.appendChild(dots);
+    if (quiz.done) {
+      const pass = quiz.right >= 3;
+      const h = el("h3", "pet-title"); h.textContent = t("petScore", { n: quiz.right }); card.appendChild(h);
+      card.appendChild(petNote(pass ? (quiz.kind === "hatch" ? t("petCracking") : t("petEarned")) : (quiz.kind === "hatch" ? t("petCloseHatch") : t("petCloseSnack"))));
+      if (pass) card.appendChild(petBtn(t("petYay"), "primary", () => {
+        petView.quiz = null;
+        if (quiz.kind === "hatch") { hatchPet(); return; }
+        pet.snacks += 3; petSave(); petView.say = t("petSaySnacks"); renderPet();
+      }));
+      else { card.appendChild(petBtn(t("petTryAgain"), "primary", () => startPetQuiz(quiz.kind))); card.appendChild(petBtn(t("petNotNow"), "", close)); }
+      return;
+    }
+    const q = quiz.qs[quiz.i];
+    const qt = el("div", "pet-q"); qt.textContent = q.q; card.appendChild(qt);
+    const opts = el("div", "pet-opts"); card.appendChild(opts);
+    q.options.forEach((o, k) => {
+      const b = el("button", "pet-opt"); b.type = "button"; b.textContent = o;
+      b.addEventListener("click", () => {
+        if (quiz.locked) return; quiz.locked = true;
+        const ok = k === q.answer; quiz.marks[quiz.i] = ok; if (ok) quiz.right++;
+        opts.querySelectorAll(".pet-opt").forEach((x, j) => { x.disabled = true; if (j === q.answer) x.classList.add("right"); });
+        if (!ok) b.classList.add("wrong");
+        setTimeout(() => {
+          if (petView.quiz !== quiz) return;
+          quiz.locked = false; quiz.i++;
+          if (quiz.i >= quiz.qs.length) { quiz.done = true; petStudied(); }
+          if (study.tab === "pet") renderPet();
+        }, 900);
+      });
+      opts.appendChild(b);
+    });
+    card.appendChild(petBtn(t("petNotNow"), "small", close));
+  }
+  function hatchPet(){
+    petView.hatching = 1; renderPet();
+    const tick = () => {
+      if (petView.hatching < 3) { petView.hatching++; if (study.tab === "pet") renderPet(); setTimeout(tick, 500); return; }
+      setTimeout(() => {
+        petView.hatching = 0;
+        pet.animal = PET_ANIMALS[Math.floor(Math.random() * PET_ANIMALS.length)];
+        pet.phase = "name"; pet.studyDays = 1; pet.lastStudy = petToday(); pet.fedAt = Date.now(); pet.fullness = 70; petSave();
+        if (study.tab === "pet") renderPet();
+      }, 600);
+    };
+    setTimeout(tick, 500);
+  }
+
+  /* ---- the pet in the petC of the Ask tab ---- */
+  var petC = { doing: "walk", x: 10, dir: 1, last: 0, raf: 0, autoIdx: 0, autoTimer: 0, zzzTimer: 0, loving: false, loveTimer: 0, shown: false };
+  var PET_AUTO = ["walk", "play", "walk", "sleep"], PET_AUTO_MS = { walk: 7000, play: 6000, sleep: 9000 };
+  var petReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function petCornerW(){ return $("petMover").offsetWidth || 100; }
+  function petCornerDraw(){
+    const mood = petC.loving ? "play" : petC.doing === "sleep" ? "sleep" : petC.doing === "play" ? "play" : "walk";
+    const face = $("petFace");
+    face.innerHTML = ballSVG(pet.animal, petStage(), mood);
+    face.classList.toggle("flip", petC.doing === "walk" && petC.dir < 0);
+    face.classList.toggle("pet-walking", !petC.loving && petC.doing === "walk");
+    face.classList.toggle("pet-playing", !petC.loving && petC.doing === "play");
+    $("petToy").innerHTML = PET_TOYS[pet.animal] || "";
+  }
+  function petCornerSet(d){
+    petC.doing = d;
+    clearInterval(petC.zzzTimer);
+    $("petCorner").querySelectorAll(".pet-zzz").forEach(z => z.remove());
+    const w = $("petCorner").clientWidth, toy = $("petToy");
+    if (d === "play") { petC.x = Math.max(0, w - petCornerW() - 34); toy.style.left = (petC.x + petCornerW() - 2) + "px"; toy.className = "pet-toy bounce"; petC.dir = 1; }
+    else if (d === "sleep") { petC.x = Math.max(0, w - petCornerW() - 30); toy.style.left = (petC.x + petCornerW() - 4) + "px"; toy.className = "pet-toy"; }
+    else toy.className = "pet-toy";
+    toy.hidden = d === "walk";
+    if (d === "sleep" && !petReduced) { petZzz(); petC.zzzTimer = setInterval(petZzz, 1000); }
+    $("petMover").style.left = petC.x + "px";
+    petCornerDraw();
+  }
+  function petZzz(){
+    const z = el("div", "pet-zzz"); z.textContent = Math.random() < .5 ? "z" : "Z";
+    z.style.left = (petC.x + petCornerW() * 0.7) + "px"; z.style.bottom = ($("petMover").offsetHeight * 0.7) + "px";
+    $("petCorner").appendChild(z); setTimeout(() => z.remove(), 3000);
+  }
+  function petCornerAuto(){
+    clearTimeout(petC.autoTimer);
+    const d = PET_AUTO[petC.autoIdx % PET_AUTO.length];
+    petCornerSet(d);
+    petC.autoTimer = setTimeout(() => { petC.autoIdx++; petCornerAuto(); }, PET_AUTO_MS[d]);
+  }
+  function petCornerTick(ts){
+    const dt = Math.min(50, ts - (petC.last || ts)); petC.last = ts;
+    if (petC.doing === "walk" && !petC.loving && !petReduced) {
+      const max = Math.max(0, $("petCorner").clientWidth - petCornerW());
+      petC.x += petC.dir * dt * 0.03;
+      if (petC.x > max) { petC.x = max; petC.dir = -1; $("petFace").classList.add("flip"); }
+      if (petC.x < 0) { petC.x = 0; petC.dir = 1; $("petFace").classList.remove("flip"); }
+      $("petMover").style.left = petC.x + "px";
+    }
+    petC.raf = requestAnimationFrame(petCornerTick);
+  }
+  // Show the petC pet only on the Ask tab, once a pet has hatched and been named.
+  function petCornerUpdate(){
+    const box = $("petCorner"), show = pet.phase === "pet" && study.tab === "ask" && !!state.currentBookId;
+    $("panelAsk").classList.toggle("has-pet", pet.phase === "pet");
+    box.hidden = !show;
+    if (show && !petC.shown) {
+      petC.shown = true;
+      const comp = document.querySelector("#panelAsk .composer"), rs = $("askResize");
+      box.style.bottom = ((comp ? comp.offsetHeight : 64) + (rs ? rs.offsetHeight : 0) + 2) + "px";
+      $("petCornerName").textContent = pet.name;
+      $("petMover").setAttribute("aria-label", t("petCornerLabel", { name: pet.name }));
+      petC.autoIdx = 0; petC.last = 0; petCornerAuto();
+      cancelAnimationFrame(petC.raf); petC.raf = requestAnimationFrame(petCornerTick);
+    } else if (!show && petC.shown) {
+      petC.shown = false;
+      clearTimeout(petC.autoTimer); clearInterval(petC.zzzTimer); cancelAnimationFrame(petC.raf);
+    }
+  }
+  $("petMover").addEventListener("click", () => {
+    const wasAsleep = petC.doing === "sleep";
+    petC.loving = true; petCornerDraw();
+    [-14, 4, 18].forEach((dx, i) => setTimeout(() => {
+      const h = el("div", "pet-heart"); h.innerHTML = PET_HEART; h.style.setProperty("--dx", dx + "px");
+      h.style.left = (petC.x + petCornerW() * 0.5 - 10 + (i - 1) * 8) + "px"; h.style.bottom = ($("petMover").offsetHeight * 0.85) + "px";
+      $("petCorner").appendChild(h); setTimeout(() => h.remove(), 1400);
+    }, i * 180));
+    clearTimeout(petC.loveTimer);
+    petC.loveTimer = setTimeout(() => {
+      petC.loving = false;
+      if (wasAsleep) { petC.autoIdx = 0; petCornerAuto(); } else petCornerDraw();
+    }, 1800);
+  });
+  // Typing a question wakes a napping pet.
+  $("questionInput").addEventListener("input", () => { if (petC.shown && petC.doing === "sleep" && !petC.loving) { petC.autoIdx = 0; petCornerAuto(); } });
+
+  addStrings({
+    en: {
+      tabPet: "Pet",
+      petCorgi: "Corgi", petKitten: "Kitten", petBunny: "Bunny", petChick: "Chick", petGecko: "Gecko",
+      petBaby: "Baby", petKid: "Kid", petTeen: "Teen", petGrown: "Grown-up",
+      petMoving: "Something is moving inside…", petCrack: "Crack…", petHereICome: "Here I come!",
+      petEggTitle: "A mystery egg",
+      petEggNote: "Finish a 5-question quiz from this book to hatch it. Get at least 3 right. What could be inside?",
+      petStartHatch: "Start the hatching quiz",
+      petDevice: "Your pet lives in this browser on this device.",
+      petHi: "Hi! Give me a name?", petItsA: "It's a {animal}!",
+      petNameAsk: "What will you call your new friend?", petNamePh: "Type a name", petNameOk: "That's the name",
+      petSayYay: "Yay, I'm {name}!", petSayYum: "Yum, thank you!", petSayHungry: "I'm hungry… can we study?",
+      petSayGrown: "Let's study together!", petSayGrow: "Hi! I'm growing!", petSaySnacks: "Snacks! Feed me?", petSayStudy: "You can do it!",
+      petTummy: "Tummy", petHungry: "hungry", petFullW: "full", petOkay: "okay",
+      petGrowing: "Growing up", petDaysOf: "{n} of 28 study days",
+      petSnacks: "snacks", petFeed: "Feed {name} a snack", petEarn: "Take a 5-question quiz for 3 snacks",
+      petNext: "{stage} in {n} more study days.", petNext1: "{stage} in 1 more study day.",
+      petGrownUp: "{name} is all grown up and stays as your study friend.",
+      petHowGrow: "Each day you study (ask a question or take a pet quiz) helps your pet grow.",
+      petNever: "Pets never run away. If you miss a day, they just get hungry.",
+      petQuizHatch: "Hatching quiz", petQuizSnack: "Snack quiz", petQOf: "{i} of 5",
+      petLoadingQ: "Getting questions from your book…", petTryAgain: "Try again", petNotNow: "Not now",
+      petScore: "{n} of 5 right", petCracking: "The egg is cracking!", petEarned: "You earned 3 snacks!",
+      petCloseHatch: "So close! Get 3 right to hatch the egg.", petCloseSnack: "So close! Get 3 right to earn snacks.",
+      petYay: "Yay!", petCornerLabel: "{name}, your study pet. Tap to give some love."
+    }
+  });
+
   /* ---- tabs ---- */
   function setTab(tab){
     if (study.tab !== tab) { pauseSpeech(); hideGlossaryTip(); if (study.tab === "game") leaveGame(); }
@@ -7126,8 +7628,10 @@
     $("panelQuiz").hidden = tab !== "quiz";
     $("panelVocab").hidden = tab !== "vocab";
     $("panelGame").hidden = tab !== "game";
+    $("panelPet").hidden = tab !== "pet";
     if (tab === "ask" && stripWordMap) renderStrip();   // page label + saved spot, now that it is visible
     renderStudy();
+    petCornerUpdate();
   }
   document.querySelectorAll("#bookTabs [data-tab]").forEach(b => {
     b.addEventListener("click", () => setTab(b.getAttribute("data-tab")));
@@ -7139,6 +7643,7 @@
     else if (study.tab === "quiz") renderQuiz();
     else if (study.tab === "vocab") renderVocab();
     else if (study.tab === "game") renderGame();
+    else if (study.tab === "pet") renderPet();
   }
 
   function isShowing(tab, bookId){ return study.tab === tab && state.currentBookId === bookId; }
@@ -11319,7 +11824,7 @@
   /* ---------------- boot ---------------- */
   {
     const savedTab = safeStorage("get", "earmark_tab");
-    if (savedTab === "cards" || savedTab === "quiz" || savedTab === "game" || savedTab === "vocab") study.tab = savedTab;
+    if (savedTab === "cards" || savedTab === "quiz" || savedTab === "game" || savedTab === "vocab" || savedTab === "pet") study.tab = savedTab;
   }
   (async () => {
     populateLangSelect();
