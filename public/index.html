@@ -7427,7 +7427,7 @@
     feed.disabled = !pet.snacks; side.appendChild(feed);
     side.appendChild(petBtn(t("petEarn"), "primary", () => startPetQuiz("snacks")));
     const next = PET_STAGE_DAYS[st + 1], left = next ? next - pet.studyDays : 0;
-    side.appendChild(petNote((next ? t(left === 1 ? "petNext1" : "petNext", { stage: petStageName(st + 1), n: left }) : t("petGrownUp", { name: pet.name })) + " " + t("petHowGrow") + " " + t("petDayNight") + " " + t("petNever")));
+    side.appendChild(petNote((next ? t(left === 1 ? "petNext1" : "petNext", { stage: petStageName(st + 1), n: left }) : t("petGrownUp", { name: pet.name })) + " " + t("petHowGrow") + " " + t("petDayNight") + " " + t("petTapBall") + " " + t("petNever")));
   }
 
   function startPetQuiz(kind){
@@ -7506,7 +7506,6 @@
   /* ---- the pet in the petC of the Ask tab ---- */
   var petC = { doing: "walk", x: 10, dir: 1, last: 0, raf: 0, autoIdx: 0, autoTimer: 0, zzzTimer: 0, loving: false, loveTimer: 0, shown: false };
   // Daytime it walks and plays; at night (9 PM – 7 AM on this device's clock) it sleeps.
-  var PET_AUTO = ["walk", "play"], PET_AUTO_MS = { walk: 8000, play: 6000 };
   function petIsNight(){ const h = new Date().getHours(); return h >= 21 || h < 7; }
   var petReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function petCornerW(){ return $("petMover").offsetWidth || 100; }
@@ -7524,7 +7523,7 @@
     clearInterval(petC.zzzTimer);
     $("petCorner").querySelectorAll(".pet-zzz").forEach(z => z.remove());
     const w = $("petCorner").clientWidth, toy = $("petToy");
-    if (d === "play") { petC.x = Math.max(0, w - petCornerW() - 34); toy.style.left = (petC.x + petCornerW() - 2) + "px"; toy.className = "pet-toy bounce"; petC.dir = 1; }
+    if (d === "play") { petC.x = Math.max(0, Math.min(petC.x, w - petCornerW() - 34)); toy.style.left = (petC.x + petCornerW() - 2) + "px"; toy.className = "pet-toy bounce"; petC.dir = 1; }   // plays right where it is
     else if (d === "sleep") { petC.x = Math.max(0, w - petCornerW() - 30); toy.style.left = (petC.x + petCornerW() - 4) + "px"; toy.className = "pet-toy"; }
     else toy.className = "pet-toy";
     toy.hidden = d === "walk";
@@ -7544,9 +7543,9 @@
       petC.autoTimer = setTimeout(petCornerAuto, 60000);
       return;
     }
-    const d = PET_AUTO[petC.autoIdx % PET_AUTO.length];
-    petCornerSet(d);
-    petC.autoTimer = setTimeout(() => { petC.autoIdx++; petCornerAuto(); }, PET_AUTO_MS[d]);
+    // Daytime: it just walks around. It only plays when the student taps it and gives it the ball.
+    if (petC.doing !== "walk") petCornerSet("walk");
+    petC.autoTimer = setTimeout(petCornerAuto, 60000);
   }
   function petCornerTick(ts){
     const dt = Math.min(50, ts - (petC.last || ts)); petC.last = ts;
@@ -7570,29 +7569,41 @@
       box.style.bottom = ((comp ? comp.offsetHeight : 64) + (rs ? rs.offsetHeight : 0) + 2) + "px";
       $("petCornerName").textContent = pet.name;
       $("petMover").setAttribute("aria-label", t("petCornerLabel", { name: pet.name }));
-      petC.autoIdx = 0; petC.last = 0; petCornerAuto();
+      petC.doing = ""; petC.last = 0; petCornerAuto();
       cancelAnimationFrame(petC.raf); petC.raf = requestAnimationFrame(petCornerTick);
     } else if (!show && petC.shown) {
       petC.shown = false;
       clearTimeout(petC.autoTimer); clearInterval(petC.zzzTimer); cancelAnimationFrame(petC.raf);
     }
   }
+  // Tap in the daytime: here's the ball! It plays for about 4–5 seconds, then walks around again.
+  // Tap at night: a little love (hearts), then back to sleep.
   $("petMover").addEventListener("click", () => {
+    if (!petIsNight()) {
+      clearTimeout(petC.autoTimer); clearTimeout(petC.loveTimer); petC.loving = false;
+      petCornerSet("play");
+      petHearts(2);
+      petC.autoTimer = setTimeout(petCornerAuto, 4500);
+      return;
+    }
     const wasAsleep = petC.doing === "sleep";
     petC.loving = true; petCornerDraw();
-    [-14, 4, 18].forEach((dx, i) => setTimeout(() => {
+    petHearts(3);
+    clearTimeout(petC.loveTimer);
+    petC.loveTimer = setTimeout(() => {
+      petC.loving = false;
+      if (wasAsleep) { petC.doing = ""; petCornerAuto(); } else petCornerDraw();   // at night it goes back to sleep
+    }, 1800);
+  });
+  function petHearts(n){
+    [-14, 4, 18].slice(0, n).forEach((dx, i) => setTimeout(() => {
       const h = el("div", "pet-heart"); h.innerHTML = PET_HEART; h.style.setProperty("--dx", dx + "px");
       h.style.left = (petC.x + petCornerW() * 0.5 - 10 + (i - 1) * 8) + "px"; h.style.bottom = ($("petMover").offsetHeight * 0.85) + "px";
       $("petCorner").appendChild(h); setTimeout(() => h.remove(), 1400);
     }, i * 180));
-    clearTimeout(petC.loveTimer);
-    petC.loveTimer = setTimeout(() => {
-      petC.loving = false;
-      if (wasAsleep) { petC.autoIdx = 0; petC.doing = ""; petCornerAuto(); } else petCornerDraw();   // at night it goes back to sleep
-    }, 1800);
-  });
+  }
   // Typing a question wakes a napping pet.
-  $("questionInput").addEventListener("input", () => { if (petC.shown && petC.doing === "sleep" && !petC.loving && !petIsNight()) { petC.autoIdx = 0; petCornerAuto(); } });
+  $("questionInput").addEventListener("input", () => { if (petC.shown && petC.doing === "sleep" && !petC.loving && !petIsNight()) petCornerAuto(); });
 
   addStrings({
     en: {
@@ -7651,6 +7662,35 @@
     ro: {"tabPet": "Animăluț", "petCorgi": "Corgi", "petKitten": "Pisicuță", "petBunny": "Iepuraș", "petChick": "Puișor", "petGecko": "Gecko", "petBaby": "Bebeluș", "petKid": "Copil", "petTeen": "Adolescent", "petGrown": "Adult", "petMoving": "Ceva se mișcă înăuntru…", "petCrack": "Crac…", "petHereICome": "Iată-mă!", "petEggTitle": "Un ou misterios", "petEggNote": "Termină un test de 5 întrebări din această carte ca să-l clocești. Cel puțin 3 corecte. Ce o fi înăuntru?", "petStartHatch": "Începe testul de clocire", "petDevice": "Animăluțul tău trăiește în acest browser, pe acest dispozitiv.", "petHi": "Salut! Îmi dai un nume?", "petItsA": "Surpriză: {animal}!", "petNameAsk": "Cum îți vei numi noul prieten?", "petNamePh": "Scrie un nume", "petNameOk": "Acesta e numele", "petSayYay": "Ura, sunt {name}!", "petSayYum": "Mmm, mulțumesc!", "petSayHungry": "Mi-e foame… învățăm?", "petSayGrown": "Hai să învățăm împreună!", "petSayGrow": "Salut! Cresc!", "petSaySnacks": "Biscuiți! Îmi dai unul?", "petSayStudy": "Poți s-o faci!", "petSayNight": "Zzz… e noapte. Ne vedem dimineață!", "petTummy": "Burtică", "petHungry": "flămând", "petFullW": "sătul", "petOkay": "bine", "petGrowing": "Creștere", "petDaysOf": "{n} din 28 de zile de studiu", "petSnacks": "biscuiți", "petFeed": "Dă-i lui {name} un biscuit", "petEarn": "Fă un test de 5 întrebări pentru 3 biscuiți", "petNext": "{stage}: încă {n} zile de studiu.", "petNext1": "{stage}: încă 1 zi de studiu.", "petGrownUp": "{name} e mare acum și rămâne prietenul tău de studiu.", "petHowGrow": "Fiecare zi în care înveți (pui o întrebare sau faci un test cu animăluțul) îl ajută să crească.", "petNever": "Animăluțele nu fug niciodată. Dacă pierzi o zi, le e doar foame.", "petDayNight": "Ziua se joacă, iar noaptea doarme.", "petQuizHatch": "Test de clocire", "petQuizSnack": "Test de biscuiți", "petQOf": "{i} din 5", "petLoadingQ": "Caut întrebări în cartea ta…", "petTryAgain": "Încearcă din nou", "petNotNow": "Nu acum", "petScore": "{n} din 5 corecte", "petCracking": "Oul crapă!", "petEarned": "Ai câștigat 3 biscuiți!", "petCloseHatch": "Aproape! 3 corecte ca să clocești oul.", "petCloseSnack": "Aproape! 3 corecte ca să câștigi biscuiți.", "petYay": "Ura!", "petCornerLabel": "{name}, animăluțul tău de studiu. Atinge ca să-i dai drag."},
     fa: {"tabPet": "حیوان خانگی", "petCorgi": "کورگی", "petKitten": "بچه‌گربه", "petBunny": "خرگوش", "petChick": "جوجه", "petGecko": "مارمولک", "petBaby": "نوزاد", "petKid": "بچه", "petTeen": "نوجوان", "petGrown": "بزرگ", "petMoving": "چیزی داخلش تکان می‌خورد…", "petCrack": "تق…", "petHereICome": "اومدم!", "petEggTitle": "یک تخم‌مرغ مرموز", "petEggNote": "یک آزمون ۵ سؤالی از همین کتاب را تمام کن تا تخم باز شود. دست‌کم ۳ جواب درست لازم است. داخلش چیست؟", "petStartHatch": "شروع آزمون تخم", "petDevice": "حیوان خانگی‌ات در همین مرورگر روی همین دستگاه زندگی می‌کند.", "petHi": "سلام! برایم اسم می‌گذاری؟", "petItsA": "سورپرایز: {animal}!", "petNameAsk": "اسم دوست تازه‌ات را چه می‌گذاری؟", "petNamePh": "یک اسم بنویس", "petNameOk": "همین اسم", "petSayYay": "آخ‌جون، من {name} هستم!", "petSayYum": "به‌به، ممنون!", "petSayHungry": "گرسنه‌ام… درس بخوانیم؟", "petSayGrown": "بیا با هم درس بخوانیم!", "petSayGrow": "سلام! دارم بزرگ می‌شوم!", "petSaySnacks": "بیسکویت! به من می‌دهی؟", "petSayStudy": "تو می‌توانی!", "petSayNight": "Zzz… شب شده. صبح می‌بینمت!", "petTummy": "شکم", "petHungry": "گرسنه", "petFullW": "سیر", "petOkay": "خوب", "petGrowing": "بزرگ شدن", "petDaysOf": "{n} از ۲۸ روز درس", "petSnacks": "بیسکویت", "petFeed": "به {name} بیسکویت بده", "petEarn": "آزمون ۵ سؤالی بده و ۳ بیسکویت بگیر", "petNext": "{stage}: {n} روز درس دیگر.", "petNext1": "{stage}: ۱ روز درس دیگر.", "petGrownUp": "{name} بزرگ شده و همیشه دوست درسی تو می‌ماند.", "petHowGrow": "هر روزی که درس می‌خوانی (سؤال می‌پرسی یا آزمون حیوان خانگی می‌دهی) به رشد حیوانت کمک می‌کند.", "petNever": "حیوان‌های خانگی هیچ‌وقت فرار نمی‌کنند. اگر یک روز نخوانی، فقط گرسنه می‌شوند.", "petDayNight": "روزها بازی می‌کند و شب‌ها می‌خوابد.", "petQuizHatch": "آزمون تخم", "petQuizSnack": "آزمون بیسکویت", "petQOf": "{i} از ۵", "petLoadingQ": "در حال آوردن سؤال از کتابت…", "petTryAgain": "دوباره امتحان کن", "petNotNow": "الان نه", "petScore": "{n} از ۵ درست", "petCracking": "تخم دارد ترک می‌خورد!", "petEarned": "۳ بیسکویت بردی!", "petCloseHatch": "نزدیک بود! ۳ جواب درست تا تخم باز شود.", "petCloseSnack": "نزدیک بود! ۳ جواب درست تا بیسکویت بگیری.", "petYay": "آخ‌جون!", "petCornerLabel": "{name}، حیوان خانگی درسی تو. لمس کن تا محبت کنی."},
     ur: {"tabPet": "پالتو", "petCorgi": "کورگی", "petKitten": "بلی کا بچہ", "petBunny": "خرگوش", "petChick": "چوزہ", "petGecko": "چھپکلی", "petBaby": "ننھا", "petKid": "بچہ", "petTeen": "نوجوان", "petGrown": "بڑا", "petMoving": "اندر کچھ ہل رہا ہے…", "petCrack": "چٹخ…", "petHereICome": "میں آ گیا!", "petEggTitle": "ایک پراسرار انڈا", "petEggNote": "انڈے سے بچہ نکالنے کے لیے اس کتاب سے 5 سوالوں کا کوئز مکمل کرو۔ کم از کم 3 درست چاہییں۔ اندر کیا ہوگا؟", "petStartHatch": "انڈے کا کوئز شروع کرو", "petDevice": "تمہارا پالتو اس ڈیوائس کے اس براؤزر میں رہتا ہے۔", "petHi": "سلام! میرا نام رکھو گے؟", "petItsA": "سرپرائز: {animal}!", "petNameAsk": "اپنے نئے دوست کا کیا نام رکھو گے؟", "petNamePh": "نام لکھو", "petNameOk": "یہی نام ہے", "petSayYay": "واہ، میں {name} ہوں!", "petSayYum": "مزے دار، شکریہ!", "petSayHungry": "مجھے بھوک لگی ہے… پڑھائی کریں؟", "petSayGrown": "چلو مل کر پڑھیں!", "petSayGrow": "سلام! میں بڑا ہو رہا ہوں!", "petSaySnacks": "بسکٹ! مجھے کھلاؤ گے؟", "petSayStudy": "تم کر سکتے ہو!", "petSayNight": "Zzz… رات ہو گئی۔ صبح ملتے ہیں!", "petTummy": "پیٹ", "petHungry": "بھوکا", "petFullW": "بھرا", "petOkay": "ٹھیک", "petGrowing": "بڑا ہونا", "petDaysOf": "28 میں سے {n} پڑھائی کے دن", "petSnacks": "بسکٹ", "petFeed": "{name} کو بسکٹ کھلاؤ", "petEarn": "3 بسکٹ کے لیے 5 سوالوں کا کوئز دو", "petNext": "{stage}: مزید {n} پڑھائی کے دن۔", "petNext1": "{stage}: مزید 1 پڑھائی کا دن۔", "petGrownUp": "{name} بڑا ہو گیا ہے اور تمہارا پڑھائی کا دوست رہے گا۔", "petHowGrow": "ہر دن جب تم پڑھتے ہو (سوال پوچھتے ہو یا پالتو کوئز دیتے ہو) تمہارا پالتو بڑا ہوتا ہے۔", "petNever": "پالتو کبھی نہیں بھاگتے۔ ایک دن چھوٹ جائے تو بس بھوکے ہو جاتے ہیں۔", "petDayNight": "یہ دن میں کھیلتا ہے اور رات کو سوتا ہے۔", "petQuizHatch": "انڈے کا کوئز", "petQuizSnack": "بسکٹ کوئز", "petQOf": "5 میں سے {i}", "petLoadingQ": "تمہاری کتاب سے سوال لا رہے ہیں…", "petTryAgain": "دوبارہ کوشش کرو", "petNotNow": "ابھی نہیں", "petScore": "5 میں سے {n} درست", "petCracking": "انڈا ٹوٹ رہا ہے!", "petEarned": "تم نے 3 بسکٹ جیتے!", "petCloseHatch": "بس تھوڑا سا! انڈے کے لیے 3 درست کرو۔", "petCloseSnack": "بس تھوڑا سا! بسکٹ کے لیے 3 درست کرو۔", "petYay": "واہ!", "petCornerLabel": "{name}، تمہارا پڑھائی والا پالتو۔ پیار دینے کے لیے چھوؤ۔"}
+  });
+
+  addStrings({
+    en: {"petTapBall": "Tap it on the Ask tab to give it a ball to play with."},
+    vi: {"petTapBall": "Chạm vào nó ở thẻ Hỏi & nghe để đưa bóng cho nó chơi."},
+    es: {"petTapBall": "Tócala en la pestaña Preguntar para darle una pelota y que juegue."},
+    fr: {"petTapBall": "Touche-le dans l'onglet Questions pour lui donner une balle."},
+    de: {"petTapBall": "Tippe es im Fragen-Tab an, um ihm einen Ball zum Spielen zu geben."},
+    pt: {"petTapBall": "Toque nele na aba Perguntar para dar uma bola para ele brincar."},
+    it: {"petTapBall": "Toccalo nella scheda Domande per dargli una palla con cui giocare."},
+    nl: {"petTapBall": "Tik erop in het Vragen-tabblad om het een bal te geven."},
+    ru: {"petTapBall": "Нажми на него во вкладке вопросов, чтобы дать ему мячик."},
+    pl: {"petTapBall": "Dotknij go w karcie pytań, aby dać mu piłkę do zabawy."},
+    tr: {"petTapBall": "Oynaması için Sor sekmesinde ona dokunup top ver."},
+    ar: {"petTapBall": "المسه في تبويب الأسئلة لتعطيه كرة يلعب بها."},
+    hi: {"petTapBall": "सवाल वाले टैब में इसे छुओ और खेलने के लिए गेंद दो।"},
+    id: {"petTapBall": "Ketuk di tab Tanya untuk memberinya bola untuk bermain."},
+    th: {"petTapBall": "แตะมันที่แท็บถามคำถามเพื่อให้ลูกบอลไปเล่น"},
+    ja: {"petTapBall": "質問タブでタップすると、ボールで遊べるよ。"},
+    ko: {"petTapBall": "질문 탭에서 눌러서 공을 주면 놀아요."},
+    zh: {"petTapBall": "在提问页点一下它，给它一个球玩。"},
+    tl: {"petTapBall": "I-tap ito sa tab na Magtanong para bigyan ng bolang paglalaruan."},
+    he: {"petTapBall": "הקש עליה בלשונית השאלות כדי לתת לה כדור לשחק בו."},
+    el: {"petTapBall": "Πάτησέ το στην καρτέλα ερωτήσεων για να του δώσεις μπάλα να παίξει."},
+    sv: {"petTapBall": "Tryck på den under Fråga-fliken för att ge den en boll att leka med."},
+    uk: {"petTapBall": "Натисни на нього у вкладці запитань, щоб дати йому м'ячик."},
+    ro: {"petTapBall": "Atinge-l în fila Întrebări ca să-i dai o minge de joacă."},
+    fa: {"petTapBall": "در زبانه پرسش رویش بزن تا یک توپ برای بازی به او بدهی."},
+    ur: {"petTapBall": "سوال والے ٹیب میں اسے چھوؤ اور کھیلنے کے لیے گیند دو۔"}
   });
 
   /* ---- tabs ---- */
