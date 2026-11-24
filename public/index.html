@@ -1063,6 +1063,41 @@
   .mk-card{ max-width:640px; }
   .mk-kicker{ color:#2f7d4a; }
   #mkSplash circle{ transition:transform .6s ease-out; }
+  /* ================= Look "B · Cute details": today's colors, rounder and friendlier ================= */
+  :root{ --radius:20px; --radius-sm:14px; }
+  .appbar{ border-bottom:none; box-shadow:0 2px 12px rgba(30,36,48,.06); position:relative; z-index:2; }
+  .menu-btn, .appbar-icon-btn{ border:none; background:var(--paper-sunken); }
+  .menu-btn{ border-radius:12px; }
+  .menu-btn:hover, .appbar-icon-btn:hover{ background:var(--accent-tint); }
+  .sidebar{ border-right:none; }
+  .add-book-btn{ border-radius:999px; box-shadow:0 4px 0 var(--accent-strong); transition:transform .08s, box-shadow .08s; }
+  .add-book-btn:active{ transform:translateY(3px); box-shadow:0 1px 0 var(--accent-strong); }
+  .book-card{ border:none; border-radius:16px; }
+  .book-card::before{ display:none; }
+  .book-card.active::after{ content:""; position:absolute; right:42px; top:0; width:13px; height:20px; background:var(--accent);
+    clip-path:polygon(0 0,100% 0,100% 100%,50% 74%,0 100%); }
+  .book-header{ border-bottom:none; }
+  .tabs{ border-bottom:none; gap:6px; padding-bottom:10px; }
+  .tab{ border-bottom:none; border-radius:999px; padding:7px 14px; margin-bottom:0; position:relative; }
+  .tab:hover{ background:var(--paper-sunken); }
+  .tab.on{ background:var(--accent-tint); color:var(--accent-strong); border-bottom:none; }
+  .tab.on::after{ content:""; position:absolute; left:50%; bottom:-7px; width:6px; height:6px; margin-left:-3px; border-radius:50%; background:var(--accent); }
+  .listen-strip{ margin:6px 14px 0; border:none; border-radius:22px; box-shadow:inset 0 0 0 2px rgba(33,117,106,.12); }
+  .ictrl, .translate-btn{ border:none; }
+  .ictrl.play{ box-shadow:0 3px 0 rgba(20,80,70,.35); }
+  .ask-resize{ background:transparent; border-top:none; }
+  .composer{ border-top:none; background:transparent; padding:10px 14px 14px; }
+  .composer textarea{ border:none; border-radius:24px; background:var(--paper-raised); box-shadow:0 2px 12px rgba(30,36,48,.07); padding:12px 18px; }
+  .mic-btn{ border:none; background:var(--paper-raised); }
+  .send-btn{ box-shadow:0 3px 0 var(--accent-strong); transition:transform .08s, box-shadow .08s; }
+  .send-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--accent-strong); }
+  .appbar-home .mark{ display:none; }
+  .appbar-home .mini-buddy{ width:26px; height:26px; flex-shrink:0; }
+  .hello-buddy{ width:84px; height:84px; display:block; margin:0 auto 6px; }
+  .hello-buddy .wave{ transform-origin:62px 32px; animation:helloWave 2.6s ease-in-out infinite; }
+  @keyframes helloWave{ 0%,60%,100%{ transform:rotate(0); } 70%{ transform:rotate(-14deg); } 80%{ transform:rotate(8deg); } 90%{ transform:rotate(-8deg); } }
+  .chat-hello::after{ content:" \2726"; color:var(--accent); }
+  @media (prefers-reduced-motion: reduce){ .hello-buddy .wave{ animation:none; } }
 </style>
 <style>
   /* OpenDyslexic by Abbie Gonzalez (https://opendyslexic.org), SIL Open Font
@@ -1091,6 +1126,7 @@
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
     </button>
     <button class="appbar-home" id="homeBtn" data-i18n-aria="home">
+      <svg class="mini-buddy" viewBox="0 0 80 80" aria-hidden="true"><g stroke="#3A2E2A" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"><rect x="16" y="10" width="46" height="60" rx="7" fill="#E8743B"/><rect x="16" y="10" width="9" height="60" rx="4" fill="#C95A27"/><ellipse cx="35" cy="36" rx="6" ry="5.5" fill="#fff"/><ellipse cx="51" cy="36" rx="6" ry="5.5" fill="#fff"/><circle cx="36" cy="37" r="2.4" fill="#3A2E2A" stroke="none"/><circle cx="52" cy="37" r="2.4" fill="#3A2E2A" stroke="none"/><path d="M38 47 Q43 51 48 47" fill="none"/></g></svg>
       <svg class="mark" viewBox="0 0 24 24" fill="currentColor"><path d="M5 2h11.5A2.5 2.5 0 0 1 19 4.5V22l-7-4-7 4V4.5A2.5 2.5 0 0 1 7.5 2H5z" opacity=".18"/><path d="M17 2H7a2 2 0 0 0-2 2v18l7-4 7 4V4a2 2 0 0 0-2-2z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
       <span>Earmark</span>
     </button>
@@ -1275,7 +1311,7 @@
       </div>
 
       <div class="chat" id="chat">
-        <div class="empty-chat-hint" id="chatHint"><div class="chat-hello" data-i18n="askHello">We are here to help!</div><div data-i18n="askHint">Ask something about this book — a concept, a definition, anything in the text.</div></div>
+        <div class="empty-chat-hint" id="chatHint"><svg class="hello-buddy" viewBox="0 0 80 80" aria-hidden="true"><g stroke="#3A2E2A" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="40" cy="75" rx="26" ry="4" fill="rgba(0,0,0,.12)" stroke="none"/><rect x="19" y="12" width="46" height="60" rx="6" fill="#FFF6E6"/><rect x="16" y="10" width="46" height="60" rx="7" fill="#E8743B"/><rect x="16" y="10" width="9" height="60" rx="4" fill="#C95A27"/><ellipse cx="35" cy="36" rx="6" ry="5.5" fill="#fff"/><ellipse cx="51" cy="36" rx="6" ry="5.5" fill="#fff"/><circle cx="36" cy="37" r="2.6" fill="#3A2E2A" stroke="none"/><circle cx="52" cy="37" r="2.6" fill="#3A2E2A" stroke="none"/><path d="M37 47 Q43 52 49 47" fill="none"/><path class="wave" d="M62 32 Q74 24 72 12" fill="none"/></g></svg><div class="chat-hello" data-i18n="askHello">We are here to help!</div><div data-i18n="askHint">Ask something about this book — a concept, a definition, anything in the text.</div></div>
       </div>
 
       <div class="resize-handle ask-resize" id="askResize" role="separator" aria-orientation="horizontal" tabindex="0" data-i18n-title="resizeHint" title="Drag to make this taller or shorter"><span></span></div>
@@ -6368,6 +6404,7 @@
     }
     return out.slice(-MAX_HISTORY_TURNS);
   }
+  var HELLO_BUDDY = (document.querySelector("#chatHint .hello-buddy") || { outerHTML: "" }).outerHTML;
   function renderChat(bookId){
     setTimeout(updateBuddy, 0);
     const chat = $("chat");
@@ -6375,6 +6412,7 @@
     const msgs = state.chatByBook.get(bookId) || [];
     if (!msgs.length) {
       const hint = el("div", "empty-chat-hint");
+      hint.insertAdjacentHTML("beforeend", HELLO_BUDDY);
       const hello = el("div", "chat-hello"); hello.textContent = t("askHello"); hint.appendChild(hello);
       const sub = el("div"); sub.textContent = t("askHint"); hint.appendChild(sub);
       chat.appendChild(hint);
