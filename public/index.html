@@ -6368,6 +6368,19 @@
     updateSyncButtons();
   }
   $("playChunk").addEventListener("click", toggleStripSpeech);
+  // Space starts and stops the reading voice on the Ask & listen tab, unless you're typing somewhere
+  // (or using the keyboard to press a button, where Space keeps its usual job).
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== " " && e.code !== "Space") return;
+    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+    if ($("bookView").hidden || study.tab !== "ask" || !state.currentBookId) return;
+    if (!$("settingsBackdrop").hidden || !$("confirmBackdrop").hidden || !$("pdfBackdrop").hidden || !$("webBackdrop").hidden) return;
+    const el_ = e.target;
+    if (el_ && (/^(INPUT|TEXTAREA|SELECT)$/.test(el_.tagName) || el_.isContentEditable)) return;
+    if (el_ && el_.closest && el_.closest("button, [role=button], a, [role=tab], [role=separator]") && el_.matches(":focus-visible")) return;
+    e.preventDefault();
+    toggleStripSpeech();
+  });
 
   /* ---- chat ---- */
   // Chats are saved with the book, so they're still there after closing the tab.
