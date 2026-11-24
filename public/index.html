@@ -130,6 +130,31 @@
   .menu-btn.side-toggle{ display:flex; }
   .menu-btn.side-toggle:hover{ border-color:var(--accent); color:var(--accent); }
   @media (max-width:760px){ .menu-btn.side-toggle{ display:none; } }
+  /* Hide the book's top part (title + tabs) so reading and asking get more room. */
+  .menu-btn.fold-toggle{ display:none; }
+  body.in-book .menu-btn.fold-toggle{ display:flex; }
+  .menu-btn.fold-toggle:hover{ border-color:var(--accent); color:var(--accent); }
+  body.top-folded .fold-toggle .ft-arrow{ transform:rotate(180deg); transform-origin:12px 12px; }
+  body.top-folded .book-view .book-header, body.top-folded .book-view .tabs{ display:none; }
+  /* Make the reading part fill the screen (the chat and ask box step aside). */
+  #panelAsk.strip-full .chat, #panelAsk.strip-full .composer, #panelAsk.strip-full #askResize, #panelAsk.strip-full #stripResize{ display:none; }
+  #panelAsk.strip-full .listen-strip{ flex:1; min-height:0; border-bottom:none; }
+  #panelAsk.strip-full .listen-strip .snippet{ max-height:none; flex:1; min-height:0; }
+  .ictrl.expand-btn[aria-pressed="true"]{ background:var(--listen); color:#fff; border-color:var(--listen); }
+  /* The study buddy: a little book by the ask box. It opens when you tap the box. */
+  .buddy{ position:relative; width:46px; height:46px; flex-shrink:0; align-self:flex-end; }
+  .buddy svg{ width:46px; height:46px; overflow:visible; display:block; }
+  .buddy .b-open, .buddy .b-think{ opacity:0; transition:opacity .18s ease; }
+  .buddy .b-closed{ transition:opacity .18s ease; }
+  .buddy.listening .b-closed, .buddy.thinking .b-closed{ opacity:0; }
+  .buddy.listening .b-open{ opacity:1; } .buddy.thinking .b-think{ opacity:1; }
+  .buddy.listening .b-open-g{ animation:buddyPop .3s ease-out; transform-origin:50% 80%; }
+  .buddy .b-lids{ transform-box:fill-box; transform-origin:center; animation:buddyBlink 4.2s infinite; }
+  @keyframes buddyPop{ from{ transform:scale(.7); } to{ transform:scale(1); } }
+  @keyframes buddyBlink{ 0%,92%,100%{ transform:scaleY(0); } 95%{ transform:scaleY(1); } }
+  .buddy-say{ position:absolute; left:0; bottom:54px; background:var(--ink); color:var(--paper); font-size:12px; font-weight:700; padding:5px 10px; border-radius:12px; white-space:nowrap; opacity:0; transform:translateY(4px); transition:opacity .18s, transform .18s; pointer-events:none; z-index:3; }
+  .buddy.listening .buddy-say, .buddy.thinking .buddy-say{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion: reduce){ .buddy .b-lids, .buddy.listening .b-open-g{ animation:none; } }
   body.side-hidden .side-toggle .st-arrow{ transform:scaleX(-1); transform-origin:14px 12px; }
   @media (min-width:761px){
     body.side-hidden .shell{ grid-template-columns:1fr; }
@@ -1059,6 +1084,9 @@
     <button class="menu-btn side-toggle" id="sideToggle" type="button" aria-controls="sidebar" aria-expanded="true">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16" /><path class="st-arrow" d="M15.5 9.5 13 12l2.5 2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
+    <button class="menu-btn fold-toggle" id="foldToggle" type="button" aria-pressed="false" aria-label="Hide the top part" title="Hide the top part">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path class="ft-arrow" d="M6 15l6-6 6 6"/></svg>
+    </button>
     <button class="menu-btn" id="menuBtn" aria-label="Open library">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
     </button>
@@ -1199,6 +1227,9 @@
               <button type="button" class="ictrl color-btn" id="colorBtn" aria-haspopup="true" aria-expanded="false" data-i18n-aria="colorLabel" aria-label="Colour"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.8 1.8-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.7 1.8-1.7H17a4 4 0 0 0 4-4c0-4.5-4-8.2-9-8.2z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7.3" r="1.2" fill="currentColor"/><circle cx="15" cy="7.6" r="1.2" fill="currentColor"/></svg></button>
               <div class="color-pop" id="colorPop" hidden><div class="color-pop-title" data-i18n="colorLabel">Colour</div><div class="swatches" data-swatches></div></div>
             </div>
+            <button type="button" class="ictrl expand-btn" id="expandStrip" aria-pressed="false" aria-label="Bigger reading space" title="Bigger reading space">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path id="expandIcon" d="M4 9V4h5M20 15v5h-5M4 4l6 6M20 20l-6-6"/></svg>
+            </button>
             <button type="button" class="translate-btn" id="translateBtn" aria-expanded="false" aria-controls="translatePanel">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
               <span data-i18n="translate">Translate</span>
@@ -1249,6 +1280,35 @@
 
       <div class="resize-handle ask-resize" id="askResize" role="separator" aria-orientation="horizontal" tabindex="0" data-i18n-title="resizeHint" title="Drag to make this taller or shorter"><span></span></div>
       <div class="composer">
+        <div class="buddy" id="studyBuddy" aria-hidden="true">
+          <span class="buddy-say" id="buddySay">I'm listening</span>
+          <svg viewBox="0 0 80 80"><g stroke="#3A2E2A" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+            <g class="b-closed">
+              <ellipse cx="40" cy="75" rx="26" ry="4" fill="rgba(0,0,0,.15)" stroke="none"/>
+              <rect x="19" y="12" width="46" height="60" rx="6" fill="#FFF6E6"/>
+              <rect x="16" y="10" width="46" height="60" rx="7" fill="#E8743B"/>
+              <rect x="16" y="10" width="9" height="60" rx="4" fill="#C95A27"/>
+              <g transform="translate(43,36)"><ellipse cx="-8" cy="0" rx="6" ry="5.5" fill="#fff"/><ellipse cx="8" cy="0" rx="6" ry="5.5" fill="#fff"/>
+                <circle cx="-7" cy="1" r="2.6" fill="#3A2E2A" stroke="none"/><circle cx="9" cy="1" r="2.6" fill="#3A2E2A" stroke="none"/>
+                <g class="b-lids"><rect x="-15" y="-6" width="14" height="12" fill="#E8743B" stroke="none"/><rect x="1" y="-6" width="14" height="12" fill="#E8743B" stroke="none"/></g>
+                <path d="M-5 11 Q0 14 5 11" fill="none"/></g>
+            </g>
+            <g class="b-open"><g class="b-open-g">
+              <ellipse cx="40" cy="75" rx="34" ry="4" fill="rgba(0,0,0,.15)" stroke="none"/>
+              <path d="M4 26 Q22 20 39 26 L39 70 Q22 64 4 70 Z" fill="#FFF6E6"/><path d="M41 26 Q58 20 76 26 L76 70 Q58 64 41 70 Z" fill="#FFF6E6"/>
+              <g stroke="#C9BFAE" stroke-width="2.6"><path d="M10 38h22M10 46h20M10 54h22M47 38h22M47 46h18M47 54h22"/></g>
+              <g transform="translate(40,15)"><ellipse cx="-8" cy="0" rx="6.5" ry="6" fill="#fff"/><ellipse cx="8" cy="0" rx="6.5" ry="6" fill="#fff"/>
+                <circle cx="-8" cy="-1" r="3" fill="#3A2E2A" stroke="none"/><circle cx="8" cy="-1" r="3" fill="#3A2E2A" stroke="none"/></g>
+            </g></g>
+            <g class="b-think">
+              <ellipse cx="40" cy="75" rx="34" ry="4" fill="rgba(0,0,0,.15)" stroke="none"/>
+              <path d="M4 26 Q22 20 39 26 L39 70 Q22 64 4 70 Z" fill="#FFF6E6"/><path d="M41 26 Q58 20 76 26 L76 70 Q58 64 41 70 Z" fill="#FFF6E6"/>
+              <g stroke="#FFD25A" stroke-width="5"><path d="M10 38h22M47 46h18"/></g>
+              <g transform="translate(40,15)"><ellipse cx="-8" cy="0" rx="6.5" ry="6" fill="#fff"/><ellipse cx="8" cy="0" rx="6.5" ry="6" fill="#fff"/>
+                <circle cx="-9" cy="2" r="3" fill="#3A2E2A" stroke="none"/><circle cx="7" cy="2" r="3" fill="#3A2E2A" stroke="none"/></g>
+            </g>
+          </g></svg>
+        </div>
         <textarea id="questionInput" rows="1" data-i18n-placeholder="askPlaceholder" placeholder="Ask about this book…"></textarea>
         <button class="mic-btn" id="micBtn" aria-label="Ask by voice" hidden>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 11a7 7 0 0 1-14 0M12 19v3" stroke-linecap="round"/></svg>
@@ -3367,6 +3427,12 @@
     ro: {"tabVocab": "Cuvintele mele", "vocabTitle": "Vocabularul meu", "vocabDesc": "Păstrează cuvintele pe care le înveți din această carte. Scrie singur sensul sau lasă Earmark să o facă.", "vocabWordPh": "Un cuvânt nou", "vocabDefPh": "Sensul (opțional: scrie-l tu sau atinge „Definește-l pentru mine”)", "vocabDefineForMe": "✨ Definește-l pentru mine", "vocabDefining": "Caut…", "vocabAdd": "Adaugă cuvântul", "vocabHave": "„{w}” e deja în listă.", "vocabEmpty": "Niciun cuvânt încă. Adaugă unul mai sus sau ține mouse-ul pe un cuvânt din carte și apasă „Adaugă la cuvintele mele”.", "vocabCount": "{n} cuvinte", "vocabDelete": "Șterge {w}", "vocabSave": "Salvează", "vocabCancel": "Anulează", "vocabNoDef": "Încă fără sens.", "vocabRedefine": "Definește din nou", "vocabEdit": "Editează", "vocabAddLookup": "Adaugă la cuvintele mele", "vocabAdded": "„{w}” a fost adăugat la Cuvintele mele."},
     fa: {"tabVocab": "واژه‌های من", "vocabTitle": "واژه‌نامه من", "vocabDesc": "واژه‌هایی را که از این کتاب یاد می‌گیری نگه دار. معنی را خودت بنویس یا بگذار Earmark بنویسد.", "vocabWordPh": "یک واژه تازه", "vocabDefPh": "معنی (اختیاری: خودت بنویس یا «برایم تعریف کن» را بزن)", "vocabDefineForMe": "✨ برایم تعریف کن", "vocabDefining": "در حال جستجو…", "vocabAdd": "افزودن واژه", "vocabHave": "«{w}» از قبل در فهرستت هست.", "vocabEmpty": "هنوز واژه‌ای نیست. بالا اضافه کن، یا نشانگر را روی واژه‌ای در کتاب نگه دار و «افزودن به واژه‌های من» را بزن.", "vocabCount": "{n} واژه", "vocabDelete": "حذف {w}", "vocabSave": "ذخیره", "vocabCancel": "لغو", "vocabNoDef": "هنوز معنی ندارد.", "vocabRedefine": "دوباره تعریف کن", "vocabEdit": "ویرایش", "vocabAddLookup": "افزودن به واژه‌های من", "vocabAdded": "«{w}» به واژه‌های من اضافه شد."},
     ur: {"tabVocab": "میرے الفاظ", "vocabTitle": "میری لغت", "vocabDesc": "اس کتاب سے سیکھے جا رہے الفاظ محفوظ کریں۔ مطلب خود لکھیں یا Earmark سے لکھوائیں۔", "vocabWordPh": "نیا لفظ", "vocabDefPh": "مطلب (اختیاری: خود لکھیں یا “میرے لیے بتاؤ” دبائیں)", "vocabDefineForMe": "✨ میرے لیے بتاؤ", "vocabDefining": "تلاش ہو رہی ہے…", "vocabAdd": "لفظ شامل کریں", "vocabHave": "“{w}” پہلے سے فہرست میں ہے۔", "vocabEmpty": "ابھی کوئی لفظ نہیں۔ اوپر شامل کریں، یا کتاب کے کسی لفظ پر ماؤس روک کر “میرے الفاظ میں شامل کریں” دبائیں۔", "vocabCount": "{n} الفاظ", "vocabDelete": "{w} مٹائیں", "vocabSave": "محفوظ کریں", "vocabCancel": "منسوخ", "vocabNoDef": "ابھی کوئی مطلب نہیں۔", "vocabRedefine": "دوبارہ بتاؤ", "vocabEdit": "ترمیم", "vocabAddLookup": "میرے الفاظ میں شامل کریں", "vocabAdded": "“{w}” میرے الفاظ میں شامل ہو گیا۔"}
+  });
+  addStrings({
+    en: {"hideTop": "Hide the top part", "showTop": "Show the top part", "expandReading": "Bigger reading space", "shrinkReading": "Back to the chat", "buddyListening": "I'm listening", "buddyThinking": "Reading your book…", "translateWaiting": "Busy for a moment. Continuing in {s}s… (page {i} of {n})", "translateDailyStop": "Today's free AI allowance is used up after {i} of {n} pages. Press Whole book tomorrow to continue where it stopped."},
+    vi: {"hideTop": "Ẩn phần trên", "showTop": "Hiện phần trên", "expandReading": "Mở rộng phần đọc", "shrinkReading": "Quay lại trò chuyện", "buddyListening": "Mình đang nghe", "buddyThinking": "Đang đọc sách của bạn…", "translateWaiting": "Đang bận một chút. Tiếp tục sau {s}s… (trang {i}/{n})", "translateDailyStop": "Đã hết lượt AI miễn phí hôm nay sau {i}/{n} trang. Ngày mai bấm Cả cuốn sách để dịch tiếp."},
+    es: {"hideTop": "Ocultar la parte de arriba", "showTop": "Mostrar la parte de arriba", "expandReading": "Más espacio para leer", "shrinkReading": "Volver al chat", "buddyListening": "Te escucho", "buddyThinking": "Leyendo tu libro…", "translateWaiting": "Ocupado un momento. Sigo en {s}s… (página {i} de {n})", "translateDailyStop": "Se agotó la IA gratis de hoy tras {i} de {n} páginas. Mañana pulsa Todo el libro para seguir."},
+    fr: {"hideTop": "Masquer le haut", "showTop": "Afficher le haut", "expandReading": "Plus d'espace pour lire", "shrinkReading": "Retour au chat", "buddyListening": "Je t'écoute", "buddyThinking": "Je lis ton livre…", "translateWaiting": "Occupé un instant. Reprise dans {s} s… (page {i} sur {n})", "translateDailyStop": "Le quota d'IA gratuit du jour est épuisé après {i} pages sur {n}. Demain, appuie sur Tout le livre pour continuer."}
   });
   addStrings({
     en: {"hideLibrary": "Hide library", "showLibrary": "Show library"},
@@ -5873,19 +5939,39 @@
       const h = el("h4"); h.textContent = t("translatePageLabel", { n: page.pageNum }); sec.appendChild(h);
       const txt = el("div"); sec.appendChild(txt);
       body.appendChild(sec);
-      try {
-        const out = await translatePage(page, meta, (text) => { if (run === tr.bookRun) txt.textContent = plainAnswer(text); });
-        if (run !== tr.bookRun) return;
-        const map = renderRichWordSpans(txt, out);
-        map.lang = meta.speech;
-        h.appendChild(listenButton("tr:" + bookId + "|" + page.pageNum + "|" + meta.code, () => map));
-      } catch (e) {
-        if (run !== tr.bookRun) return;
-        txt.innerHTML = "";
-        const err = el("div", "setup-error"); err.setAttribute("role", "alert"); err.textContent = sampleErrorText(e); txt.appendChild(err);
-        $("trProgressText").textContent = t("translateStopped", { i, n: pages.length });
-        $("trStop").hidden = true;
-        return;
+      // Keep going: when the AI is busy or a request fails, wait a little and try the
+      // same page again. Only the daily allowance running out really stops it (and
+      // pressing Whole book again later continues, because finished pages are kept).
+      let tries = 0;
+      for (;;) {
+        try {
+          const cached = translations.has(bookId + "|" + page.pageNum + "|" + meta.code);
+          const out = await translatePage(page, meta, (text) => { if (run === tr.bookRun) txt.textContent = plainAnswer(text); });
+          if (run !== tr.bookRun) return;
+          const map = renderRichWordSpans(txt, out);
+          map.lang = meta.speech;
+          h.appendChild(listenButton("tr:" + bookId + "|" + page.pageNum + "|" + meta.code, () => map));
+          if (!cached) await new Promise(r => setTimeout(r, 700));   // a short breath between pages so we stay under the limit
+          break;
+        } catch (e) {
+          if (run !== tr.bookRun) return;
+          const code = e && e.code;
+          if (code === "daily_limit" || code === "not_granted" || code === "prompt_too_large" || code === "refused" || tries >= 12) {
+            txt.innerHTML = "";
+            const err = el("div", "setup-error"); err.setAttribute("role", "alert"); err.textContent = sampleErrorText(e); txt.appendChild(err);
+            $("trProgressText").textContent = code === "daily_limit" ? t("translateDailyStop", { i, n: pages.length }) : t("translateStopped", { i, n: pages.length });
+            $("trStop").hidden = true;
+            return;
+          }
+          tries++;
+          const wait = Math.min(60, (code === "rate_limited" ? 15 : 5) * tries);
+          for (let s = wait; s > 0; s--) {
+            if (run !== tr.bookRun || bookId !== state.currentBookId) return;
+            $("trProgressText").textContent = t("translateWaiting", { s, i: i + 1, n: pages.length });
+            await new Promise(r => setTimeout(r, 1000));
+          }
+          txt.textContent = "";
+        }
       }
     }
     progress(pages.length);
@@ -6226,6 +6312,7 @@
     return out.slice(-MAX_HISTORY_TURNS);
   }
   function renderChat(bookId){
+    setTimeout(updateBuddy, 0);
     const chat = $("chat");
     chat.innerHTML = "";
     const msgs = state.chatByBook.get(bookId) || [];
@@ -10438,6 +10525,38 @@
     setTimeout(() => window.dispatchEvent(new Event("resize")), 0);
   }
   $("sideToggle").addEventListener("click", () => setSideHidden(!document.body.classList.contains("side-hidden")));
+  // Hide the book's title + tabs for more reading/asking room (remembered).
+  function setTopFolded(folded){
+    document.body.classList.toggle("top-folded", folded);
+    const b = $("foldToggle");
+    b.setAttribute("aria-pressed", folded ? "true" : "false");
+    b.setAttribute("aria-label", t(folded ? "showTop" : "hideTop")); b.title = t(folded ? "showTop" : "hideTop");
+    safeStorage("set", "earmark_fold", folded ? "1" : "0");
+    setTimeout(() => window.dispatchEvent(new Event("resize")), 0);
+  }
+  $("foldToggle").addEventListener("click", () => setTopFolded(!document.body.classList.contains("top-folded")));
+  setTopFolded(safeStorage("get", "earmark_fold") === "1");
+  // Only show the fold button while a book is open.
+  new MutationObserver(() => document.body.classList.toggle("in-book", !$("bookView").hidden)).observe($("bookView"), { attributes: true, attributeFilter: ["hidden"] });
+  document.body.classList.toggle("in-book", !$("bookView").hidden);
+  // Make the reading part fill the screen, and back.
+  function setStripFull(full){
+    $("panelAsk").classList.toggle("strip-full", full);
+    const b = $("expandStrip");
+    b.setAttribute("aria-pressed", full ? "true" : "false");
+    b.setAttribute("aria-label", t(full ? "shrinkReading" : "expandReading")); b.title = t(full ? "shrinkReading" : "expandReading");
+    $("expandIcon").setAttribute("d", full ? "M9 4v5H4M15 20v-5h5M4 4l5 5M20 20l-5-5" : "M4 9V4h5M20 15v5h-5M4 4l6 6M20 20l-6-6");
+  }
+  $("expandStrip").addEventListener("click", () => setStripFull(!$("panelAsk").classList.contains("strip-full")));
+  // The study buddy opens when you tap the ask box, and reads while the answer comes.
+  function updateBuddy(){
+    const bd = $("studyBuddy"); if (!bd) return;
+    const state_ = chatBusy ? "thinking" : (document.activeElement === $("questionInput") ? "listening" : "");
+    bd.className = "buddy" + (state_ ? " " + state_ : "");
+    $("buddySay").textContent = t(chatBusy ? "buddyThinking" : "buddyListening");
+  }
+  $("questionInput").addEventListener("focus", updateBuddy);
+  $("questionInput").addEventListener("blur", () => setTimeout(updateBuddy, 0));
   setSideHidden(safeStorage("get", "earmark_side") === "hidden");
   $("scrim").addEventListener("click", closeSidebar);
 
